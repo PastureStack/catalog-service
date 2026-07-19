@@ -11,7 +11,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/rancher/catalog-service/model"
+	"github.com/PastureStack/catalog-service/model"
 	"gopkg.in/yaml.v2"
 )
 

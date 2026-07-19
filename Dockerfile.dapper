@@ -1,33 +1,67 @@
-FROM ubuntu:16.04
-# FROM arm=armhf/ubuntu:16.04
+FROM ubuntu:26.04@sha256:3131b4cc82a783df6c9df078f86e01819a13594b865c2cad47bd1bca2b7063bb
 
-ARG DAPPER_HOST_ARCH
+ARG DAPPER_HOST_ARCH=amd64
 ENV HOST_ARCH=${DAPPER_HOST_ARCH} ARCH=${DAPPER_HOST_ARCH}
-
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-    apt-get install -y gcc ca-certificates git wget curl vim less file python-pip xz-utils && \
+    apt-get install -y --no-install-recommends \
+        bash \
+        ca-certificates \
+        curl \
+        file \
+        gcc \
+        git \
+        libc6-dev \
+        python3 \
+        python3-pip \
+        python3-venv \
+        tar \
+        xz-utils && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -f /usr/bin/pebble && \
     rm -f /bin/sh && ln -s /bin/bash /bin/sh
-RUN pip install tox
 
+RUN git config --system --add safe.directory '*'
+
+ARG GO_VERSION=1.26.5
+ARG GO_SHA256_amd64=5c2c3b16caefa1d968a94c1daca04a7ca301a496d9b086e17ad77bb81393f053
+ARG GO_SHA256_arm=6dae9edab81c13bccf962dec15f1fd2ec26c14a6821b4d2c92dab4130c289d7a
+ARG PIP_VERSION=26.1.2
+ARG SETUPTOOLS_VERSION=83.0.0
+ARG WHEEL_VERSION=0.47.0
+ARG TOX_VERSION=4.57.2
 ENV GOLANG_ARCH_amd64=amd64 GOLANG_ARCH_arm=armv6l GOLANG_ARCH=GOLANG_ARCH_${ARCH} \
-    GOPATH=/go PATH=/go/bin:/usr/local/go/bin:${PATH} SHELL=/bin/bash
+    GO_SHA256=GO_SHA256_${ARCH} \
+    GOPATH=/go PATH=/opt/tox/bin:/go/bin:/usr/local/go/bin:${PATH} SHELL=/bin/bash \
+    GO111MODULE=off GO15VENDOREXPERIMENT=1
 
-RUN wget -O - https://storage.googleapis.com/golang/go1.8.3.linux-${!GOLANG_ARCH}.tar.gz | tar -xzf - -C /usr/local && \
-    go get github.com/rancher/trash && go get github.com/golang/lint/golint
+RUN curl -fsSL -o /tmp/go.tgz "https://go.dev/dl/go${GO_VERSION}.linux-${!GOLANG_ARCH}.tar.gz" && \
+    echo "${!GO_SHA256}  /tmp/go.tgz" | sha256sum -c - && \
+    tar -C /usr/local -xzf /tmp/go.tgz && \
+    rm -f /tmp/go.tgz && \
+    python3 -m venv /opt/tox && \
+    /opt/tox/bin/pip install --no-cache-dir --upgrade \
+        "pip==${PIP_VERSION}" \
+        "setuptools==${SETUPTOOLS_VERSION}" \
+        "wheel==${WHEEL_VERSION}" \
+        "tox==${TOX_VERSION}" && \
+    mkdir -p /go/bin /go/src && \
+    go version && \
+    python3 --version && \
+    tox --version
 
-ENV DOCKER_URL_amd64=https://get.docker.com/builds/Linux/x86_64/docker-1.10.3 \
-    DOCKER_URL_arm=https://github.com/rancher/docker/releases/download/v1.10.3-ros1/docker-1.10.3_arm \
-    DOCKER_URL=DOCKER_URL_${ARCH}
+COPY integration/requirements.lock /tmp/catalog-service-test-requirements.lock
+RUN mkdir -p /opt/catalog-service-wheelhouse && \
+    /opt/tox/bin/pip download \
+        --dest /opt/catalog-service-wheelhouse \
+        --requirement /tmp/catalog-service-test-requirements.lock && \
+    rm -f /tmp/catalog-service-test-requirements.lock
 
-RUN wget -O - ${!DOCKER_URL} > /usr/bin/docker && chmod +x /usr/bin/docker
 
-ENV DAPPER_SOURCE /go/src/github.com/rancher/catalog-service/
-ENV DAPPER_OUTPUT ./bin ./dist
-ENV DAPPER_DOCKER_SOCKET true
-ENV TRASH_CACHE ${DAPPER_SOURCE}/.trash-cache
-ENV HOME ${DAPPER_SOURCE}
+ENV DAPPER_SOURCE=/go/src/github.com/PastureStack/catalog-service/
+ENV DAPPER_OUTPUT="./bin ./dist"
+ENV HOME=/tmp GOCACHE=/tmp/go-build-cache GOMODCACHE=/tmp/go-mod-cache
 WORKDIR ${DAPPER_SOURCE}
 
 ENTRYPOINT ["./scripts/entry"]

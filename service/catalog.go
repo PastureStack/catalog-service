@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/PastureStack/catalog-service/model"
 	"github.com/gorilla/mux"
-	"github.com/rancher/catalog-service/model"
 	"github.com/rancher/go-rancher/api"
 )
 
@@ -48,10 +48,11 @@ func getCatalog(w http.ResponseWriter, r *http.Request, envId string) (int, erro
 }
 
 type CatalogRequest struct {
-	Name   string
-	URL    string
-	Branch string
-	Kind   string
+	Name         string
+	URL          string
+	Branch       string
+	Kind         string
+	PinnedCommit string `json:"pinnedCommit"`
 }
 
 func isDuplicateName(catalogModel *model.CatalogModel) bool {
@@ -209,6 +210,7 @@ func catalogModelFromRequest(r *http.Request, envId string) (*model.CatalogModel
 			URL:           catalogRequest.URL,
 			Branch:        catalogRequest.Branch,
 			Kind:          catalogRequest.Kind,
+			PinnedCommit:  catalogRequest.PinnedCommit,
 		},
 	}, nil
 }
@@ -236,7 +238,7 @@ func getCatalogTemplates(w http.ResponseWriter, r *http.Request, envId string) (
 		return http.StatusBadRequest, errors.New("Missing paramater catalog")
 	}
 
-	rancherVersion := r.URL.Query().Get("rancherVersion")
+	platformVersion := requestedPlatformVersion(r)
 	templateBaseEq := r.URL.Query().Get("templateBase_eq")
 	categories, _ := r.URL.Query()["category"]
 	categoriesNe, _ := r.URL.Query()["category_ne"]
@@ -246,7 +248,7 @@ func getCatalogTemplates(w http.ResponseWriter, r *http.Request, envId string) (
 	// TODO: this is duplicated
 	resp := model.TemplateCollection{}
 	for _, template := range templates {
-		templateResource := templateResource(apiContext, catalogName, template, rancherVersion, envId)
+		templateResource := templateResource(apiContext, catalogName, template, platformVersion, envId)
 		if len(templateResource.VersionLinks) > 0 {
 			resp.Data = append(resp.Data, *templateResource)
 		}

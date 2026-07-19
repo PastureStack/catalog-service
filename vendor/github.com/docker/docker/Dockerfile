@@ -23,7 +23,7 @@
 # the case. Therefore, you don't have to disable it anymore.
 #
 
-FROM debian:jessie
+FROM ubuntu:26.04
 
 # Add zfs ppa
 RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys E871F18B51E0147C77796AC81196BA81F6B0FC61 \
@@ -218,7 +218,7 @@ COPY contrib/download-frozen-image-v2.sh /go/src/github.com/docker/docker/contri
 RUN ./contrib/download-frozen-image-v2.sh /docker-frozen-images \
 	buildpack-deps:jessie@sha256:25785f89240fbcdd8a74bdaf30dd5599a9523882c6dfc567f2e9ef7cf6f79db6 \
 	busybox:latest@sha256:e4f93f6ed15a0cdd342f5aae387886fba0ab98af0a102da6276eaf24d6e6ade0 \
-	debian:jessie@sha256:f968f10b4b523737e253a97eac59b0d1420b5c19b69928d35801a6373ffe330e \
+	ubuntu:26.04@sha256:f968f10b4b523737e253a97eac59b0d1420b5c19b69928d35801a6373ffe330e \
 	hello-world:latest@sha256:8be990ef2aeb16dbcb9271ddfe2610fa6658d13f6dfb8bc72074cc1ca36966a7
 # See also "hack/make/.ensure-frozen-images" (which needs to be updated any time this list is)
 

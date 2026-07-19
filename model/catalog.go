@@ -8,12 +8,13 @@ import (
 type Catalog struct {
 	EnvironmentId string `json:"environmentId"`
 
-	Name   string `json:"name"`
-	URL    string `json:"url"`
-	Branch string `json:"branch"`
-	Commit string `json:"commit"`
-	Type   string `json:"type"`
-	Kind   string `json:"kind"`
+	Name         string `json:"name"`
+	URL          string `json:"url"`
+	Branch       string `json:"branch"`
+	Commit       string `json:"commit"`
+	PinnedCommit string `json:"pinnedCommit,omitempty"`
+	Type         string `json:"-" gorm:"column:type"`
+	Kind         string `json:"kind"`
 }
 
 type CatalogModel struct {

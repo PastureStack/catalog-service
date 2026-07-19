@@ -1,7 +1,9 @@
 {
   "catalogs": {
     "orig": {
-      "url": "https://github.com/rancher/test-catalog"
+      "url": "https://github.com/rancher/test-catalog",
+      "branch": "master",
+      "pinnedCommit": "fe280beca448b60f50334bdb58b8907d82301e7b"
     },
     "updated": {
       "url": "/tmp/test-catalog"

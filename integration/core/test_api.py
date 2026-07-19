@@ -1,8 +1,38 @@
 import pytest
-import cattle
 import requests
 import json
 from wait_for import wait_for
+
+
+class CatalogObject(dict):
+    def __getattr__(self, key):
+        try:
+            return self[key]
+        except KeyError:
+            raise AttributeError(key)
+
+
+class CatalogClient:
+    def __init__(self, url, headers):
+        self.base_url = url.rsplit('/schemas', 1)[0]
+        self.headers = headers
+
+    def _list(self, resource):
+        response = requests.get(
+            self.base_url + '/' + resource,
+            headers=self.headers)
+        response.raise_for_status()
+        return [CatalogObject(item) for item in response.json()['data']]
+
+    def list_catalog(self):
+        return self._list('catalogs')
+
+    def list_template(self):
+        return self._list('templates')
+
+
+def catalog_client(url, headers):
+    return CatalogClient(url, headers)
 
 
 def headers(environment_id):
@@ -19,7 +49,7 @@ BASE_URL = 'http://localhost:8088/v1-catalog/'
 
 def create_catalog(name, url, branch=None, headers=DEFAULT_HEADERS):
     schemas_url = 'http://localhost:8088/v1-catalog/schemas'
-    client = cattle.from_env(url=schemas_url, headers=headers)
+    client = catalog_client(url=schemas_url, headers=headers)
 
     original_catalogs = client.list_catalog()
     assert len(original_catalogs) > 0
@@ -56,7 +86,7 @@ def create_catalog(name, url, branch=None, headers=DEFAULT_HEADERS):
 
 def create_duplicate_catalog(name, url, branch=None, headers=DEFAULT_HEADERS):
     schemas_url = 'http://localhost:8088/v1-catalog/schemas'
-    client = cattle.from_env(url=schemas_url, headers=headers)
+    client = catalog_client(url=schemas_url, headers=headers)
 
     original_catalogs = client.list_catalog()
     assert len(original_catalogs) > 0
@@ -77,7 +107,7 @@ def create_duplicate_catalog(name, url, branch=None, headers=DEFAULT_HEADERS):
 
 def delete_catalog(name, headers=DEFAULT_HEADERS):
     schemas_url = 'http://localhost:8088/v1-catalog/schemas'
-    client = cattle.from_env(url=schemas_url, headers=headers)
+    client = catalog_client(url=schemas_url, headers=headers)
 
     original_catalogs = client.list_catalog()
     assert len(original_catalogs) > 0
@@ -97,11 +127,12 @@ def delete_catalog(name, headers=DEFAULT_HEADERS):
 @pytest.fixture
 def client():
     url = 'http://localhost:8088/v1-catalog/schemas'
-    catalogs = cattle.from_env(url=url, headers=DEFAULT_HEADERS).list_catalog()
     wait_for(
-        lambda: len(catalogs) > 0
+        lambda: len(catalog_client(
+            url=url,
+            headers=DEFAULT_HEADERS).list_catalog()) >= 2
     )
-    return cattle.from_env(url=url, headers=DEFAULT_HEADERS)
+    return catalog_client(url=url, headers=DEFAULT_HEADERS)
 
 
 def test_catalog_list(client):
@@ -269,9 +300,10 @@ def test_get_template_with_version_folders(client):
 
     for version in ('v0.0.1', 'v0.0.1-rancher1.2', 'v0.0.3'):
         version_id = 'orig:version-folders:' + version
-        assert version_id in versionLinks.values()[0] or \
-            version_id in versionLinks.values()[1] or \
-            version_id in versionLinks.values()[2]
+        version_link_values = list(versionLinks.values())
+        assert version_id in version_link_values[0] or \
+            version_id in version_link_values[1] or \
+            version_id in version_link_values[2]
 
 
 def test_get_template_404(client):

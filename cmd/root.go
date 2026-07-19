@@ -3,17 +3,18 @@ package cmd
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/PastureStack/catalog-service/manager"
+	"github.com/PastureStack/catalog-service/model"
+	"github.com/PastureStack/catalog-service/service"
+	"github.com/PastureStack/catalog-service/tracking"
 	"github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/rancher/catalog-service/manager"
-	"github.com/rancher/catalog-service/model"
-	"github.com/rancher/catalog-service/service"
-	"github.com/rancher/catalog-service/tracking"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -29,6 +30,7 @@ var (
 	track           bool
 	debug           bool
 	version         bool
+	locale          string
 	VERSION         string
 )
 
@@ -51,6 +53,11 @@ func init() {
 	RootCmd.PersistentFlags().BoolVar(&track, "track", true, "")
 	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "")
 	RootCmd.PersistentFlags().BoolVarP(&version, "version", "v", false, "")
+	localeDefault := os.Getenv("PASTURESTACK_LOCALE")
+	if localeDefault == "" {
+		localeDefault = "en-US"
+	}
+	RootCmd.PersistentFlags().StringVar(&locale, "locale", localeDefault, "Operator message locale: en-US or zh-TW")
 
 	RootCmd.PersistentFlags().String("mysql-user", "", "")
 	viper.BindPFlag("mysql_user", RootCmd.PersistentFlags().Lookup("mysql-user"))
@@ -69,6 +76,9 @@ func init() {
 }
 
 func run(cmd *cobra.Command, args []string) {
+	if locale != "en-US" && locale != "zh-TW" {
+		log.Fatalf("unsupported locale %q; use en-US or zh-TW", locale)
+	}
 	if version {
 		fmt.Println(VERSION)
 		return
@@ -129,7 +139,7 @@ func run(cmd *cobra.Command, args []string) {
 	uuid := ""
 	if track && !validateOnly {
 		var err error
-		uuid, err = tracking.LoadRancherUUID()
+		uuid, err = tracking.LoadPlatformUUID()
 		if err != nil {
 			log.Warnf("Couldn't load install uuid: %v", err)
 		}
@@ -144,12 +154,20 @@ func run(cmd *cobra.Command, args []string) {
 	}
 	go autoRefresh(m, refreshInterval)
 
-	log.Infof("Starting Catalog Service (port %d, refresh interval %d seconds)", port, refreshInterval)
+	log.Infof("%s (port %d, refresh interval %d seconds)", operatorMessage(locale, "start"), port, refreshInterval)
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), &service.MuxWrapper{
 		IsReady: false,
 		Router:  service.NewRouter(m, db),
 	}))
+}
+
+func operatorMessage(locale, key string) string {
+	messages := map[string]map[string]string{
+		"en-US": {"start": "Starting PastureStack catalog service"},
+		"zh-TW": {"start": "正在啟動 PastureStack 應用目錄服務"},
+	}
+	return messages[locale][key]
 }
 
 func formatDSN(user, password, address, dbname, params string) string {

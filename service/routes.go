@@ -3,10 +3,10 @@ package service
 import (
 	"net/http"
 
+	"github.com/PastureStack/catalog-service/manager"
+	"github.com/PastureStack/catalog-service/model"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-	"github.com/rancher/catalog-service/manager"
-	"github.com/rancher/catalog-service/model"
 	"github.com/rancher/go-rancher/api"
 	"github.com/rancher/go-rancher/client"
 )

@@ -8,16 +8,17 @@ import (
 type CatalogType int
 
 const (
-	CatalogTypeRancher CatalogType = iota
+	CatalogTypeNative CatalogType = iota
 	CatalogTypeHelmObjectRepo
 	CatalogTypeHelmGitRepo
 	CatalogTypeInvalid
 )
 
 type CatalogConfig struct {
-	URL    string
-	Branch string
-	Kind   string
+	URL          string
+	Branch       string
+	Kind         string
+	PinnedCommit string `json:"pinnedCommit"`
 }
 
 func (m *Manager) readConfig() error {

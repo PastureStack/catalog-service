@@ -3,8 +3,8 @@ package utils
 import (
 	"strings"
 
+	"github.com/PastureStack/catalog-service/utils/version"
 	"github.com/blang/semver"
-	"github.com/rancher/catalog-service/utils/version"
 )
 
 func VersionBetween(a, b, c string) bool {

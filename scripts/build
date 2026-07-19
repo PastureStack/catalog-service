@@ -6,7 +6,6 @@ source $(dirname $0)/version
 cd $(dirname $0)/..
 
 mkdir -p bin
-[ "$(uname)" != "Darwin" ] && LINKFLAGS="-linkmode external -extldflags -static -s"
-go build -ldflags "-X github.com/rancher/catalog-service/cmd.VERSION=$VERSION $LINKFLAGS" -o bin/rancher-catalog-service-sqlite
+CGO_CFLAGS="${CGO_CFLAGS:-} -Wno-return-local-addr" go build -trimpath -buildvcs=true -tags "netgo osusergo sqlite_omit_load_extension" -ldflags "-X github.com/PastureStack/catalog-service/cmd.VERSION=$VERSION -s -w" -o bin/catalog-service-sqlite
 # Production binary needs to be fully static
-CGO_ENABLED=0 go build -tags "nosqlite" -ldflags "-X github.com/rancher/catalog-service/cmd.VERSION=$VERSION $LINKFLAGS" -o bin/rancher-catalog-service
+CGO_ENABLED=0 go build -trimpath -buildvcs=true -tags "nosqlite netgo" -ldflags "-X github.com/PastureStack/catalog-service/cmd.VERSION=$VERSION -s -w" -o bin/catalog-service

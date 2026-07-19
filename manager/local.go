@@ -9,14 +9,17 @@ import (
 	"net/url"
 	"os"
 	"path"
+	"regexp"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/PastureStack/catalog-service/git"
+	"github.com/PastureStack/catalog-service/helm"
+	"github.com/PastureStack/catalog-service/model"
 	"github.com/pkg/errors"
-	"github.com/rancher/catalog-service/git"
-	"github.com/rancher/catalog-service/helm"
-	"github.com/rancher/catalog-service/model"
+	log "github.com/sirupsen/logrus"
 )
+
+var fullCommitSHA = regexp.MustCompile(`^[0-9a-fA-F]{40}$`)
 
 func dirEmpty(dir string) (bool, error) {
 	f, err := os.Open(dir)
@@ -32,8 +35,8 @@ func dirEmpty(dir string) (bool, error) {
 }
 
 func (m *Manager) prepareRepoPath(catalog model.Catalog, update bool) (string, string, CatalogType, error) {
-	if catalog.Kind == "" || catalog.Kind == RancherTemplateType {
-		return m.prepareGitRepoPath(catalog, update, CatalogTypeRancher)
+	if catalog.Kind == "" || catalog.Kind == NativeTemplateType {
+		return m.prepareGitRepoPath(catalog, update, CatalogTypeNative)
 	}
 	if catalog.Kind == HelmTemplateType {
 		if git.IsValid(catalog.URL) {
@@ -67,8 +70,13 @@ func (m *Manager) prepareGitRepoPath(catalog model.Catalog, update bool, catalog
 	if catalog.Branch == "" {
 		branch = "master"
 	}
+	pinnedCommit := strings.TrimSpace(catalog.PinnedCommit)
+	if pinnedCommit != "" && !fullCommitSHA.MatchString(pinnedCommit) {
+		return "", "", catalogType, fmt.Errorf("Pinned commit must be a full 40-character Git commit SHA")
+	}
+	pinnedCommit = strings.ToLower(pinnedCommit)
 
-	sum := md5.Sum([]byte(catalog.URL + branch))
+	sum := md5.Sum([]byte(catalog.URL + branch + pinnedCommit))
 	repoBranchHash := hex.EncodeToString(sum[:])
 	repoPath := path.Join(m.cacheRoot, catalog.EnvironmentId, repoBranchHash)
 
@@ -85,8 +93,23 @@ func (m *Manager) prepareGitRepoPath(catalog model.Catalog, update bool, catalog
 		if err = git.Clone(repoPath, catalog.URL, branch); err != nil {
 			return "", "", catalogType, errors.Wrap(err, "Clone failed")
 		}
+		if pinnedCommit != "" {
+			if err = git.CheckoutCommit(repoPath, pinnedCommit); err != nil {
+				return "", "", catalogType, errors.Wrap(err, "Pinned commit checkout failed")
+			}
+		}
 	} else {
-		if update {
+		if pinnedCommit != "" {
+			currentCommit, headErr := git.HeadCommit(repoPath)
+			if headErr != nil {
+				return "", "", catalogType, errors.Wrap(headErr, "Retrieving pinned catalog commit failed")
+			}
+			if !strings.EqualFold(currentCommit, pinnedCommit) {
+				if err = git.CheckoutCommit(repoPath, pinnedCommit); err != nil {
+					return "", "", catalogType, errors.Wrap(err, "Pinned commit checkout failed")
+				}
+			}
+		} else if update {
 			changed, err := m.remoteShaChanged(catalog.URL, catalog.Branch, catalog.Commit, m.uuid)
 			if err != nil {
 				return "", "", catalogType, errors.Wrap(err, "Remote commit check failed")
@@ -103,6 +126,8 @@ func (m *Manager) prepareGitRepoPath(catalog model.Catalog, update bool, catalog
 	commit, err := git.HeadCommit(repoPath)
 	if err != nil {
 		err = errors.Wrap(err, "Retrieving head commit failed")
+	} else if pinnedCommit != "" && !strings.EqualFold(commit, pinnedCommit) {
+		err = fmt.Errorf("Catalog HEAD %s does not match pinned commit %s", commit, pinnedCommit)
 	}
 	return repoPath, commit, catalogType, err
 }

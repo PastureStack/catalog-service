@@ -1,9 +1,9 @@
 package parse
 
 import (
+	"github.com/PastureStack/catalog-service/model"
 	"github.com/docker/libcompose/config"
 	"github.com/docker/libcompose/utils"
-	"github.com/rancher/catalog-service/model"
 	"gopkg.in/yaml.v2"
 )
 
@@ -40,7 +40,7 @@ func CatalogInfoFromTemplateVersion(contents []byte) (model.Version, error) {
 	return template, nil
 }
 
-func CatalogInfoFromRancherCompose(contents []byte) (model.Version, error) {
+func CatalogInfoFromLegacyCompose(contents []byte) (model.Version, error) {
 	cfg, err := config.CreateConfig(contents)
 	if err != nil {
 		return model.Version{}, err
@@ -75,5 +75,5 @@ func CatalogInfoFromRancherCompose(contents []byte) (model.Version, error) {
 
 func CatalogInfoFromCompose(contents []byte) (model.Version, error) {
 	contents = []byte(extractCatalogBlock(string(contents)))
-	return CatalogInfoFromRancherCompose(contents)
+	return CatalogInfoFromLegacyCompose(contents)
 }

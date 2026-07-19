@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/PastureStack/catalog-service/model"
+	"github.com/PastureStack/catalog-service/parse"
 	"github.com/gorilla/mux"
-	"github.com/rancher/catalog-service/model"
-	"github.com/rancher/catalog-service/parse"
 	"github.com/rancher/go-rancher/api"
 )
 
@@ -74,13 +74,7 @@ func getTemplates(w http.ResponseWriter, r *http.Request, envId string) (int, er
 	if catalog == "" {
 		catalog = r.URL.Query().Get("catalog")
 	}
-	rancherVersion := r.URL.Query().Get("rancherVersion")
-
-	// Backwards compatibility for older versions of CLI
-	minRancherVersion := r.URL.Query().Get("minimumRancherVersion_lte")
-	if rancherVersion == "" && minRancherVersion != "" {
-		rancherVersion = minRancherVersion
-	}
+	platformVersion := requestedPlatformVersion(r)
 
 	templateBaseEq := r.URL.Query().Get("templateBase_eq")
 	categories, _ := r.URL.Query()["category"]
@@ -91,7 +85,7 @@ func getTemplates(w http.ResponseWriter, r *http.Request, envId string) (int, er
 
 	resp := model.TemplateCollection{}
 	for _, template := range templates {
-		templateResource := templateResource(apiContext, template.Catalog, template, rancherVersion, envId)
+		templateResource := templateResource(apiContext, template.Catalog, template, platformVersion, envId)
 		if len(templateResource.VersionLinks) > 0 {
 			resp.Data = append(resp.Data, *templateResource)
 		}
@@ -114,7 +108,7 @@ func getTemplate(w http.ResponseWriter, r *http.Request, envId string) (int, err
 		return http.StatusBadRequest, errors.New("Missing paramater catalog_template_version")
 	}
 
-	rancherVersion := r.URL.Query().Get("rancherVersion")
+	platformVersion := requestedPlatformVersion(r)
 
 	catalogName, templateName, templateBase, revisionOrVersion, _ := parse.TemplateURLPath(catalogTemplateVersion)
 
@@ -139,7 +133,7 @@ func getTemplate(w http.ResponseWriter, r *http.Request, envId string) (int, err
 		}
 
 		// Return template
-		apiContext.Write(templateResource(apiContext, catalogName, *template, rancherVersion, envId))
+		apiContext.Write(templateResource(apiContext, catalogName, *template, platformVersion, envId))
 	} else {
 		var version *model.Version
 		revision, err := strconv.Atoi(revisionOrVersion)
@@ -157,7 +151,7 @@ func getTemplate(w http.ResponseWriter, r *http.Request, envId string) (int, err
 			return 0, nil
 		}
 
-		versionResource, err := versionResource(apiContext, catalogName, *template, *version, rancherVersion, envId)
+		versionResource, err := versionResource(apiContext, catalogName, *template, *version, platformVersion, envId)
 		if err != nil {
 			return http.StatusBadRequest, err
 		}

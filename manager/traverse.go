@@ -10,14 +10,14 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/PastureStack/catalog-service/helm"
+	"github.com/PastureStack/catalog-service/model"
+	"github.com/PastureStack/catalog-service/parse"
 	"github.com/blang/semver"
-	"github.com/rancher/catalog-service/helm"
-	"github.com/rancher/catalog-service/model"
-	"github.com/rancher/catalog-service/parse"
 )
 
 func traverseFiles(repoPath, kind string, catalogType CatalogType) ([]model.Template, []error, error) {
-	if kind == "" || kind == RancherTemplateType {
+	if kind == "" || kind == NativeTemplateType {
 		return traverseGitFiles(repoPath)
 	}
 	if kind == HelmTemplateType {
@@ -193,7 +193,7 @@ func traverseGitFiles(repoPath string) ([]model.Template, []error, error) {
 			}
 
 			var compose string
-			var rancherCompose string
+			var legacyCompose string
 			var templateVersion string
 			for _, file := range version.Files {
 				switch file.Name {
@@ -202,11 +202,11 @@ func traverseGitFiles(repoPath string) ([]model.Template, []error, error) {
 				case "compose.yml":
 					compose = file.Contents
 				case "rancher-compose.yml":
-					rancherCompose = file.Contents
+					legacyCompose = file.Contents
 				}
 			}
 			newVersion := version
-			if templateVersion != "" || compose != "" || rancherCompose != "" {
+			if templateVersion != "" || compose != "" || legacyCompose != "" {
 				var err error
 				if templateVersion != "" {
 					newVersion, err = parse.CatalogInfoFromTemplateVersion([]byte(templateVersion))
@@ -214,8 +214,8 @@ func traverseGitFiles(repoPath string) ([]model.Template, []error, error) {
 				if compose != "" {
 					newVersion, err = parse.CatalogInfoFromCompose([]byte(compose))
 				}
-				if rancherCompose != "" {
-					newVersion, err = parse.CatalogInfoFromRancherCompose([]byte(rancherCompose))
+				if legacyCompose != "" {
+					newVersion, err = parse.CatalogInfoFromLegacyCompose([]byte(legacyCompose))
 				}
 
 				if err != nil {

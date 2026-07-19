@@ -3,3 +3,9 @@
 /dist
 *.swp
 /.trash-cache
+/cache
+/local.db
+/.pytest_cache
+*.egg-info/
+__pycache__/
+*.pyc

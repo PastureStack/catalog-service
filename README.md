@@ -1,28 +1,49 @@
-catalog-service
-========
+# PastureStack Catalog Service
 
-A microservice that does micro things.
+Catalog Service indexes reviewed catalog repositories and serves compatible catalog, template, version, question, icon, and upgrade-link APIs.
 
-## Building
+PastureStack is an independent community effort to preserve, audit, and modernize the Rancher 1.6 ecosystem. It is not affiliated with or endorsed by Rancher Labs or SUSE.
 
-`make`
+**Upstream:** [`rancher/catalog-service`](https://github.com/rancher/catalog-service). This GitHub fork preserves upstream history, authorship, dates, tags, licenses, and bundled dependency notices; PastureStack maintenance is consolidated into one commit after the preserved upstream boundary.
 
+## Project status
 
-## Running
+This is a migration proof of concept. Existing Ubuntu 26.04, Go 1.26.5, database, dependency, version-filter, TLS, and build maintenance is retained. Product-owned imports, binaries, tracking identifiers, default configuration, version query, and operator messages use PastureStack naming. The default `repo.json` is intentionally empty; no unreviewed catalog is cloned. Python integration-test dependencies are pinned and installed from an offline wheelhouse inside the disposable build image. Release packaging is reproducible and manual; no CI/CD, package publication, catalog publication, or production deployment is enabled.
 
-`./bin/catalog-service`
+## Pinned GitHub catalogs
 
-## License
-Copyright (c) 2014-2016 [Rancher Labs, Inc.](http://rancher.com)
+Git catalogs may specify both a branch and a full 40-character `pinnedCommit`. The service clones the branch, checks out the exact commit in detached mode, verifies `HEAD`, and does not advance a pinned catalog during refresh. This lets a server consume a reviewed public GitHub catalog without requiring operators to host an additional catalog service or mirror.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+```json
+{
+  "catalogs": {
+    "pasturestack": {
+      "url": "https://github.com/PastureStack/catalog-templates.git",
+      "branch": "main",
+      "pinnedCommit": "FULL_40_CHARACTER_COMMIT_SHA"
+    }
+  }
+}
+```
 
-[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+The placeholder above must be replaced with a reviewed commit. An omitted `pinnedCommit` preserves the historical moving-branch behavior for compatibility and is not suitable for a PastureStack release gate.
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+## API migration
+
+Use `platformVersion` when filtering templates and upgrade links. The historical `rancherVersion` and `minimumRancherVersion_lte` query parameters remain read-only compatibility fallbacks. Set `PASTURESTACK_LOCALE=en-US` or `zh-TW` for operator lifecycle messages.
+
+## Build and test
+
+From a Docker-capable Linux host:
+
+```sh
+make test
+make build
+make package
+```
+
+Catalog repository URLs must be supplied explicitly in a reviewed configuration. See [COMPATIBILITY.md](COMPATIBILITY.md), [SECURITY.md](SECURITY.md), and [ORIGIN.md](ORIGIN.md).
+
+## License and attribution
+
+The inherited project remains licensed under [Apache License 2.0](LICENSE). Copyright and attribution for inherited work and vendored dependencies remain with their respective authors and contributors. PastureStack contributors claim authorship only for their own changes.

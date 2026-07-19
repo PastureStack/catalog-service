@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 func Clone(path, url, branch string) error {
@@ -18,6 +18,13 @@ func Update(path, branch string) error {
 		return err
 	}
 	return runcmd("git", "-C", path, "checkout", fmt.Sprintf("origin/%s", branch))
+}
+
+func CheckoutCommit(path, commit string) error {
+	if err := runcmd("git", "-C", path, "cat-file", "-e", commit+"^{commit}"); err != nil {
+		return err
+	}
+	return runcmd("git", "-C", path, "checkout", "--detach", commit)
 }
 
 func HeadCommit(path string) (string, error) {

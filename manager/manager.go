@@ -5,15 +5,15 @@ import (
 	"net/http"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/PastureStack/catalog-service/model"
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
-	"github.com/rancher/catalog-service/model"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
 	HelmTemplateType     = "helm"
-	RancherTemplateType  = "native"
+	NativeTemplateType   = "native"
 	HelmTemplateBaseType = "kubernetes"
 )
 
@@ -78,11 +78,14 @@ func (m *Manager) refreshConfigCatalogs(update bool) error {
 			Name:          name,
 			URL:           config.URL,
 			Branch:        config.Branch,
+			PinnedCommit:  config.PinnedCommit,
 			EnvironmentId: "global",
 			Kind:          config.Kind,
 		}
 		existingCatalog, err := m.lookupCatalog("global", name)
-		if err == nil && existingCatalog.URL == catalog.URL && existingCatalog.Branch == catalog.Branch {
+		if err == nil && existingCatalog.URL == catalog.URL &&
+			existingCatalog.Branch == catalog.Branch &&
+			existingCatalog.PinnedCommit == catalog.PinnedCommit {
 			catalog = existingCatalog
 		}
 		if err := m.refreshCatalog(catalog, update); err != nil {

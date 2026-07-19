@@ -1,5 +1,7 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
+
+umask 022
 
 source $(dirname $0)/version
 
@@ -8,10 +10,32 @@ cd $(dirname $0)/..
 ARCH=${ARCH:?"ARCH not set"}
 SUFFIX=""
 [ "${ARCH}" != "amd64" ] && SUFFIX="_${ARCH}"
+RELEASE_VERSION=${VERSION#v}
+SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH:-$(git show -s --format=%ct HEAD)}
+if [ -n "${VERSION_OVERRIDE:-}" ]; then
+    case "$RELEASE_VERSION" in
+        ''|*[!0-9.]*) echo "VERSION_OVERRIDE must contain a numeric release version" >&2; exit 1 ;;
+    esac
+else
+    case "$RELEASE_VERSION" in
+        ''|*[!0-9A-Za-z._-]*) echo "Development version contains unsafe characters" >&2; exit 1 ;;
+    esac
+fi
+case "$SOURCE_DATE_EPOCH" in
+    ''|*[!0-9]*) echo "SOURCE_DATE_EPOCH must be an integer" >&2; exit 1 ;;
+esac
 
-if [ ! -e bin/rancher-catalog-service ]; then
+if [ ! -e bin/catalog-service ]; then
     ./scripts/build
 fi
 
+rm -rf dist/artifacts
 mkdir -p dist/artifacts
-tar cvJf dist/artifacts/rancher-catalog-service${SUFFIX}.tar.xz -C ./bin .
+archive_tmp=$(mktemp "dist/artifacts/.catalog-service-${RELEASE_VERSION}${SUFFIX}.tar.xz.XXXXXX")
+trap 'rm -f "$archive_tmp"' EXIT
+tar --sort=name --format=gnu --mtime="@${SOURCE_DATE_EPOCH}" \
+    --owner=0 --group=0 --numeric-owner -C ./bin -cf - . | \
+    xz --threads=1 --check=crc64 -9e > "$archive_tmp"
+mv "$archive_tmp" "dist/artifacts/catalog-service-${RELEASE_VERSION}${SUFFIX}.tar.xz"
+trap - EXIT
+echo "Created dist/artifacts/catalog-service-${RELEASE_VERSION}${SUFFIX}.tar.xz"

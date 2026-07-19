@@ -7,12 +7,12 @@ import (
 	"sort"
 	"strconv"
 
-	log "github.com/Sirupsen/logrus"
-	"github.com/rancher/catalog-service/model"
-	"github.com/rancher/catalog-service/parse"
-	"github.com/rancher/catalog-service/utils"
+	"github.com/PastureStack/catalog-service/model"
+	"github.com/PastureStack/catalog-service/parse"
+	"github.com/PastureStack/catalog-service/utils"
 	"github.com/rancher/go-rancher/api"
 	"github.com/rancher/go-rancher/v2"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -108,12 +108,22 @@ func templateDefaultVersion(template model.Template, catalogName string, apiCont
 	return "", "", ""
 }
 
-func templateResource(apiContext *api.ApiContext, catalogName string, template model.Template, rancherVersion string, envId string) *model.TemplateResource {
+func requestedPlatformVersion(r *http.Request) string {
+	if version := r.URL.Query().Get("platformVersion"); version != "" {
+		return version
+	}
+	if version := r.URL.Query().Get("rancherVersion"); version != "" {
+		return version
+	}
+	return r.URL.Query().Get("minimumRancherVersion_lte")
+}
+
+func templateResource(apiContext *api.ApiContext, catalogName string, template model.Template, platformVersion string, envId string) *model.TemplateResource {
 	templateId := generateTemplateId(catalogName, template)
 
 	versionLinks := map[string]string{}
 	for _, version := range template.Versions {
-		if utils.VersionBetween(version.MinimumRancherVersion, rancherVersion, version.MaximumRancherVersion) {
+		if utils.VersionBetween(version.MinimumRancherVersion, platformVersion, version.MaximumRancherVersion) {
 			route := generateVersionId(catalogName, template, version)
 			link := apiContext.UrlBuilder.ReferenceByIdLink("template", route)
 			versionLinks[version.Version] = URLEncoded(link)
@@ -161,7 +171,7 @@ func defaultUpgradeVersionLink(upgradeVersions []model.Version, catalogName stri
 	return ""
 }
 
-func versionResource(apiContext *api.ApiContext, catalogName string, template model.Template, version model.Version, rancherVersion string, envId string) (*model.TemplateVersionResource, error) {
+func versionResource(apiContext *api.ApiContext, catalogName string, template model.Template, version model.Version, platformVersion string, envId string) (*model.TemplateVersionResource, error) {
 	templateId := generateTemplateId(catalogName, template)
 	versionId := generateVersionId(catalogName, template, version)
 
@@ -173,7 +183,7 @@ func versionResource(apiContext *api.ApiContext, catalogName string, template mo
 	var questions []model.Question
 	templateVersion, templateVersionExists := filesMap["template-version.yml"]
 	compose, composeExists := filesMap["compose.yml"]
-	rancherCompose, rancherComposeExists := filesMap["rancher-compose.yml"]
+	legacyCompose, legacyComposeExists := filesMap["rancher-compose.yml"]
 	if templateVersionExists {
 		catalogInfo, err := parse.CatalogInfoFromTemplateVersion([]byte(templateVersion))
 		if err != nil {
@@ -186,8 +196,8 @@ func versionResource(apiContext *api.ApiContext, catalogName string, template mo
 			return nil, err
 		}
 		questions = catalogInfo.Questions
-	} else if rancherComposeExists {
-		catalogInfo, err := parse.CatalogInfoFromRancherCompose([]byte(rancherCompose))
+	} else if legacyComposeExists {
+		catalogInfo, err := parse.CatalogInfoFromLegacyCompose([]byte(legacyCompose))
 		if err != nil {
 			return nil, err
 		}
@@ -211,7 +221,7 @@ func versionResource(apiContext *api.ApiContext, catalogName string, template mo
 	upgradeVersionLinks := map[string]string{}
 	upgradeVersions := []model.Version{}
 	for _, upgradeVersion := range template.Versions {
-		if showUpgradeVersion(version, upgradeVersion, rancherVersion) {
+		if showUpgradeVersion(version, upgradeVersion, platformVersion) {
 			route := generateVersionId(catalogName, template, upgradeVersion)
 			link := apiContext.UrlBuilder.ReferenceByIdLink("template", route)
 			upgradeVersionLinks[upgradeVersion.Version] = URLEncoded(link)
@@ -244,11 +254,11 @@ func versionResource(apiContext *api.ApiContext, catalogName string, template mo
 	}, nil
 }
 
-func showUpgradeVersion(version, upgradeVersion model.Version, rancherVersion string) bool {
+func showUpgradeVersion(version, upgradeVersion model.Version, platformVersion string) bool {
 	if !utils.VersionGreaterThan(upgradeVersion.Version, version.Version) {
 		return false
 	}
-	if !utils.VersionBetween(upgradeVersion.MinimumRancherVersion, rancherVersion, upgradeVersion.MaximumRancherVersion) {
+	if !utils.VersionBetween(upgradeVersion.MinimumRancherVersion, platformVersion, upgradeVersion.MaximumRancherVersion) {
 		return false
 	}
 	if upgradeVersion.UpgradeFrom != "" {

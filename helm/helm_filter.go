@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/rancher/catalog-service/model"
+	"github.com/PastureStack/catalog-service/model"
 )
 
 var (

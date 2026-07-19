@@ -7,6 +7,7 @@ echo Running validation
 
 PACKAGES=". $(find -name '*.go' | xargs -I{} dirname {} |  cut -f2 -d/ | sort -u | grep -Ev '(^\.$|.git|.trash-cache|vendor|bin)' | sed -e 's!^!./!' -e 's!$!/...!')"
 
+export CGO_CFLAGS="${CGO_CFLAGS:-} -Wno-return-local-addr"
 echo Running: go vet
 go vet ${PACKAGES}
 # echo Running: golint
