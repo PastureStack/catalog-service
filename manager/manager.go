@@ -122,10 +122,16 @@ func (m *Manager) refreshCatalog(catalog model.Catalog, update bool) error {
 		return err
 	}
 
-	// Catalog is already up to date
 	if commit == catalog.Commit {
-		log.Debugf("Catalog %s is already up to date", catalog.Name)
-		return nil
+		hasTemplates, err := m.catalogHasTemplates(catalog)
+		if err != nil {
+			return errors.Wrap(err, "Catalog index check failed")
+		}
+		if hasTemplates {
+			log.Debugf("Catalog %s is already up to date", catalog.Name)
+			return nil
+		}
+		log.Warnf("Catalog %s has no indexed templates; rebuilding commit %s", catalog.Name, commit)
 	}
 
 	templates, errs, err := traverseFiles(repoPath, catalog.Kind, catalogType)
@@ -142,4 +148,13 @@ func (m *Manager) refreshCatalog(catalog model.Catalog, update bool) error {
 
 	log.Debugf("Updating catalog %s", catalog.Name)
 	return m.updateDb(catalog, templates, commit)
+}
+
+func (m *Manager) catalogHasTemplates(catalog model.Catalog) (bool, error) {
+	var count int
+	err := m.db.Table("catalog_template").
+		Joins("JOIN catalog ON catalog.id = catalog_template.catalog_id").
+		Where("catalog.name = ? AND catalog.environment_id = ?", catalog.Name, catalog.EnvironmentId).
+		Count(&count).Error
+	return count > 0, err
 }
