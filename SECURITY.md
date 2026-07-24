@@ -2,7 +2,7 @@
 
 ## Supported state
 
-This repository is under migration review and is not release-ready.
+The latest PastureStack release and the current `main` branch receive security fixes. Historical upstream tags are retained for provenance and are not supported by PastureStack.
 
 ## Security boundaries
 
@@ -10,6 +10,7 @@ This repository is under migration review and is not release-ready.
 - Repository URLs, database credentials, API credentials, installation identifiers, and private catalogs are sensitive.
 - No catalog source is fetched by the default configuration.
 - Do not commit database credentials, private repository URLs, tokens, production catalog data, or installation identifiers.
+- Release artifacts are built only from the current public `main` commit by the manually dispatched GitHub release workflow.
 
 ## Reporting
 

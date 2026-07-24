@@ -4,11 +4,13 @@ Catalog Service indexes reviewed catalog repositories and serves compatible cata
 
 PastureStack is an independent community effort to preserve, audit, and modernize the Rancher 1.6 ecosystem. It is not affiliated with or endorsed by Rancher Labs or SUSE.
 
-**Upstream:** [`rancher/catalog-service`](https://github.com/rancher/catalog-service). This GitHub fork preserves upstream history, authorship, dates, tags, licenses, and bundled dependency notices; PastureStack maintenance is consolidated into one commit after the preserved upstream boundary.
+**Upstream:** [`rancher/catalog-service`](https://github.com/rancher/catalog-service). This GitHub fork preserves upstream history, authorship, dates, tags, licenses, and bundled dependency notices; all PastureStack maintenance follows the preserved upstream boundary.
 
 ## Project status
 
-This is a migration proof of concept. Existing Ubuntu 26.04, Go 1.26.5, database, dependency, version-filter, TLS, and build maintenance is retained. Product-owned imports, binaries, tracking identifiers, default configuration, version query, and operator messages use PastureStack naming. The default `repo.json` is intentionally empty; no unreviewed catalog is cloned. Python integration-test dependencies are pinned and installed from an offline wheelhouse inside the disposable build image. Release packaging is reproducible and manual; no CI/CD, package publication, catalog publication, or production deployment is enabled.
+The migration-reviewed compatibility release retains the Ubuntu 26.04, Go 1.26.5, database, dependency, version-filter, TLS, and build maintenance completed after the preserved upstream boundary. Product-owned imports, binaries, tracking identifiers, default configuration, version query, and operator messages use PastureStack naming. The default `repo.json` is intentionally empty; no unreviewed catalog is cloned. Python integration-test dependencies are pinned and installed from an offline wheelhouse inside the disposable build image.
+
+Release packaging is manual and reproducible. The GitHub release workflow runs only when an organization maintainer explicitly dispatches it. It builds and tests the selected main-branch commit twice, requires byte-identical packages, and publishes the binaries and checksum to a GitHub Release. It does not deploy a service or publish a catalog.
 
 ## Pinned GitHub catalogs
 
@@ -43,6 +45,8 @@ make package
 ```
 
 Catalog repository URLs must be supplied explicitly in a reviewed configuration. See [COMPATIBILITY.md](COMPATIBILITY.md), [SECURITY.md](SECURITY.md), and [ORIGIN.md](ORIGIN.md).
+
+Maintainers can create an immutable release from the current `main` commit with the manual **Release Catalog Service** GitHub workflow. The workflow accepts a semantic release tag, rejects an existing tag or release, and publishes `catalog-service` and `catalog-service-sqlite` together in one checksummed archive.
 
 ## License and attribution
 

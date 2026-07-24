@@ -6,4 +6,4 @@ The migration preserves `/v1-catalog` routes, generated catalog schemas, databas
 
 Operator lifecycle messages support `en-US` and `zh-TW`. Catalog content, questions, template readmes, API resources, database data, version strings, and remote errors are not translated.
 
-Before release, validate `platformVersion` precedence and legacy fallback, catalog refresh, database migration, empty default configuration, icon and readme routes, version ordering, upgrade links, malformed repositories, and rollback.
+Release validation covers `platformVersion` precedence and legacy fallback, catalog refresh, database migration, empty default configuration, icon and readme routes, version ordering, upgrade links, malformed repositories, empty-index recovery, and rollback.
