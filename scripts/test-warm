@@ -3,15 +3,15 @@ set -ex
 
 cd $(dirname $0)/..
 
+rm -rf /tmp/test-catalog
 git clone https://github.com/rancher/test-catalog.git /tmp/test-catalog
-
-./bin/rancher-catalog-service-sqlite --config scripts/test-setup.json --validate || true
+git -C /tmp/test-catalog checkout -B master fe280beca448b60f50334bdb58b8907d82301e7b
 
 cd /tmp/test-catalog
 
 cp -r templates/many-versions/13 templates/many-versions/14
 sed -i 's/1.0.13/1.0.14/g' templates/many-versions/14/rancher-compose.yml
 git add templates/
-git config --global user.email "test@test.com"
-git config --global user.name "test"
+git config user.email "test@example.invalid"
+git config user.name "PastureStack Test"
 git commit -m "test"

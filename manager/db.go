@@ -1,6 +1,6 @@
 package manager
 
-import "github.com/rancher/catalog-service/model"
+import "github.com/PastureStack/catalog-service/model"
 
 func (m *Manager) removeCatalogsNotInConfig() error {
 	var catalogs []model.CatalogModel

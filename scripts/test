@@ -2,6 +2,28 @@
 set -e
 
 cd $(dirname $0)/..
+REPO_ROOT=$(pwd)
+
+cleanup_generated()
+{
+    rm -rf -- "${REPO_ROOT}/cache" "${REPO_ROOT}/local.db" \
+        "${REPO_ROOT}"/integration/*.egg-info \
+        "${REPO_ROOT}/integration/core/__pycache__"
+}
+
+cleanup()
+{
+    local exit_code=$?
+    if [ -n "${SERVICE_PID:-}" ]; then
+        kill "${SERVICE_PID}" 2>/dev/null || true
+        wait "${SERVICE_PID}" 2>/dev/null || true
+    fi
+    cleanup_generated
+    exit "${exit_code}"
+}
+
+trap cleanup EXIT
+cleanup_generated
 
 ./scripts/test-warm
 
@@ -9,10 +31,12 @@ echo Running tests
 
 PACKAGES=". $(find -name '*.go' | xargs -I{} dirname {} |  cut -f2 -d/ | sort -u | grep -Ev '(^\.$|.git|.trash-cache|vendor|bin)' | sed -e 's!^!./!' -e 's!$!/...!')"
 
+export CGO_CFLAGS="${CGO_CFLAGS:-} -Wno-return-local-addr"
+export PASTURESTACK_CATALOG_ALLOWED_LOCAL_ROOTS="/tmp"
 [ "${ARCH}" == "amd64" ] && RACE=-race
 go test ${RACE} -cover -tags=test ${PACKAGES}
 
-./bin/rancher-catalog-service-sqlite --sqlite --config scripts/test-repo.json -p 8088 --track=false &
-trap "kill $!" exit
+./bin/catalog-service-sqlite --sqlite --config scripts/test-repo.json -p 8088 --track=false &
+SERVICE_PID=$!
 cd integration
-tox -e flake8,py27
+tox -e flake8,py314

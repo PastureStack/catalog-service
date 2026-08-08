@@ -1,0 +1,311 @@
+name: Security release gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'verification/catalog-service-*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: catalog-service-security-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-test-scan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      DAPPER_IMAGE: pasturestack/catalog-service-dapper:${{ github.sha }}
+      TRIVY_IMAGE: aquasec/trivy:0.73.0@sha256:7cced7cae583819fc7806d4cbc0dbbc7cad18b99f7d3e235192e6da8c091045c
+      VERSION_OVERRIDE: v0.20.9
+
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Record candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain)"
+          mkdir -p evidence
+          git rev-parse HEAD > evidence/source-revision.txt
+          sha256sum \
+            Dockerfile.dapper \
+            ubuntu-apt.lock \
+            vendor.conf \
+            integration/build-requirements.lock \
+            integration/requirements.lock \
+            security/dapper.openvex.json \
+            > evidence/source-locks.sha256
+
+      - name: Build, test, validate, and package twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker build \
+            --build-arg DAPPER_HOST_ARCH=amd64 \
+            --tag "$DAPPER_IMAGE" \
+            --file Dockerfile.dapper \
+            .
+
+          source_path="$GITHUB_WORKSPACE"
+          source_epoch="$(git show -s --format=%ct HEAD)"
+          run_ci() {
+            docker run --rm \
+              --volume "${source_path}:/go/src/github.com/PastureStack/catalog-service" \
+              --env "DAPPER_UID=$(id -u)" \
+              --env "DAPPER_GID=$(id -g)" \
+              --env ARCH=amd64 \
+              --env "VERSION_OVERRIDE=$VERSION_OVERRIDE" \
+              --env "SOURCE_DATE_EPOCH=$source_epoch" \
+              "$DAPPER_IMAGE" ci
+          }
+
+          run_ci
+          artifact="dist/artifacts/catalog-service-0.20.9.tar.xz"
+          test -s "$artifact"
+          cp "$artifact" /tmp/catalog-service-first.tar.xz
+
+          rm -rf bin dist cache local.db integration/*.egg-info integration/core/__pycache__
+          run_ci
+          cmp /tmp/catalog-service-first.tar.xz "$artifact"
+          ./scripts/check-pasturestack-source
+
+          mkdir -p evidence/product
+          tar -xJf "$artifact" -C evidence/product
+          test "$(find evidence/product -maxdepth 1 -type f | wc -l)" -eq 2
+          test -x evidence/product/catalog-service
+          test -x evidence/product/catalog-service-sqlite
+          test "$(evidence/product/catalog-service --version)" = 'v0.20.9'
+          test "$(evidence/product/catalog-service-sqlite --version)" = 'v0.20.9'
+          sha256sum "$artifact" > evidence/catalog-service.tar.xz.sha256
+          docker run --rm --entrypoint sh \
+            --volume "$PWD:/work:ro" \
+            "$DAPPER_IMAGE" -lc \
+            'go version -m /work/evidence/product/catalog-service' \
+            > evidence/catalog-service-go-version.txt
+          docker run --rm --entrypoint sh \
+            --volume "$PWD:/work:ro" \
+            "$DAPPER_IMAGE" -lc \
+            'go version -m /work/evidence/product/catalog-service-sqlite' \
+            > evidence/catalog-service-sqlite-go-version.txt
+          docker run --rm --entrypoint sh \
+            --volume "$PWD:/work:ro" \
+            "$DAPPER_IMAGE" -lc \
+            'file /work/evidence/product/catalog-service /work/evidence/product/catalog-service-sqlite; ldd /work/evidence/product/catalog-service-sqlite' \
+            > evidence/product-linkage.txt
+          grep -F $'build\tCGO_ENABLED=0' evidence/catalog-service-go-version.txt >/dev/null
+          grep -F $'build\tCGO_ENABLED=1' evidence/catalog-service-sqlite-go-version.txt >/dev/null
+          grep -Eq 'catalog-service:[[:space:]]+ELF' evidence/product-linkage.txt
+          grep -F 'statically linked' evidence/product-linkage.txt >/dev/null
+          grep -Eq 'catalog-service-sqlite:[[:space:]]+ELF' evidence/product-linkage.txt
+
+      - name: Record resolved build inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker inspect "$DAPPER_IMAGE" > evidence/dapper-image-inspect.json
+          docker run --rm --entrypoint sh "$DAPPER_IMAGE" -lc \
+            "printf 'package\tversion\n'; dpkg-query -W -f='\${binary:Package}\t\${Version}\n' | LC_ALL=C sort" \
+            > evidence/dapper-dpkg.tsv
+          docker run --rm --entrypoint sh "$DAPPER_IMAGE" -lc \
+            '/opt/tox/bin/pip freeze --all | LC_ALL=C sort' \
+            > evidence/dapper-python.txt
+          docker run --rm \
+            -v "$PWD/scripts/verify-dapper-vex:/verify-dapper-vex:ro" \
+            --entrypoint bash "$DAPPER_IMAGE" /verify-dapper-vex \
+            > evidence/dapper-vex-code-review.txt
+          cp vendor.conf integration/build-requirements.lock integration/requirements.lock evidence/
+
+      - name: Scan source, product, and build image
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker pull "$TRIVY_IMAGE"
+          trivy_cache="$RUNNER_TEMP/trivy-cache"
+          source_tree="$(mktemp -d)"
+          dapper_rootfs="$(mktemp -d)"
+          dapper_container=""
+          cleanup_scan() {
+            if [ -n "$dapper_container" ]; then
+              docker rm -f "$dapper_container" >/dev/null 2>&1 || true
+            fi
+            rm -rf "$source_tree" "$dapper_rootfs" "$RUNNER_TEMP/dapper-rootfs.tar"
+          }
+          trap cleanup_scan EXIT
+          mkdir -p "$trivy_cache"
+          git archive --format=tar HEAD | tar -xf - -C "$source_tree"
+
+          docker run --rm \
+            -v "$source_tree:/scan:ro" \
+            -v "$PWD/evidence:/evidence" \
+            -v "$trivy_cache:/root/.cache/trivy" \
+            "$TRIVY_IMAGE" fs \
+            --scanners vuln,secret --format json \
+            --output /evidence/source-security.json /scan
+          docker run --rm \
+            -v "$PWD/evidence:/evidence" \
+            -v "$trivy_cache:/root/.cache/trivy" \
+            "$TRIVY_IMAGE" rootfs \
+            --scanners vuln,secret --format json \
+            --output /evidence/product-security.json /evidence/product
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v "$PWD:/work" -w /work \
+            -v "$trivy_cache:/root/.cache/trivy" \
+            "$TRIVY_IMAGE" image \
+            --scanners vuln,secret --format json \
+            --output /work/evidence/dapper-image-metadata-raw.json "$DAPPER_IMAGE"
+
+          # The pinned base image carries third-party SBOM metadata that can
+          # outlive the packages it describes. Retain that report as evidence,
+          # but gate the actual exported filesystem and installed package DBs.
+          dapper_container="$(docker create "$DAPPER_IMAGE")"
+          docker export --output "$RUNNER_TEMP/dapper-rootfs.tar" "$dapper_container"
+          docker rm "$dapper_container"
+          dapper_container=""
+          tar --no-same-owner --no-same-permissions \
+            -xf "$RUNNER_TEMP/dapper-rootfs.tar" -C "$dapper_rootfs"
+          docker run --rm \
+            -v "$dapper_rootfs:/scan:ro" \
+            -v "$PWD/evidence:/evidence" \
+            -v "$trivy_cache:/root/.cache/trivy" \
+            "$TRIVY_IMAGE" rootfs \
+            --scanners vuln,secret --format json \
+            --output /evidence/dapper-rootfs-raw.json /scan
+
+          jq -r '
+            .Results[]?.Vulnerabilities[]?
+            | select(.Severity == "CRITICAL" or .Severity == "HIGH")
+            | [.VulnerabilityID, .PkgIdentifier.PURL]
+            | @tsv
+          ' evidence/dapper-rootfs-raw.json | LC_ALL=C sort -u \
+            > /tmp/dapper-critical-high.tsv
+          jq -r '
+            .statements[]?
+            | select(
+                .status == "not_affected"
+                and .justification == "vulnerable_code_not_present"
+              )
+            | .vulnerability.name as $id
+            | .products[]?
+            | [$id, .["@id"]]
+            | @tsv
+          ' security/dapper.openvex.json | LC_ALL=C sort -u \
+            > /tmp/dapper-vex.tsv
+          test -s /tmp/dapper-critical-high.tsv
+          diff -u /tmp/dapper-critical-high.tsv /tmp/dapper-vex.tsv
+          test "$(jq '.statements | length' security/dapper.openvex.json)" \
+            -eq "$(wc -l < /tmp/dapper-vex.tsv)"
+          jq -e '
+            all(
+              .statements[];
+              .status == "not_affected"
+              and .justification == "vulnerable_code_not_present"
+              and ((.impact_statement | type) == "string")
+              and ((.impact_statement | length) > 0)
+            )
+          ' security/dapper.openvex.json >/dev/null
+          if grep -Eq '^linux-(image|modules)([-:]|[[:space:]])' evidence/dapper-dpkg.tsv; then
+            printf 'Unexpected Linux kernel runtime package in Dapper image\n' >&2
+            exit 1
+          fi
+          docker run --rm \
+            -v "$dapper_rootfs:/scan:ro" \
+            -v "$PWD:/work:ro" -w /work \
+            -v "$PWD/evidence:/evidence" \
+            -v "$trivy_cache:/root/.cache/trivy" \
+            "$TRIVY_IMAGE" rootfs \
+            --scanners vuln,secret \
+            --vex /work/security/dapper.openvex.json --show-suppressed \
+            --format json \
+            --output /evidence/dapper-rootfs-applicable.json /scan
+          docker run --rm \
+            -v "$source_tree:/scan:ro" \
+            -v "$PWD/evidence:/evidence" \
+            -v "$trivy_cache:/root/.cache/trivy" \
+            "$TRIVY_IMAGE" fs \
+            --format cyclonedx --output /evidence/source.cdx.json /scan
+          docker run --rm \
+            -v "$PWD/evidence:/evidence" \
+            -v "$trivy_cache:/root/.cache/trivy" \
+            "$TRIVY_IMAGE" rootfs \
+            --format cyclonedx --output /evidence/product.cdx.json /evidence/product
+          docker run --rm \
+            -v "$dapper_rootfs:/scan:ro" \
+            -v "$PWD/evidence:/evidence" \
+            -v "$trivy_cache:/root/.cache/trivy" \
+            "$TRIVY_IMAGE" rootfs \
+            --format cyclonedx --output /evidence/dapper-rootfs.cdx.json /scan
+
+      - name: Summarize and enforce candidate security
+        shell: bash
+        run: |
+          set -euo pipefail
+          count() {
+            jq "$2" "$1"
+          }
+          source_secrets=$(count evidence/source-security.json '[.Results[]?.Secrets[]?] | length')
+          source_critical=$(count evidence/source-security.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length')
+          source_high=$(count evidence/source-security.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH")] | length')
+          product_secrets=$(count evidence/product-security.json '[.Results[]?.Secrets[]?] | length')
+          product_critical=$(count evidence/product-security.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length')
+          product_high=$(count evidence/product-security.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH")] | length')
+          dapper_metadata_critical=$(count evidence/dapper-image-metadata-raw.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length')
+          dapper_metadata_high=$(count evidence/dapper-image-metadata-raw.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH")] | length')
+          dapper_raw_critical=$(count evidence/dapper-rootfs-raw.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length')
+          dapper_raw_high=$(count evidence/dapper-rootfs-raw.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH")] | length')
+          dapper_applicable_critical=$(count evidence/dapper-rootfs-applicable.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL" and .Status != "not_affected")] | length')
+          dapper_applicable_high=$(count evidence/dapper-rootfs-applicable.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH" and .Status != "not_affected")] | length')
+          dapper_secrets=$(count evidence/dapper-rootfs-applicable.json '[.Results[]?.Secrets[]?] | length')
+          {
+            printf 'source_secrets=%s\n' "$source_secrets"
+            printf 'source_critical=%s\n' "$source_critical"
+            printf 'source_high=%s\n' "$source_high"
+            printf 'product_secrets=%s\n' "$product_secrets"
+            printf 'product_critical=%s\n' "$product_critical"
+            printf 'product_high=%s\n' "$product_high"
+            printf 'dapper_metadata_critical=%s\n' "$dapper_metadata_critical"
+            printf 'dapper_metadata_high=%s\n' "$dapper_metadata_high"
+            printf 'dapper_raw_critical=%s\n' "$dapper_raw_critical"
+            printf 'dapper_raw_high=%s\n' "$dapper_raw_high"
+            printf 'dapper_applicable_critical=%s\n' "$dapper_applicable_critical"
+            printf 'dapper_applicable_high=%s\n' "$dapper_applicable_high"
+            printf 'dapper_secrets=%s\n' "$dapper_secrets"
+          } | tee evidence/security-summary.txt
+
+          test "$source_secrets" -eq 0
+          test "$source_critical" -eq 0
+          test "$source_high" -eq 0
+          test "$product_secrets" -eq 0
+          test "$product_critical" -eq 0
+          test "$product_high" -eq 0
+          test "$dapper_applicable_critical" -eq 0
+          test "$dapper_applicable_high" -eq 0
+          test "$dapper_secrets" -eq 0
+
+      - name: Upload review evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: catalog-service-security-${{ github.sha }}
+          path: evidence/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Clean runner resources
+        if: always()
+        shell: bash
+        run: |
+          set +e
+          docker rm -f $(docker ps -aq --filter ancestor="$DAPPER_IMAGE") 2>/dev/null
+          docker image rm -f "$DAPPER_IMAGE" "$TRIVY_IMAGE" 2>/dev/null
+          docker builder prune --all --force >/dev/null 2>&1
+          rm -rf bin dist cache local.db evidence/product

@@ -3,17 +3,17 @@ package cmd
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/PastureStack/catalog-service/manager"
+	"github.com/PastureStack/catalog-service/model"
+	"github.com/PastureStack/catalog-service/service"
 	"github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/rancher/catalog-service/manager"
-	"github.com/rancher/catalog-service/model"
-	"github.com/rancher/catalog-service/service"
-	"github.com/rancher/catalog-service/tracking"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -26,9 +26,10 @@ var (
 	validateOnly    bool
 	sqlite          bool
 	migrateDb       bool
-	track           bool
+	trackCompat     bool
 	debug           bool
 	version         bool
+	locale          string
 	VERSION         string
 )
 
@@ -48,9 +49,14 @@ func init() {
 	RootCmd.PersistentFlags().BoolVar(&validateOnly, "validate", false, "")
 	RootCmd.PersistentFlags().BoolVar(&sqlite, "sqlite", false, "")
 	RootCmd.PersistentFlags().BoolVar(&migrateDb, "migrate-db", false, "")
-	RootCmd.PersistentFlags().BoolVar(&track, "track", true, "")
+	RootCmd.PersistentFlags().BoolVar(&trackCompat, "track", false, "Deprecated compatibility flag; no installation identifier is read or transmitted")
 	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "")
 	RootCmd.PersistentFlags().BoolVarP(&version, "version", "v", false, "")
+	localeDefault := os.Getenv("PASTURESTACK_LOCALE")
+	if localeDefault == "" {
+		localeDefault = "en-US"
+	}
+	RootCmd.PersistentFlags().StringVar(&locale, "locale", localeDefault, "Operator message locale: en-US or zh-TW")
 
 	RootCmd.PersistentFlags().String("mysql-user", "", "")
 	viper.BindPFlag("mysql_user", RootCmd.PersistentFlags().Lookup("mysql-user"))
@@ -69,6 +75,9 @@ func init() {
 }
 
 func run(cmd *cobra.Command, args []string) {
+	if locale != "en-US" && locale != "zh-TW" {
+		log.Fatalf("unsupported locale %q; use en-US or zh-TW", locale)
+	}
 	if version {
 		fmt.Println(VERSION)
 		return
@@ -80,6 +89,9 @@ func run(cmd *cobra.Command, args []string) {
 	var db *gorm.DB
 	var err error
 	if sqlite {
+		if !sqliteAvailable() {
+			log.Fatal("SQLite support is not available in this binary")
+		}
 		db, err = gorm.Open("sqlite3", "local.db")
 		if err != nil {
 			log.Fatal(err)
@@ -126,30 +138,32 @@ func run(cmd *cobra.Command, args []string) {
 		db.AutoMigrate(&model.VersionLabelModel{})
 	}
 
-	uuid := ""
-	if track && !validateOnly {
-		var err error
-		uuid, err = tracking.LoadRancherUUID()
-		if err != nil {
-			log.Warnf("Couldn't load install uuid: %v", err)
-		}
+	m, err := manager.NewManager(cacheRoot, configFile, validateOnly, db)
+	if err != nil {
+		log.Fatal("Invalid catalog source policy")
 	}
-
-	m := manager.NewManager(cacheRoot, configFile, validateOnly, db, uuid)
 	if validateOnly {
 		if err := m.RefreshAll(true); err != nil {
-			log.Fatalf("Failed to validate catalog: %v", err)
+			log.Fatal("Failed to validate catalog")
 		}
 		return
 	}
 	go autoRefresh(m, refreshInterval)
 
-	log.Infof("Starting Catalog Service (port %d, refresh interval %d seconds)", port, refreshInterval)
+	log.Infof("%s (port %d, refresh interval %d seconds)", operatorMessage(locale, "start"), port, refreshInterval)
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), &service.MuxWrapper{
 		IsReady: false,
 		Router:  service.NewRouter(m, db),
 	}))
+}
+
+func operatorMessage(locale, key string) string {
+	messages := map[string]map[string]string{
+		"en-US": {"start": "Starting PastureStack catalog service"},
+		"zh-TW": {"start": "正在啟動 PastureStack 應用目錄服務"},
+	}
+	return messages[locale][key]
 }
 
 func formatDSN(user, password, address, dbname, params string) string {
@@ -176,13 +190,10 @@ func formatDSN(user, password, address, dbname, params string) string {
 func autoRefresh(m *manager.Manager, refreshInterval int) {
 	var r = func(m *manager.Manager, update bool) {
 		if err := m.RefreshAll(update); err != nil {
-			if re, ok := err.(*manager.RepoRefreshError); ok && len(re.Errors) > 1 {
-				log.Errorf("Multiple errors encountered performing catalog refresh")
-				for _, e := range re.Errors {
-					log.Error(e)
-				}
+			if re, ok := err.(*manager.RepoRefreshError); ok {
+				log.WithField("error_count", len(re.Errors)).Error("Catalog refresh failed")
 			} else {
-				log.Errorf("Failed to perform catalog refresh: %v", err)
+				log.Error("Catalog refresh failed")
 			}
 		}
 	}
@@ -190,9 +201,14 @@ func autoRefresh(m *manager.Manager, refreshInterval int) {
 	r(m, false)
 
 	r(m, true)
-	// TODO: don't want to have refresh running twice at the same time
-	for range time.Tick(time.Duration(refreshInterval) * time.Second) {
+	if refreshInterval <= 0 {
+		log.Warn("Automatic catalog refresh is disabled because the interval is not positive")
+		return
+	}
+	ticker := time.NewTicker(time.Duration(refreshInterval) * time.Second)
+	defer ticker.Stop()
+	for range ticker.C {
 		log.Debugf("Performing automatic refresh of all catalogs (interval %d seconds)", refreshInterval)
-		go r(m, true)
+		r(m, true)
 	}
 }

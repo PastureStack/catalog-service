@@ -5,7 +5,7 @@
 
 # This represents the bare minimum required to build and test Docker.
 
-FROM debian:jessie
+FROM ubuntu:26.04
 
 # Compile and runtime deps
 # https://github.com/docker/docker/blob/master/project/PACKAGERS.md#build-dependencies

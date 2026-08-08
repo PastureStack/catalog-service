@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+if [ -d vendor/github.com/docker/libcompose ] && \
+    find vendor/github.com/docker/libcompose -type f -print -quit | grep -q .; then
+    printf 'Archived Compose parser source must not be vendored\n' >&2
+    exit 1
+fi
+
+matches=$(
+    find . -type f \( -name '*.go' -o -name 'vendor.conf' \) \
+        -not -path './.git/*' -print0 |
+        xargs -0 grep -nE 'github\.com/docker/libcompose|docker/libcompose' || true
+)
+if [ -n "$matches" ]; then
+    printf '%s\n' "$matches" >&2
+    printf 'Archived Compose parser dependency must not return\n' >&2
+    exit 1
+fi
+
+direct_http=$(
+    find . -type f -name '*.go' \
+        -not -path './.git/*' -not -path './vendor/*' -print0 |
+        xargs -0 grep -nE 'http\.(Get|Post|PostForm|Head)\(' || true
+)
+if [ -n "$direct_http" ]; then
+    printf '%s\n' "$direct_http" >&2
+    printf 'Catalog outbound HTTP must use the exact-origin policy client\n' >&2
+    exit 1
+fi
+
+if grep -RInE 'crypto/md5|md5\.Sum' \
+    --include='*.go' --exclude-dir=.git --exclude-dir=vendor .; then
+    printf 'Security-sensitive source must not restore MD5 cache keys\n' >&2
+    exit 1
+fi
+
+if find . -type f \( -name '*.go' -o -name '*.sh' -o -name '*.yml' -o -name '*.yaml' \) \
+    -not -path './.git/*' -not -path './vendor/*' -not -name '*_test.go' -print0 |
+    xargs -0 grep -nE '(-pasturestack\.|\.pasturestack\.|-rancher[0-9]|\.rancher[0-9])'; then
+    printf 'New product versions must be numeric SemVer without product suffixes\n' >&2
+    exit 1
+fi

@@ -1,3 +1,4 @@
+//go:build linux
 // +build linux
 
 package signals
@@ -5,7 +6,7 @@ package signals
 import (
 	"syscall"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 func init() {

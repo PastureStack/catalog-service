@@ -1,5 +1,4 @@
-cattle==0.5.1
-
-flake8
-pytest==2.3.5
-wait_for
+flake8==7.3.0
+pytest==9.1.1
+requests==2.34.2
+wait-for==2.0

@@ -3,43 +3,49 @@ package manager
 import (
 	"encoding/base64"
 	"fmt"
+	"io"
+	"io/fs"
 	"io/ioutil"
 	"os"
 	"path"
-	"path/filepath"
 	"strconv"
 	"strings"
 
+	"github.com/PastureStack/catalog-service/helm"
+	"github.com/PastureStack/catalog-service/model"
+	"github.com/PastureStack/catalog-service/outbound"
+	"github.com/PastureStack/catalog-service/parse"
 	"github.com/blang/semver"
-	"github.com/rancher/catalog-service/helm"
-	"github.com/rancher/catalog-service/model"
-	"github.com/rancher/catalog-service/parse"
 )
 
-func traverseFiles(repoPath, kind string, catalogType CatalogType) ([]model.Template, []error, error) {
-	if kind == "" || kind == RancherTemplateType {
-		return traverseGitFiles(repoPath)
+func traverseFiles(repoRoot *os.Root, kind string, catalogType CatalogType, httpClient *outbound.Client, sourceURL string) ([]model.Template, []error, error) {
+	if kind == "" || kind == NativeTemplateType {
+		return traverseGitFiles(repoRoot)
 	}
 	if kind == HelmTemplateType {
 		if catalogType == CatalogTypeHelmGitRepo {
-			return traverseHelmGitFiles(repoPath)
+			return traverseHelmGitFiles(repoRoot, httpClient)
 		}
-		return traverseHelmFiles(repoPath)
+		return traverseHelmFiles(repoRoot, httpClient, sourceURL)
 	}
 	return nil, nil, fmt.Errorf("Unknown kind %s", kind)
 }
 
-func traverseHelmGitFiles(repoPath string) ([]model.Template, []error, error) {
-	fullpath := path.Join(repoPath, "stable")
-
+func traverseHelmGitFiles(root *os.Root, httpClient *outbound.Client) ([]model.Template, []error, error) {
+	if root == nil {
+		return nil, nil, fmt.Errorf("Helm repository root is missing")
+	}
 	templates := []model.Template{}
 	var template *model.Template
 	errors := []error{}
-	err := filepath.Walk(fullpath, func(path string, info os.FileInfo, err error) error {
-		if len(path) == len(fullpath) {
+	err := fs.WalkDir(root.FS(), "stable", func(rootRelativePath string, entry fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if rootRelativePath == "stable" {
 			return nil
 		}
-		relPath := path[len(fullpath)+1:]
+		relPath := strings.TrimPrefix(rootRelativePath, "stable/")
 		components := strings.Split(relPath, "/")
 		if len(components) == 1 {
 			if template != nil {
@@ -52,12 +58,12 @@ func traverseHelmGitFiles(repoPath string) ([]model.Template, []error, error) {
 			})
 			template.Base = HelmTemplateBaseType
 		}
-		if info.IsDir() {
+		if entry == nil || entry.IsDir() {
 			return nil
 		}
 
-		if strings.HasSuffix(info.Name(), "Chart.yaml") {
-			metadata, err := helm.LoadMetadata(path)
+		if strings.HasSuffix(entry.Name(), "Chart.yaml") {
+			metadata, err := helm.LoadMetadata(root, rootRelativePath)
 			if err != nil {
 				return err
 			}
@@ -66,7 +72,7 @@ func traverseHelmGitFiles(repoPath string) ([]model.Template, []error, error) {
 			if len(metadata.Sources) > 0 {
 				template.ProjectURL = metadata.Sources[0]
 			}
-			iconData, iconFilename, err := parse.ParseIcon(metadata.Icon)
+			iconData, iconFilename, err := parse.ParseIcon(httpClient, "", metadata.Icon)
 			if err != nil {
 				errors = append(errors, err)
 			}
@@ -78,14 +84,14 @@ func traverseHelmGitFiles(repoPath string) ([]model.Template, []error, error) {
 			template.Versions[0].Revision = &rev
 			template.Versions[0].Version = metadata.Version
 		}
-		file, err := helm.LoadFile(path)
+		file, err := helm.LoadFile(root, rootRelativePath)
 		if err != nil {
 			return err
 		}
 
 		file.Name = relPath
 
-		if strings.HasSuffix(info.Name(), "README.md") {
+		if strings.HasSuffix(entry.Name(), "README.md") {
 			template.Versions[0].Readme = file.Contents
 			return nil
 		}
@@ -94,18 +100,26 @@ func traverseHelmGitFiles(repoPath string) ([]model.Template, []error, error) {
 
 		return nil
 	})
+	if err == nil && template != nil {
+		templates = append(templates, *template)
+	}
 	return templates, errors, err
 }
 
-func traverseHelmFiles(repoPath string) ([]model.Template, []error, error) {
-	index, err := helm.LoadIndex(repoPath)
+func traverseHelmFiles(repoRoot *os.Root, httpClient *outbound.Client, sourceURL string) ([]model.Template, []error, error) {
+	index, err := helm.LoadIndex(repoRoot)
 	if err != nil {
 		return nil, nil, err
 	}
+	index.SetSourceURL(strings.TrimSuffix(strings.TrimSpace(sourceURL), "/") + "/index.yaml")
 
 	templates := []model.Template{}
 	var errors []error
 	for chart, metadata := range index.IndexFile.Entries {
+		if len(metadata) == 0 {
+			errors = append(errors, fmt.Errorf("Helm chart %q has no versions", chart))
+			continue
+		}
 		template := model.Template{
 			Name: chart,
 		}
@@ -114,7 +128,7 @@ func traverseHelmFiles(repoPath string) ([]model.Template, []error, error) {
 		if len(metadata[0].Sources) > 0 {
 			template.ProjectURL = metadata[0].Sources[0]
 		}
-		iconData, iconFilename, err := parse.ParseIcon(metadata[0].Icon)
+		iconData, iconFilename, err := parse.ParseIcon(httpClient, index.SourceURL(), metadata[0].Icon)
 		if err != nil {
 			errors = append(errors, err)
 		}
@@ -127,9 +141,8 @@ func traverseHelmFiles(repoPath string) ([]model.Template, []error, error) {
 				Revision: &i,
 				Version:  version.Version,
 			}
-			files, err := helm.FetchFiles(version.URLs)
+			files, err := helm.FetchFiles(httpClient, index.SourceURL(), version.URLs)
 			if err != nil {
-				fmt.Println(err)
 				errors = append(errors, err)
 				continue
 			}
@@ -149,21 +162,29 @@ func traverseHelmFiles(repoPath string) ([]model.Template, []error, error) {
 
 		templates = append(templates, template)
 	}
-	return templates, nil, nil
+	return templates, errors, nil
 }
 
-func traverseGitFiles(repoPath string) ([]model.Template, []error, error) {
+func traverseGitFiles(root *os.Root) ([]model.Template, []error, error) {
+	if root == nil {
+		return nil, nil, fmt.Errorf("Catalog repository root is missing")
+	}
 	templateIndex := map[string]*model.Template{}
 	var errors []error
 
-	if err := filepath.Walk(repoPath, func(fullPath string, f os.FileInfo, err error) error {
-		if f == nil || !f.Mode().IsRegular() {
-			return nil
-		}
-
-		relativePath, err := filepath.Rel(repoPath, fullPath)
+	if err := fs.WalkDir(root.FS(), ".", func(relativePath string, entry fs.DirEntry, err error) error {
 		if err != nil {
 			return err
+		}
+		if relativePath == "." || entry == nil || entry.IsDir() {
+			return nil
+		}
+		info, err := entry.Info()
+		if err != nil {
+			return err
+		}
+		if !info.Mode().IsRegular() {
+			return nil
 		}
 
 		_, _, parsedCorrectly := parse.TemplatePath(relativePath)
@@ -173,8 +194,8 @@ func traverseGitFiles(repoPath string) ([]model.Template, []error, error) {
 
 		_, filename := path.Split(relativePath)
 
-		if err = handleFile(templateIndex, fullPath, relativePath, filename); err != nil {
-			errors = append(errors, fmt.Errorf("%s: %v", fullPath, err))
+		if err = handleFile(root, templateIndex, relativePath, filename); err != nil {
+			errors = append(errors, fmt.Errorf("%s: %v", relativePath, err))
 		}
 
 		return nil
@@ -193,7 +214,7 @@ func traverseGitFiles(repoPath string) ([]model.Template, []error, error) {
 			}
 
 			var compose string
-			var rancherCompose string
+			var legacyCompose string
 			var templateVersion string
 			for _, file := range version.Files {
 				switch file.Name {
@@ -202,11 +223,11 @@ func traverseGitFiles(repoPath string) ([]model.Template, []error, error) {
 				case "compose.yml":
 					compose = file.Contents
 				case "rancher-compose.yml":
-					rancherCompose = file.Contents
+					legacyCompose = file.Contents
 				}
 			}
 			newVersion := version
-			if templateVersion != "" || compose != "" || rancherCompose != "" {
+			if templateVersion != "" || compose != "" || legacyCompose != "" {
 				var err error
 				if templateVersion != "" {
 					newVersion, err = parse.CatalogInfoFromTemplateVersion([]byte(templateVersion))
@@ -214,8 +235,8 @@ func traverseGitFiles(repoPath string) ([]model.Template, []error, error) {
 				if compose != "" {
 					newVersion, err = parse.CatalogInfoFromCompose([]byte(compose))
 				}
-				if rancherCompose != "" {
-					newVersion, err = parse.CatalogInfoFromRancherCompose([]byte(rancherCompose))
+				if legacyCompose != "" {
+					newVersion, err = parse.CatalogInfoFromLegacyCompose([]byte(legacyCompose))
 				}
 
 				if err != nil {
@@ -252,14 +273,14 @@ func traverseGitFiles(repoPath string) ([]model.Template, []error, error) {
 	return templates, errors, nil
 }
 
-func handleFile(templateIndex map[string]*model.Template, fullPath, relativePath, filename string) error {
+func handleFile(root *os.Root, templateIndex map[string]*model.Template, relativePath, filename string) error {
 	switch {
 	case filename == "config.yml" || filename == "template.yml":
 		base, templateName, parsedCorrectly := parse.TemplatePath(relativePath)
 		if !parsedCorrectly {
 			return nil
 		}
-		contents, err := ioutil.ReadFile(fullPath)
+		contents, err := readRepositoryFile(root, relativePath)
 		if err != nil {
 			return err
 		}
@@ -287,7 +308,7 @@ func handleFile(templateIndex map[string]*model.Template, fullPath, relativePath
 			return nil
 		}
 
-		contents, err := ioutil.ReadFile(fullPath)
+		contents, err := readRepositoryFile(root, relativePath)
 		if err != nil {
 			return err
 		}
@@ -307,10 +328,10 @@ func handleFile(templateIndex map[string]*model.Template, fullPath, relativePath
 
 		_, _, _, parsedCorrectly = parse.VersionPath(relativePath)
 		if parsedCorrectly {
-			return handleVersionFile(templateIndex, fullPath, relativePath, filename)
+			return handleVersionFile(root, templateIndex, relativePath, filename)
 		}
 
-		contents, err := ioutil.ReadFile(fullPath)
+		contents, err := readRepositoryFile(root, relativePath)
 		if err != nil {
 			return err
 		}
@@ -322,19 +343,19 @@ func handleFile(templateIndex map[string]*model.Template, fullPath, relativePath
 		}
 		templateIndex[key].Readme = string(contents)
 	default:
-		return handleVersionFile(templateIndex, fullPath, relativePath, filename)
+		return handleVersionFile(root, templateIndex, relativePath, filename)
 	}
 
 	return nil
 }
 
-func handleVersionFile(templateIndex map[string]*model.Template, fullPath, relativePath, filename string) error {
+func handleVersionFile(root *os.Root, templateIndex map[string]*model.Template, relativePath, filename string) error {
 	base, templateName, folderName, parsedCorrectly := parse.VersionPath(relativePath)
 	if !parsedCorrectly {
 		return nil
 	}
 
-	contents, err := ioutil.ReadFile(fullPath)
+	contents, err := readRepositoryFile(root, relativePath)
 	if err != nil {
 		return err
 	}
@@ -382,4 +403,24 @@ func handleVersionFile(templateIndex map[string]*model.Template, fullPath, relat
 	}
 
 	return nil
+}
+
+func readRepositoryFile(root *os.Root, relativePath string) ([]byte, error) {
+	if root == nil || relativePath == "." || !fs.ValidPath(relativePath) {
+		return nil, fmt.Errorf("Catalog repository path is not local to its root")
+	}
+	file, err := root.Open(relativePath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	const maxRepositoryFileBytes = 16 << 20
+	contents, err := ioutil.ReadAll(io.LimitReader(file, maxRepositoryFileBytes+1))
+	if err != nil {
+		return nil, err
+	}
+	if len(contents) > maxRepositoryFileBytes {
+		return nil, fmt.Errorf("Catalog repository file %q exceeds %d bytes", relativePath, maxRepositoryFileBytes)
+	}
+	return contents, nil
 }

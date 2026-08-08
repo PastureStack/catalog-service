@@ -4,10 +4,19 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/docker/libcompose/utils"
 	"github.com/jinzhu/gorm"
 	"github.com/rancher/go-rancher/v2"
 )
+
+func containsString(collection []string, key string) bool {
+	for _, value := range collection {
+		if value == key {
+			return true
+		}
+	}
+
+	return false
+}
 
 type Template struct {
 	EnvironmentId string `json:"environmentId"`
@@ -268,13 +277,13 @@ AND catalog_template.base = ?`
 
 		skip := false
 		for _, category := range categories {
-			if !utils.Contains(templateModel.Categories, category) {
+			if !containsString(templateModel.Categories, category) {
 				skip = true
 				break
 			}
 		}
 		for _, categoryNe := range categoriesNe {
-			if utils.Contains(templateModel.Categories, categoryNe) {
+			if containsString(templateModel.Categories, categoryNe) {
 				skip = true
 				break
 			}

@@ -1,3 +1,4 @@
+//go:build !nosqlite
 // +build !nosqlite
 
 package cmd
@@ -5,3 +6,5 @@ package cmd
 import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
+
+func sqliteAvailable() bool { return true }

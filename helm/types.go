@@ -13,6 +13,19 @@ type HelmRepoIndex struct {
 	Hash      string     `json:"hash" yaml:"hash"`
 }
 
+func (index *HelmRepoIndex) SourceURL() string {
+	if index == nil {
+		return ""
+	}
+	return index.URL
+}
+
+func (index *HelmRepoIndex) SetSourceURL(rawURL string) {
+	if index != nil {
+		index.URL = rawURL
+	}
+}
+
 type IndexFile struct {
 	APIVersion string                   `json:"apiVersion" yaml:"apiVersion"`
 	Generated  time.Time                `json:"generated" yaml:"generated"`

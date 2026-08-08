@@ -1,11 +1,23 @@
 package parse
 
 import (
-	"github.com/docker/libcompose/config"
-	"github.com/docker/libcompose/utils"
-	"github.com/rancher/catalog-service/model"
+	"github.com/PastureStack/catalog-service/model"
 	"gopkg.in/yaml.v2"
 )
+
+type composeCatalogEnvelope struct {
+	Version  string                 `yaml:"version,omitempty"`
+	Services map[string]interface{} `yaml:"services,omitempty"`
+}
+
+func convertYAML(source, target interface{}) error {
+	contents, err := yaml.Marshal(source)
+	if err != nil {
+		return err
+	}
+
+	return yaml.Unmarshal(contents, target)
+}
 
 func TemplateInfo(contents []byte) (model.Template, error) {
 	var data map[string]interface{}
@@ -24,7 +36,7 @@ func TemplateInfo(contents []byte) (model.Template, error) {
 	}
 
 	var template model.Template
-	if err := utils.Convert(data, &template); err != nil {
+	if err := convertYAML(data, &template); err != nil {
 		return model.Template{}, err
 	}
 
@@ -40,15 +52,15 @@ func CatalogInfoFromTemplateVersion(contents []byte) (model.Version, error) {
 	return template, nil
 }
 
-func CatalogInfoFromRancherCompose(contents []byte) (model.Version, error) {
-	cfg, err := config.CreateConfig(contents)
-	if err != nil {
+func CatalogInfoFromLegacyCompose(contents []byte) (model.Version, error) {
+	var compose composeCatalogEnvelope
+	if err := yaml.Unmarshal(contents, &compose); err != nil {
 		return model.Version{}, err
 	}
 	var rawCatalogConfig interface{}
 
-	if cfg.Version == "2" && cfg.Services[".catalog"] != nil {
-		rawCatalogConfig = cfg.Services[".catalog"]
+	if compose.Version == "2" && compose.Services[".catalog"] != nil {
+		rawCatalogConfig = compose.Services[".catalog"]
 	}
 
 	var data map[string]interface{}
@@ -64,7 +76,7 @@ func CatalogInfoFromRancherCompose(contents []byte) (model.Version, error) {
 
 	if rawCatalogConfig != nil {
 		var template model.Version
-		if err := utils.Convert(rawCatalogConfig, &template); err != nil {
+		if err := convertYAML(rawCatalogConfig, &template); err != nil {
 			return model.Version{}, err
 		}
 		return template, nil
@@ -75,5 +87,5 @@ func CatalogInfoFromRancherCompose(contents []byte) (model.Version, error) {
 
 func CatalogInfoFromCompose(contents []byte) (model.Version, error) {
 	contents = []byte(extractCatalogBlock(string(contents)))
-	return CatalogInfoFromRancherCompose(contents)
+	return CatalogInfoFromLegacyCompose(contents)
 }
