@@ -29,12 +29,10 @@ cleanup_generated
 
 echo Running tests
 
-PACKAGES=". $(find -name '*.go' | xargs -I{} dirname {} |  cut -f2 -d/ | sort -u | grep -Ev '(^\.$|.git|.trash-cache|vendor|bin)' | sed -e 's!^!./!' -e 's!$!/...!')"
-
 export CGO_CFLAGS="${CGO_CFLAGS:-} -Wno-return-local-addr"
 export PASTURESTACK_CATALOG_ALLOWED_LOCAL_ROOTS="/tmp"
 [ "${ARCH}" == "amd64" ] && RACE=-race
-go test ${RACE} -cover -tags=test ${PACKAGES}
+go test -mod=vendor ${RACE} -cover -tags=test ./...
 
 ./bin/catalog-service-sqlite --sqlite --config scripts/test-repo.json -p 8088 --track=false &
 SERVICE_PID=$!

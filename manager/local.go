@@ -15,7 +15,6 @@ import (
 	"github.com/PastureStack/catalog-service/git"
 	"github.com/PastureStack/catalog-service/helm"
 	"github.com/PastureStack/catalog-service/model"
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -98,18 +97,18 @@ func (m *Manager) prepareGitRepoPath(catalog model.Catalog, update bool, catalog
 	empty, err := dirEmpty(repoRoot)
 	if err != nil {
 		repoRoot.Close()
-		return nil, "", catalogType, errors.Wrap(err, "Empty directory check failed")
+		return nil, "", catalogType, fmt.Errorf("Empty directory check failed: %w", err)
 	}
 
 	if empty {
 		if err = git.Clone(repoPath, source, branch); err != nil {
 			repoRoot.Close()
-			return nil, "", catalogType, errors.Wrap(err, "Clone failed")
+			return nil, "", catalogType, fmt.Errorf("Clone failed: %w", err)
 		}
 		if pinnedCommit != "" {
 			if err = git.CheckoutCommit(repoPath, pinnedCommit); err != nil {
 				repoRoot.Close()
-				return nil, "", catalogType, errors.Wrap(err, "Pinned commit checkout failed")
+				return nil, "", catalogType, fmt.Errorf("Pinned commit checkout failed: %w", err)
 			}
 		}
 	} else {
@@ -117,24 +116,24 @@ func (m *Manager) prepareGitRepoPath(catalog model.Catalog, update bool, catalog
 			currentCommit, headErr := git.HeadCommit(repoPath)
 			if headErr != nil {
 				repoRoot.Close()
-				return nil, "", catalogType, errors.Wrap(headErr, "Retrieving pinned catalog commit failed")
+				return nil, "", catalogType, fmt.Errorf("Retrieving pinned catalog commit failed: %w", headErr)
 			}
 			if !strings.EqualFold(currentCommit, pinnedCommit) {
 				if err = git.CheckoutCommit(repoPath, pinnedCommit); err != nil {
 					repoRoot.Close()
-					return nil, "", catalogType, errors.Wrap(err, "Pinned commit checkout failed")
+					return nil, "", catalogType, fmt.Errorf("Pinned commit checkout failed: %w", err)
 				}
 			}
 		} else if update {
 			changed, err := m.remoteShaChanged(catalog.URL, branch, catalog.Commit)
 			if err != nil {
 				repoRoot.Close()
-				return nil, "", catalogType, errors.Wrap(err, "Remote commit check failed")
+				return nil, "", catalogType, fmt.Errorf("Remote commit check failed: %w", err)
 			}
 			if changed {
 				if err = git.Update(repoPath, source, branch); err != nil {
 					repoRoot.Close()
-					return nil, "", catalogType, errors.Wrap(err, "Update failed")
+					return nil, "", catalogType, fmt.Errorf("Update failed: %w", err)
 				}
 				log.Debug("Catalog source was updated")
 			}
@@ -143,7 +142,7 @@ func (m *Manager) prepareGitRepoPath(catalog model.Catalog, update bool, catalog
 
 	commit, err := git.HeadCommit(repoPath)
 	if err != nil {
-		err = errors.Wrap(err, "Retrieving head commit failed")
+		err = fmt.Errorf("Retrieving head commit failed: %w", err)
 	} else if pinnedCommit != "" && !strings.EqualFold(commit, pinnedCommit) {
 		err = fmt.Errorf("Catalog HEAD %s does not match pinned commit %s", commit, pinnedCommit)
 	}
@@ -226,7 +225,7 @@ func (m *Manager) remoteShaChanged(repoURL, branch, sha string) (bool, error) {
 	if err != nil {
 		// Return timeout errors so caller can decide whether or not to proceed with updating the repo
 		if uErr, ok := err.(*url.Error); ok && uErr.Timeout() {
-			return false, errors.Wrap(uErr, "Catalog repository is not accessible")
+			return false, fmt.Errorf("Catalog repository is not accessible: %w", uErr)
 		}
 		return true, nil
 	}

@@ -7,15 +7,15 @@ import (
 	"io"
 	"net/http"
 
+	api "github.com/PastureStack/catalog-service/internal/catalogapi"
 	"github.com/PastureStack/catalog-service/model"
 	"github.com/gorilla/mux"
-	"github.com/rancher/go-rancher/api"
 )
 
 const maxCatalogRequestBytes = 1 << 20
 
 func getCatalogs(w http.ResponseWriter, r *http.Request, envId string) (int, error) {
-	apiContext := api.GetApiContext(r)
+	apiContext := api.GetAPIContext(r)
 
 	catalogs := model.LookupCatalogs(db, envId)
 
@@ -30,7 +30,7 @@ func getCatalogs(w http.ResponseWriter, r *http.Request, envId string) (int, err
 }
 
 func getCatalog(w http.ResponseWriter, r *http.Request, envId string) (int, error) {
-	apiContext := api.GetApiContext(r)
+	apiContext := api.GetAPIContext(r)
 
 	vars := mux.Vars(r)
 	envId, err := getEnvironmentId(r)
@@ -112,7 +112,7 @@ func isDuplicateGlobalName(catalogModel *model.CatalogModel) bool {
 }
 
 func createCatalog(w http.ResponseWriter, r *http.Request, envId string) (int, error) {
-	apiContext := api.GetApiContext(r)
+	apiContext := api.GetAPIContext(r)
 
 	catalogModel, err := catalogModelFromRequest(r, envId)
 	if err != nil {
@@ -157,7 +157,7 @@ func catalogExists(catalogModel *model.CatalogModel, envId string) bool {
 }
 
 func updateCatalog(w http.ResponseWriter, r *http.Request, envId string) (int, error) {
-	apiContext := api.GetApiContext(r)
+	apiContext := api.GetAPIContext(r)
 
 	catalogModel, err := catalogModelFromRequest(r, envId)
 	if err != nil {
@@ -186,7 +186,7 @@ func updateCatalog(w http.ResponseWriter, r *http.Request, envId string) (int, e
 		return http.StatusNotFound, errors.New("Catalog not found")
 	}
 
-	if err := db.Model(&model.CatalogModel{}).Where(&oldCatalog).Update(catalogModel).Error; err != nil {
+	if err := db.Model(&model.CatalogModel{}).Where(&oldCatalog).Updates(catalogModel).Error; err != nil {
 		return http.StatusBadRequest, err
 	}
 
@@ -235,7 +235,7 @@ func deleteCatalog(w http.ResponseWriter, r *http.Request, envId string) (int, e
 }
 
 func getCatalogTemplates(w http.ResponseWriter, r *http.Request, envId string) (int, error) {
-	apiContext := api.GetApiContext(r)
+	apiContext := api.GetAPIContext(r)
 	vars := mux.Vars(r)
 
 	catalogName, ok := vars["catalog"]
@@ -260,7 +260,7 @@ func getCatalogTemplates(w http.ResponseWriter, r *http.Request, envId string) (
 	}
 
 	resp.Actions = map[string]string{
-		"refresh": api.GetApiContext(r).UrlBuilder.ReferenceByIdLink("template", "") + "?action=refresh",
+		"refresh": api.GetAPIContext(r).URLBuilder.ReferenceByIDLink("template", "") + "?action=refresh",
 	}
 
 	apiContext.Write(&resp)

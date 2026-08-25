@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root=$(cd "$(dirname "$0")/.." && pwd)
+port=${CATALOG_SMOKE_PORT:-18088}
+run_root=$(mktemp -d "${TMPDIR:-/tmp}/catalog-service-smoke.XXXXXX")
+service_pid=""
+
+cleanup()
+{
+    exit_code=$?
+    if [ -n "$service_pid" ]; then
+        kill "$service_pid" 2>/dev/null || true
+        wait "$service_pid" 2>/dev/null || true
+    fi
+    if [ "$exit_code" -ne 0 ] && [ -f "$run_root/service.log" ]; then
+        cat "$run_root/service.log" >&2
+    fi
+    rm -rf -- "$run_root"
+    exit "$exit_code"
+}
+trap cleanup EXIT
+
+test -x "$repo_root/bin/catalog-service-sqlite"
+cd "$run_root"
+"$repo_root/bin/catalog-service-sqlite" \
+    --sqlite \
+    --config "$repo_root/repo.json" \
+    --cache "$run_root/cache" \
+    --port "$port" \
+    --refresh-interval 0 \
+    --track=false \
+    >service.log 2>&1 &
+service_pid=$!
+
+ready=0
+for _ in $(seq 1 40); do
+    if curl -fsS "http://127.0.0.1:${port}/" >root.json 2>/dev/null; then
+        ready=1
+        break
+    fi
+    sleep 0.1
+done
+test "$ready" -eq 1
+
+curl -fsS "http://127.0.0.1:${port}/v1-catalog" >version.json
+curl -fsS "http://127.0.0.1:${port}/v1-catalog/schemas" >schemas.json
+python3 - root.json version.json schemas.json <<'PY'
+import json
+import pathlib
+import sys
+
+root = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
+version = json.loads(pathlib.Path(sys.argv[2]).read_text(encoding="utf-8"))
+schemas = json.loads(pathlib.Path(sys.argv[3]).read_text(encoding="utf-8"))
+
+assert root["data"][0]["id"] == "v1-catalog", root
+assert root["links"]["latest"].endswith("/v1-catalog"), root
+assert version["id"] == "v1-catalog", version
+schema_ids = {item["id"] for item in schemas["data"]}
+required = {"catalog", "template", "templateVersion", "error"}
+assert required <= schema_ids, schema_ids
+print(f"CATALOG_RUNTIME_SMOKE_OK schemas={len(schema_ids)}")
+PY
+
+test -s local.db
+grep -F "Automatic catalog refresh is disabled" service.log >/dev/null

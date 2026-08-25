@@ -1,6 +1,6 @@
 package model
 
-import "github.com/rancher/go-rancher/v2"
+import client "github.com/PastureStack/catalog-service/internal/catalogclient"
 
 type CatalogError struct {
 	client.Resource

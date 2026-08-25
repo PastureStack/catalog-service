@@ -4,7 +4,12 @@
 package cmd
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	gormsqlite "gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func sqliteAvailable() bool { return true }
+
+func openSQLite(dsn string) (*gorm.DB, error) {
+	return gorm.Open(gormsqlite.Open(dsn), newCatalogGormConfig())
+}

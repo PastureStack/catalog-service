@@ -7,11 +7,11 @@ import (
 	"sort"
 	"strconv"
 
+	api "github.com/PastureStack/catalog-service/internal/catalogapi"
+	client "github.com/PastureStack/catalog-service/internal/catalogclient"
 	"github.com/PastureStack/catalog-service/model"
 	"github.com/PastureStack/catalog-service/parse"
 	"github.com/PastureStack/catalog-service/utils"
-	"github.com/rancher/go-rancher/api"
-	"github.com/rancher/go-rancher/v2"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -41,7 +41,7 @@ func ReturnHTTPError(w http.ResponseWriter, r *http.Request, httpStatus int, err
 		Message: err.Error(),
 	}
 
-	api.GetApiContext(r).Write(&catalogError)
+	api.GetAPIContext(r).Write(&catalogError)
 }
 
 // TODO: this should return an error
@@ -71,8 +71,8 @@ func generateTemplateId(catalogName string, template model.Template) string {
 	return fmt.Sprintf("%s:%s*%s", catalogName, template.Base, template.FolderName)
 }
 
-func catalogResource(catalog model.Catalog, apiContext *api.ApiContext, envId string) *model.CatalogResource {
-	selfLink := apiContext.UrlBuilder.ReferenceByIdLink("catalogs", catalog.Name)
+func catalogResource(catalog model.Catalog, apiContext *api.APIContext, envId string) *model.CatalogResource {
+	selfLink := apiContext.URLBuilder.ReferenceByIDLink("catalogs", catalog.Name)
 	projectID := envId
 	if projectID != "" {
 		selfLink = selfLink + "?projectId=" + projectID
@@ -80,7 +80,7 @@ func catalogResource(catalog model.Catalog, apiContext *api.ApiContext, envId st
 
 	return &model.CatalogResource{
 		Resource: client.Resource{
-			Id:    catalog.Name,
+			ID:    catalog.Name,
 			Type:  "catalog",
 			Links: map[string]string{"self": selfLink},
 		},
@@ -88,12 +88,12 @@ func catalogResource(catalog model.Catalog, apiContext *api.ApiContext, envId st
 	}
 }
 
-func templateDefaultVersion(template model.Template, catalogName string, apiContext *api.ApiContext) (string, string, string) {
+func templateDefaultVersion(template model.Template, catalogName string, apiContext *api.APIContext) (string, string, string) {
 	var defaultTemplateVersionId string
 	for _, version := range template.Versions {
 		if version.Version == template.DefaultVersion {
 			defaultTemplateVersionId = generateVersionId(catalogName, template, version)
-			selfLink := apiContext.UrlBuilder.ReferenceByIdLink("templates", defaultTemplateVersionId)
+			selfLink := apiContext.URLBuilder.ReferenceByIDLink("templates", defaultTemplateVersionId)
 			return selfLink, defaultTemplateVersionId, version.Version
 		}
 	}
@@ -101,7 +101,7 @@ func templateDefaultVersion(template model.Template, catalogName string, apiCont
 	sort.Sort(model.Versions(template.Versions))
 	if len(template.Versions) != 0 {
 		defaultTemplateVersionId = generateVersionId(catalogName, template, template.Versions[len(template.Versions)-1])
-		selfLink := apiContext.UrlBuilder.ReferenceByIdLink("templates", defaultTemplateVersionId)
+		selfLink := apiContext.URLBuilder.ReferenceByIDLink("templates", defaultTemplateVersionId)
 		return selfLink, defaultTemplateVersionId, template.Versions[len(template.Versions)-1].Version
 	}
 
@@ -118,23 +118,23 @@ func requestedPlatformVersion(r *http.Request) string {
 	return r.URL.Query().Get("minimumRancherVersion_lte")
 }
 
-func templateResource(apiContext *api.ApiContext, catalogName string, template model.Template, platformVersion string, envId string) *model.TemplateResource {
+func templateResource(apiContext *api.APIContext, catalogName string, template model.Template, platformVersion string, envId string) *model.TemplateResource {
 	templateId := generateTemplateId(catalogName, template)
 
 	versionLinks := map[string]string{}
 	for _, version := range template.Versions {
 		if utils.VersionBetween(version.MinimumRancherVersion, platformVersion, version.MaximumRancherVersion) {
 			route := generateVersionId(catalogName, template, version)
-			link := apiContext.UrlBuilder.ReferenceByIdLink("template", route)
+			link := apiContext.URLBuilder.ReferenceByIDLink("template", route)
 			versionLinks[version.Version] = URLEncoded(link)
 		}
 	}
 
 	links := map[string]string{}
 
-	links["icon"] = URLEncoded(apiContext.UrlBuilder.ReferenceByIdLink("template", fmt.Sprintf("%s?image&projectId=%s", templateId, envId)))
+	links["icon"] = URLEncoded(apiContext.URLBuilder.ReferenceByIDLink("template", fmt.Sprintf("%s?image&projectId=%s", templateId, envId)))
 	if template.Readme != "" {
-		links["readme"] = URLEncoded(apiContext.UrlBuilder.ReferenceByIdLink("template", fmt.Sprintf("%s?readme", templateId)))
+		links["readme"] = URLEncoded(apiContext.URLBuilder.ReferenceByIDLink("template", fmt.Sprintf("%s?readme", templateId)))
 	}
 	if template.ProjectURL != "" {
 		links["project"] = template.ProjectURL
@@ -149,7 +149,7 @@ func templateResource(apiContext *api.ApiContext, catalogName string, template m
 
 	return &model.TemplateResource{
 		Resource: client.Resource{
-			Id:    templateId,
+			ID:    templateId,
 			Type:  "template",
 			Links: links,
 		},
@@ -159,11 +159,11 @@ func templateResource(apiContext *api.ApiContext, catalogName string, template m
 	}
 }
 
-func defaultUpgradeVersionLink(upgradeVersions []model.Version, catalogName string, template model.Template, apiContext *api.ApiContext) string {
+func defaultUpgradeVersionLink(upgradeVersions []model.Version, catalogName string, template model.Template, apiContext *api.APIContext) string {
 	sort.Sort(model.Versions(upgradeVersions))
 	if len(upgradeVersions) != 0 {
 		route := generateVersionId(catalogName, template, upgradeVersions[len(upgradeVersions)-1])
-		link := apiContext.UrlBuilder.ReferenceByIdLink("template", route)
+		link := apiContext.URLBuilder.ReferenceByIDLink("template", route)
 		defaultUpgradeVersionLink := URLEncoded(link)
 		return defaultUpgradeVersionLink
 	}
@@ -171,7 +171,7 @@ func defaultUpgradeVersionLink(upgradeVersions []model.Version, catalogName stri
 	return ""
 }
 
-func versionResource(apiContext *api.ApiContext, catalogName string, template model.Template, version model.Version, platformVersion string, envId string) (*model.TemplateVersionResource, error) {
+func versionResource(apiContext *api.APIContext, catalogName string, template model.Template, version model.Version, platformVersion string, envId string) (*model.TemplateVersionResource, error) {
 	templateId := generateTemplateId(catalogName, template)
 	versionId := generateVersionId(catalogName, template, version)
 
@@ -205,25 +205,25 @@ func versionResource(apiContext *api.ApiContext, catalogName string, template mo
 	}
 
 	links := map[string]string{}
-	links["icon"] = URLEncoded(apiContext.UrlBuilder.ReferenceByIdLink("template", fmt.Sprintf("%s?image&projectId=%s", templateId, envId)))
+	links["icon"] = URLEncoded(apiContext.URLBuilder.ReferenceByIDLink("template", fmt.Sprintf("%s?image&projectId=%s", templateId, envId)))
 
 	if version.Readme != "" {
-		links["readme"] = URLEncoded(apiContext.UrlBuilder.ReferenceByIdLink("template", fmt.Sprintf("%s?readme", versionId)))
+		links["readme"] = URLEncoded(apiContext.URLBuilder.ReferenceByIDLink("template", fmt.Sprintf("%s?readme", versionId)))
 	} else if template.Readme != "" {
-		links["readme"] = URLEncoded(apiContext.UrlBuilder.ReferenceByIdLink("template", fmt.Sprintf("%s?readme", templateId)))
+		links["readme"] = URLEncoded(apiContext.URLBuilder.ReferenceByIDLink("template", fmt.Sprintf("%s?readme", templateId)))
 	}
 	if template.ProjectURL != "" {
 		links["project"] = template.ProjectURL
 	}
 
-	links["template"] = URLEncoded(apiContext.UrlBuilder.ReferenceByIdLink("template", templateId))
+	links["template"] = URLEncoded(apiContext.URLBuilder.ReferenceByIDLink("template", templateId))
 
 	upgradeVersionLinks := map[string]string{}
 	upgradeVersions := []model.Version{}
 	for _, upgradeVersion := range template.Versions {
 		if showUpgradeVersion(version, upgradeVersion, platformVersion) {
 			route := generateVersionId(catalogName, template, upgradeVersion)
-			link := apiContext.UrlBuilder.ReferenceByIdLink("template", route)
+			link := apiContext.URLBuilder.ReferenceByIDLink("template", route)
 			upgradeVersionLinks[upgradeVersion.Version] = URLEncoded(link)
 			upgradeVersions = append(upgradeVersions, upgradeVersion)
 
@@ -242,7 +242,7 @@ func versionResource(apiContext *api.ApiContext, catalogName string, template mo
 
 	return &model.TemplateVersionResource{
 		Resource: client.Resource{
-			Id:    versionId,
+			ID:    versionId,
 			Type:  "templateVersion",
 			Links: links,
 		},

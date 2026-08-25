@@ -3,9 +3,9 @@ package model
 import (
 	"strings"
 
-	"github.com/blang/semver"
-	"github.com/jinzhu/gorm"
-	"github.com/rancher/go-rancher/v2"
+	"github.com/Masterminds/semver/v3"
+	client "github.com/PastureStack/catalog-service/internal/catalogclient"
+	"gorm.io/gorm"
 )
 
 const (
@@ -20,7 +20,7 @@ AND catalog_template.folder_name = ?`
 )
 
 type Version struct {
-	TemplateId uint `sql:"type:integer REFERENCES catalog_template(id) ON DELETE CASCADE"`
+	TemplateId uint `gorm:"type:integer REFERENCES catalog_template(id) ON DELETE CASCADE"`
 
 	Revision              *int   `json:"revision"`
 	Version               string `json:"version"`
@@ -29,10 +29,10 @@ type Version struct {
 	UpgradeFrom           string `json:"upgradeFrom" yaml:"upgrade_from"`
 	Readme                string `json:"readme"`
 
-	Labels map[string]string `sql:"-" json:"labels"`
+	Labels map[string]string `gorm:"-" json:"labels"`
 
-	Files     []File     `sql:"-"`
-	Questions []Question `sql:"-"`
+	Files     []File     `gorm:"-"`
+	Questions []Question `gorm:"-"`
 }
 
 type Versions []Version
@@ -62,19 +62,23 @@ func (v Versions) Swap(i, j int) {
 }
 
 func (v Versions) Less(i, j int) bool {
-
-	a, _ := semver.Make(strings.TrimLeft(v[i].Version, "v"))
-	b, _ := semver.Make(strings.TrimLeft(v[j].Version, "v"))
-
-	boolean := a.LT(b)
-	return boolean
+	a, aErr := semver.StrictNewVersion(strings.TrimLeft(v[i].Version, "v"))
+	b, bErr := semver.StrictNewVersion(strings.TrimLeft(v[j].Version, "v"))
+	if aErr != nil || bErr != nil {
+		if aErr != nil && bErr != nil {
+			return v[i].Version < v[j].Version
+		}
+		return aErr != nil
+	}
+	return a.LessThan(b)
 }
 
 func LookupVersionByRevision(db *gorm.DB, environmentId, catalog, base, template string, revision int) *Version {
 	var versionModel VersionModel
-	if err := db.Raw(baseVersionQuery+`
+	result := db.Raw(baseVersionQuery+`
 AND catalog_version.revision = ?
-`, environmentId, "global", catalog, base, template, revision).Scan(&versionModel).Error; err == gorm.ErrRecordNotFound {
+`, environmentId, "global", catalog, base, template, revision).Scan(&versionModel)
+	if result.Error != nil || result.RowsAffected == 0 {
 		return nil
 	}
 
@@ -86,9 +90,10 @@ AND catalog_version.revision = ?
 
 func LookupVersionByVersion(db *gorm.DB, environmentId, catalog, base, template string, version string) *Version {
 	var versionModel VersionModel
-	if err := db.Raw(baseVersionQuery+`
+	result := db.Raw(baseVersionQuery+`
 AND catalog_version.version = ?
-`, environmentId, "global", catalog, base, template, version).Scan(&versionModel).Error; err == gorm.ErrRecordNotFound {
+`, environmentId, "global", catalog, base, template, version).Scan(&versionModel)
+	if result.Error != nil || result.RowsAffected == 0 {
 		return nil
 	}
 
@@ -100,11 +105,7 @@ AND catalog_version.version = ?
 
 func lookupVersions(db *gorm.DB, templateId uint) []Version {
 	var versionModels []VersionModel
-	db.Where(&VersionModel{
-		Version: Version{
-			TemplateId: templateId,
-		},
-	}).Find(&versionModels)
+	db.Where("template_id = ?", templateId).Find(&versionModels)
 
 	var versions []Version
 	for _, versionModel := range versionModels {

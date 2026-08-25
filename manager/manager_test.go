@@ -7,19 +7,22 @@ import (
 	"testing"
 
 	"github.com/PastureStack/catalog-service/model"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func openCatalogIndexTestDB(t *testing.T) *gorm.DB {
 	t.Helper()
 
-	db, err := gorm.Open("sqlite3", ":memory:")
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() {
-		db.Close()
+		sqlDB, sqlErr := db.DB()
+		if sqlErr == nil {
+			_ = sqlDB.Close()
+		}
 	})
 
 	for _, statement := range []string{

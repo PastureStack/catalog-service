@@ -5,9 +5,8 @@ import (
 
 	"github.com/PastureStack/catalog-service/model"
 	"github.com/PastureStack/catalog-service/outbound"
-	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 )
 
 const (
@@ -92,7 +91,7 @@ func (m *Manager) refreshConfigCatalogs(update bool) error {
 			catalog = existingCatalog
 		}
 		if err := m.refreshCatalog(catalog, update); err != nil {
-			refreshErrors = append(refreshErrors, errors.Wrapf(err, "Catalog refresh failed for %s (%s)", safeLogValue(catalog.Name), safeLogValue(catalog.URL)))
+			refreshErrors = append(refreshErrors, fmt.Errorf("Catalog refresh failed for %s (%s): %w", safeLogValue(catalog.Name), safeLogValue(catalog.URL), err))
 		}
 	}
 	if len(refreshErrors) > 0 {
@@ -110,7 +109,7 @@ func (m *Manager) refreshEnvironmentCatalogs(environmentId string, update bool) 
 	var refreshErrors []error
 	for _, catalog := range catalogs {
 		if err := m.refreshCatalog(catalog, update); err != nil {
-			refreshErrors = append(refreshErrors, errors.Wrapf(err, "Catalog refresh failed for %s (%s)", safeLogValue(catalog.Name), safeLogValue(catalog.URL)))
+			refreshErrors = append(refreshErrors, fmt.Errorf("Catalog refresh failed for %s (%s): %w", safeLogValue(catalog.Name), safeLogValue(catalog.URL), err))
 		}
 	}
 	if len(refreshErrors) > 0 {
@@ -129,7 +128,7 @@ func (m *Manager) refreshCatalog(catalog model.Catalog, update bool) error {
 	if commit == catalog.Commit {
 		hasTemplates, err := m.catalogHasTemplates(catalog)
 		if err != nil {
-			return errors.Wrap(err, "Catalog index check failed")
+			return fmt.Errorf("Catalog index check failed: %w", err)
 		}
 		if hasTemplates {
 			log.Debug("Catalog is already up to date")
@@ -140,7 +139,7 @@ func (m *Manager) refreshCatalog(catalog model.Catalog, update bool) error {
 
 	templates, errs, err := traverseFiles(repoRoot, catalog.Kind, catalogType, m.httpClient, catalog.URL)
 	if err != nil {
-		return errors.Wrap(err, "Repo traversal failed")
+		return fmt.Errorf("Repo traversal failed: %w", err)
 	}
 
 	if len(errs) != 0 {
@@ -155,7 +154,7 @@ func (m *Manager) refreshCatalog(catalog model.Catalog, update bool) error {
 }
 
 func (m *Manager) catalogHasTemplates(catalog model.Catalog) (bool, error) {
-	var count int
+	var count int64
 	err := m.db.Table("catalog_template").
 		Joins("JOIN catalog ON catalog.id = catalog_template.catalog_id").
 		Where("catalog.name = ? AND catalog.environment_id = ?", catalog.Name, catalog.EnvironmentId).

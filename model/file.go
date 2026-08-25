@@ -1,9 +1,9 @@
 package model
 
-import "github.com/jinzhu/gorm"
+import "gorm.io/gorm"
 
 type File struct {
-	VersionId uint `sql:"type:integer REFERENCES catalog_version(id) ON DELETE CASCADE"`
+	VersionId uint `gorm:"type:integer REFERENCES catalog_version(id) ON DELETE CASCADE"`
 
 	Name     string `json:"name"`
 	Contents string
@@ -16,11 +16,7 @@ type FileModel struct {
 
 func lookupFiles(db *gorm.DB, versionId uint) []File {
 	var fileModels []FileModel
-	db.Where(&FileModel{
-		File: File{
-			VersionId: versionId,
-		},
-	}).Find(&fileModels)
+	db.Where("version_id = ?", versionId).Find(&fileModels)
 
 	var files []File
 	for _, fileModel := range fileModels {

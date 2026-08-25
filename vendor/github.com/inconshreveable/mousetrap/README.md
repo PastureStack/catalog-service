@@ -1,6 +1,23 @@
 # mousetrap
 
-Mousetrap reports whether a Windows command-line executable was started by
-double-clicking it in Explorer. This vendored copy is pinned to upstream tag
-`v1.1.0`, commit `4e8053ee7ef85a6bd26368364a6d27f1641c1d21`, because the pinned Cobra
-dependency imports it on Windows.
+mousetrap is a tiny library that answers a single question.
+
+On a Windows machine, was the process invoked by someone double clicking on
+the executable file while browsing in explorer?
+
+### Motivation
+
+Windows developers unfamiliar with command line tools will often "double-click"
+the executable for a tool. Because most CLI tools print the help and then exit
+when invoked without arguments, this is often very frustrating for those users.
+
+mousetrap provides a way to detect these invocations so that you can provide
+more helpful behavior and instructions on how to run the CLI tool. To see what
+this looks like, both from an organizational and a technical perspective, see
+https://inconshreveable.com/09-09-2014/sweat-the-small-stuff/
+
+### The interface
+
+The library exposes a single interface:
+
+    func StartedByExplorer() (bool)

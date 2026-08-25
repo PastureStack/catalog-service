@@ -93,6 +93,30 @@ func TestCatalogInfoFromLegacyComposeRejectsInvalidYAML(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestCatalogInfoFromLegacyComposeAcceptsLegacyEmptyDuplicateKey(t *testing.T) {
+	version, err := CatalogInfoFromLegacyCompose([]byte(`.catalog:
+  version: 1.0.0
+  labels:
+  labels:
+    key1: value1
+`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, "value1", version.Labels["key1"])
+}
+
+func TestCatalogInfoFromLegacyComposeRejectsConflictingDuplicateKey(t *testing.T) {
+	_, err := CatalogInfoFromLegacyCompose([]byte(`.catalog:
+  version: 1.0.0
+  labels:
+    key1: first
+  labels:
+    key1: second
+`))
+	assert.EqualError(t, err, `duplicate YAML mapping key "labels"`)
+}
+
 func TestCatalogInfoFromComposeExtractsOnlyMetadata(t *testing.T) {
 	version, err := CatalogInfoFromCompose([]byte(`service:
   image: example.invalid/app:1.0.0

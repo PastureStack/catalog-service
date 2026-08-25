@@ -128,9 +128,14 @@ def delete_catalog(name, headers=DEFAULT_HEADERS):
 def client():
     url = 'http://localhost:8088/v1-catalog/schemas'
     wait_for(
-        lambda: len(catalog_client(
-            url=url,
-            headers=DEFAULT_HEADERS).list_catalog()) >= 2
+        lambda: (
+            len(catalog_client(
+                url=url,
+                headers=DEFAULT_HEADERS).list_catalog()) >= 2 and
+            len(catalog_client(
+                url=url,
+                headers=DEFAULT_HEADERS).list_template()) > 0
+        )
     )
     return catalog_client(url=url, headers=DEFAULT_HEADERS)
 

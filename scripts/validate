@@ -5,11 +5,9 @@ cd $(dirname $0)/..
 
 echo Running validation
 
-PACKAGES=". $(find -name '*.go' | xargs -I{} dirname {} |  cut -f2 -d/ | sort -u | grep -Ev '(^\.$|.git|.trash-cache|vendor|bin)' | sed -e 's!^!./!' -e 's!$!/...!')"
-
 export CGO_CFLAGS="${CGO_CFLAGS:-} -Wno-return-local-addr"
 echo Running: go vet
-go vet ${PACKAGES}
+go vet -mod=vendor -tags=test ./...
 # echo Running: golint
 # for i in ${PACKAGES}; do
 #     if [ -n "$(golint $i | grep -v 'should have comment.*or be unexported' | tee /dev/stderr)" ]; then
@@ -18,4 +16,6 @@ go vet ${PACKAGES}
 # done
 # test -z "$failed"
 echo Running: go fmt
-test -z "$(go fmt ${PACKAGES} | tee /dev/stderr)"
+unformatted=$(find . -path './vendor' -prune -o -path './.git' -prune -o -name '*.go' -type f -print0 \
+    | xargs -0 gofmt -l)
+test -z "$(printf '%s' "$unformatted" | tee /dev/stderr)"

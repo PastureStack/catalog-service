@@ -10,12 +10,13 @@ import (
 	"github.com/PastureStack/catalog-service/manager"
 	"github.com/PastureStack/catalog-service/model"
 	"github.com/PastureStack/catalog-service/service"
-	"github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	mysqldriver "github.com/go-sql-driver/mysql"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	gormmysql "gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 var (
@@ -36,6 +37,28 @@ var (
 var RootCmd = &cobra.Command{
 	Use: "catalog-service",
 	Run: run,
+}
+
+type catalogNamingStrategy struct {
+	schema.NamingStrategy
+}
+
+func (strategy catalogNamingStrategy) TableName(value string) string {
+	name := strategy.NamingStrategy.TableName(value)
+	name = strings.TrimSuffix(name, "_model")
+	if name == "catalog" {
+		return name
+	}
+	if name == "template_label" {
+		name = strings.TrimPrefix(name, "template_")
+	}
+	return "catalog_" + name
+}
+
+func newCatalogGormConfig() *gorm.Config {
+	return &gorm.Config{NamingStrategy: catalogNamingStrategy{
+		NamingStrategy: schema.NamingStrategy{SingularTable: true},
+	}}
 }
 
 func init() {
@@ -92,7 +115,7 @@ func run(cmd *cobra.Command, args []string) {
 		if !sqliteAvailable() {
 			log.Fatal("SQLite support is not available in this binary")
 		}
-		db, err = gorm.Open("sqlite3", "local.db")
+		db, err = openSQLite("local.db")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -105,37 +128,31 @@ func run(cmd *cobra.Command, args []string) {
 		dbname := viper.GetString("mysql_dbname")
 		params := viper.GetString("mysql_params")
 
-		db, err = gorm.Open("mysql", formatDSN(user, password, address, dbname, params))
+		db, err = gorm.Open(gormmysql.Open(formatDSN(user, password, address, dbname, params)), newCatalogGormConfig())
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
-	defer db.Close()
-
-	db.SingularTable(true)
-	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		defaultTableName = strings.TrimSuffix(defaultTableName, "_model")
-		if defaultTableName == "catalog" {
-			return defaultTableName
-		}
-		if defaultTableName == "template_label" {
-			defaultTableName = strings.TrimPrefix(defaultTableName, "template_")
-		}
-		return "catalog_" + defaultTableName
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatal(err)
 	}
+	defer sqlDB.Close()
 
 	if migrateDb {
 		log.Info("Migrating DB")
-		db.AutoMigrate(&model.CatalogModel{})
-
-		db.AutoMigrate(&model.TemplateModel{})
-		db.AutoMigrate(&model.CategoryModel{})
-		db.AutoMigrate(&model.TemplateCategoryModel{})
-		db.AutoMigrate(&model.TemplateLabelModel{})
-
-		db.AutoMigrate(&model.VersionModel{})
-		db.AutoMigrate(&model.FileModel{})
-		db.AutoMigrate(&model.VersionLabelModel{})
+		if err := db.AutoMigrate(
+			&model.CatalogModel{},
+			&model.TemplateModel{},
+			&model.CategoryModel{},
+			&model.TemplateCategoryModel{},
+			&model.TemplateLabelModel{},
+			&model.VersionModel{},
+			&model.FileModel{},
+			&model.VersionLabelModel{},
+		); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	m, err := manager.NewManager(cacheRoot, configFile, validateOnly, db)
@@ -176,7 +193,7 @@ func formatDSN(user, password, address, dbname, params string) string {
 			paramsMap[split[0]] = split[1]
 		}
 	}
-	mysqlConfig := &mysql.Config{
+	mysqlConfig := &mysqldriver.Config{
 		User:   user,
 		Passwd: password,
 		Net:    "tcp",

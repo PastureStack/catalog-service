@@ -16,7 +16,7 @@ import (
 
 	"github.com/PastureStack/catalog-service/model"
 	"github.com/PastureStack/catalog-service/outbound"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 const (

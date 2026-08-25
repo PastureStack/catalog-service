@@ -10,13 +10,29 @@ if [ -d vendor/github.com/docker/libcompose ] && \
 fi
 
 matches=$(
-    find . -type f \( -name '*.go' -o -name 'vendor.conf' \) \
+    find . -type f \( -name '*.go' -o -name 'go.mod' -o -name 'go.sum' \) \
         -not -path './.git/*' -print0 |
         xargs -0 grep -nE 'github\.com/docker/libcompose|docker/libcompose' || true
 )
 if [ -n "$matches" ]; then
     printf '%s\n' "$matches" >&2
     printf 'Archived Compose parser dependency must not return\n' >&2
+    exit 1
+fi
+
+legacy_dependencies=$(
+    {
+        find . -type f \( -name '*.go' -o -name 'go.mod' -o -name 'go.sum' -o -name 'Dockerfile*' -o -name '*.sh' -o -name '*.yml' -o -name '*.yaml' \) \
+            -not -path './.git/*' -not -path './vendor/*' -print0 |
+            xargs -0 grep -nE 'github\.com/rancher/go-rancher|github\.com/jinzhu/gorm([/@]|$)|gopkg\.in/yaml\.v2|github\.com/pkg/errors|GO111MODULE=off' || true
+        if [ -f vendor/modules.txt ]; then
+            grep -nE 'github\.com/rancher/go-rancher|github\.com/jinzhu/gorm([/@]|$)|gopkg\.in/yaml\.v2|github\.com/pkg/errors' vendor/modules.txt || true
+        fi
+    }
+)
+if [ -n "$legacy_dependencies" ]; then
+    printf '%s\n' "$legacy_dependencies" >&2
+    printf 'Removed EOL catalog dependencies must not return\n' >&2
     exit 1
 fi
 

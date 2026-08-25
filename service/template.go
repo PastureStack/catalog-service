@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
+	api "github.com/PastureStack/catalog-service/internal/catalogapi"
 	"github.com/PastureStack/catalog-service/model"
 	"github.com/PastureStack/catalog-service/parse"
 	"github.com/gorilla/mux"
-	"github.com/rancher/go-rancher/api"
 )
 
 // Removes template that belongs to a duplicate catalog
@@ -33,7 +33,7 @@ func removeDuplicateCatalogTemplate(templates []model.Template, envId string) []
 	query := `
 	SELECT *
 	FROM catalog
-	WHERE catalog.id IN (?)`
+	WHERE catalog.id IN ?`
 	catalogs := []model.CatalogModel{}
 	db.Raw(query, catalogIds).Find(&catalogs)
 
@@ -68,7 +68,7 @@ func removeDuplicateCatalogTemplate(templates []model.Template, envId string) []
 }
 
 func getTemplates(w http.ResponseWriter, r *http.Request, envId string) (int, error) {
-	apiContext := api.GetApiContext(r)
+	apiContext := api.GetAPIContext(r)
 
 	catalog := r.URL.Query().Get("catalogId")
 	if catalog == "" {
@@ -92,7 +92,7 @@ func getTemplates(w http.ResponseWriter, r *http.Request, envId string) (int, er
 	}
 
 	resp.Actions = map[string]string{
-		"refresh": api.GetApiContext(r).UrlBuilder.ReferenceByIdLink("template", "") + "?action=refresh",
+		"refresh": api.GetAPIContext(r).URLBuilder.ReferenceByIDLink("template", "") + "?action=refresh",
 	}
 
 	apiContext.Write(&resp)
@@ -100,7 +100,7 @@ func getTemplates(w http.ResponseWriter, r *http.Request, envId string) (int, er
 }
 
 func getTemplate(w http.ResponseWriter, r *http.Request, envId string) (int, error) {
-	apiContext := api.GetApiContext(r)
+	apiContext := api.GetAPIContext(r)
 	vars := mux.Vars(r)
 
 	catalogTemplateVersion, ok := vars["catalog_template_version"]

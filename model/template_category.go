@@ -1,10 +1,10 @@
 package model
 
-import "github.com/jinzhu/gorm"
+import "gorm.io/gorm"
 
 type TemplateCategory struct {
-	TemplateId uint `sql:"type:integer REFERENCES catalog_template(id) ON DELETE CASCADE"`
-	CategoryId uint `sql:"type:integer REFERENCES catalog_category(id) ON DELETE CASCADE"`
+	TemplateId uint `gorm:"type:integer REFERENCES catalog_template(id) ON DELETE CASCADE"`
+	CategoryId uint `gorm:"type:integer REFERENCES catalog_category(id) ON DELETE CASCADE"`
 }
 
 type TemplateCategoryModel struct {

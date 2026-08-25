@@ -19,12 +19,12 @@ jobs:
     timeout-minutes: 75
     env:
       DAPPER_IMAGE: pasturestack/catalog-service-dapper:${{ github.sha }}
-      TRIVY_IMAGE: aquasec/trivy:0.73.0@sha256:7cced7cae583819fc7806d4cbc0dbbc7cad18b99f7d3e235192e6da8c091045c
-      VERSION_OVERRIDE: v0.20.9
+      TRIVY_IMAGE: aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969
+      VERSION_OVERRIDE: v0.20.10
 
     steps:
       - name: Check out candidate
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -39,7 +39,9 @@ jobs:
           sha256sum \
             Dockerfile.dapper \
             ubuntu-apt.lock \
-            vendor.conf \
+            go.mod \
+            go.sum \
+            vendor/modules.txt \
             integration/build-requirements.lock \
             integration/requirements.lock \
             security/dapper.openvex.json \
@@ -69,7 +71,7 @@ jobs:
           }
 
           run_ci
-          artifact="dist/artifacts/catalog-service-0.20.9.tar.xz"
+          artifact="dist/artifacts/catalog-service-0.20.10.tar.xz"
           test -s "$artifact"
           cp "$artifact" /tmp/catalog-service-first.tar.xz
 
@@ -83,8 +85,8 @@ jobs:
           test "$(find evidence/product -maxdepth 1 -type f | wc -l)" -eq 2
           test -x evidence/product/catalog-service
           test -x evidence/product/catalog-service-sqlite
-          test "$(evidence/product/catalog-service --version)" = 'v0.20.9'
-          test "$(evidence/product/catalog-service-sqlite --version)" = 'v0.20.9'
+          test "$(evidence/product/catalog-service --version)" = 'v0.20.10'
+          test "$(evidence/product/catalog-service-sqlite --version)" = 'v0.20.10'
           sha256sum "$artifact" > evidence/catalog-service.tar.xz.sha256
           docker run --rm --entrypoint sh \
             --volume "$PWD:/work:ro" \
@@ -122,7 +124,7 @@ jobs:
             -v "$PWD/scripts/verify-dapper-vex:/verify-dapper-vex:ro" \
             --entrypoint bash "$DAPPER_IMAGE" /verify-dapper-vex \
             > evidence/dapper-vex-code-review.txt
-          cp vendor.conf integration/build-requirements.lock integration/requirements.lock evidence/
+          cp go.mod go.sum vendor/modules.txt integration/build-requirements.lock integration/requirements.lock evidence/
 
       - name: Scan source, product, and build image
         shell: bash
@@ -255,9 +257,13 @@ jobs:
           source_secrets=$(count evidence/source-security.json '[.Results[]?.Secrets[]?] | length')
           source_critical=$(count evidence/source-security.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length')
           source_high=$(count evidence/source-security.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH")] | length')
+          source_medium=$(count evidence/source-security.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "MEDIUM")] | length')
+          source_low=$(count evidence/source-security.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "LOW")] | length')
           product_secrets=$(count evidence/product-security.json '[.Results[]?.Secrets[]?] | length')
           product_critical=$(count evidence/product-security.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length')
           product_high=$(count evidence/product-security.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH")] | length')
+          product_medium=$(count evidence/product-security.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "MEDIUM")] | length')
+          product_low=$(count evidence/product-security.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "LOW")] | length')
           dapper_metadata_critical=$(count evidence/dapper-image-metadata-raw.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length')
           dapper_metadata_high=$(count evidence/dapper-image-metadata-raw.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH")] | length')
           dapper_raw_critical=$(count evidence/dapper-rootfs-raw.json '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length')
@@ -269,9 +275,13 @@ jobs:
             printf 'source_secrets=%s\n' "$source_secrets"
             printf 'source_critical=%s\n' "$source_critical"
             printf 'source_high=%s\n' "$source_high"
+            printf 'source_medium=%s\n' "$source_medium"
+            printf 'source_low=%s\n' "$source_low"
             printf 'product_secrets=%s\n' "$product_secrets"
             printf 'product_critical=%s\n' "$product_critical"
             printf 'product_high=%s\n' "$product_high"
+            printf 'product_medium=%s\n' "$product_medium"
+            printf 'product_low=%s\n' "$product_low"
             printf 'dapper_metadata_critical=%s\n' "$dapper_metadata_critical"
             printf 'dapper_metadata_high=%s\n' "$dapper_metadata_high"
             printf 'dapper_raw_critical=%s\n' "$dapper_raw_critical"
@@ -284,16 +294,20 @@ jobs:
           test "$source_secrets" -eq 0
           test "$source_critical" -eq 0
           test "$source_high" -eq 0
+          test "$source_medium" -eq 0
+          test "$source_low" -eq 0
           test "$product_secrets" -eq 0
           test "$product_critical" -eq 0
           test "$product_high" -eq 0
+          test "$product_medium" -eq 0
+          test "$product_low" -eq 0
           test "$dapper_applicable_critical" -eq 0
           test "$dapper_applicable_high" -eq 0
           test "$dapper_secrets" -eq 0
 
       - name: Upload review evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: catalog-service-security-${{ github.sha }}
           path: evidence/

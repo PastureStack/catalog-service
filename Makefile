@@ -18,7 +18,7 @@ $(TARGETS): .dapper-image
 		$(DAPPER_IMAGE) $@
 
 trash:
-	@echo "Dependencies are vendored; no external dependency fetch is required."
+	@echo "Dependencies are locked by go.mod/go.sum and vendored; no build-time dependency fetch is required."
 
 trash-keep: trash
 

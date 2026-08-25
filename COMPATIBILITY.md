@@ -12,4 +12,6 @@ Source authorization is intentionally stricter than the historical service. Exis
 
 The `0.20.9` candidate replaces MD5 cache directory names with SHA-256 names. The database and API identifiers are unchanged. Existing cache directories are disposable and are rebuilt on the first refresh; catalog records and version history are not migrated or deleted.
 
+The `0.20.10` candidate preserves those database table names and JSON resource shapes while moving to GORM v2 and a bounded project-owned catalog API compatibility layer. The retired Rancher client HTML renderer is intentionally not preserved; Catalog API responses are JSON.
+
 Release validation covers `platformVersion` precedence and legacy fallback, both legacy metadata layouts, catalog refresh, database migration, empty default configuration, icon and readme routes, version ordering, upgrade links, malformed repositories, empty-index recovery, outbound-origin and path boundaries, Helm archive limits, SQLite and non-SQLite binaries, and rollback.

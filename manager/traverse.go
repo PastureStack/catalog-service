@@ -11,11 +11,11 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/PastureStack/catalog-service/helm"
 	"github.com/PastureStack/catalog-service/model"
 	"github.com/PastureStack/catalog-service/outbound"
 	"github.com/PastureStack/catalog-service/parse"
-	"github.com/blang/semver"
 )
 
 func traverseFiles(repoRoot *os.Root, kind string, catalogType CatalogType, httpClient *outbound.Client, sourceURL string) ([]model.Template, []error, error) {
@@ -387,7 +387,7 @@ func handleVersionFile(root *os.Root, templateIndex map[string]*model.Template, 
 	}
 
 	// Handle case where folder name is version (must be in semver format)
-	_, err = semver.Parse(strings.Trim(folderName, "v"))
+	_, err = semver.StrictNewVersion(strings.Trim(folderName, "v"))
 	if err == nil {
 		for i, version := range templateIndex[key].Versions {
 			if version.Version == folderName {

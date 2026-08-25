@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jinzhu/gorm"
-	"github.com/rancher/go-rancher/v2"
+	client "github.com/PastureStack/catalog-service/internal/catalogclient"
+	"gorm.io/gorm"
 )
 
 func containsString(collection []string, key string) bool {
@@ -20,7 +20,7 @@ func containsString(collection []string, key string) bool {
 
 type Template struct {
 	EnvironmentId string `json:"environmentId"`
-	CatalogId     uint   `sql:"type:integer REFERENCES catalog(id) ON DELETE CASCADE"`
+	CatalogId     uint   `gorm:"type:integer REFERENCES catalog(id) ON DELETE CASCADE"`
 
 	Name           string `json:"name"`
 	IsSystem       string `json:"isSystem"`
@@ -38,11 +38,11 @@ type Template struct {
 	IconFilename   string `json:"iconFilename"`
 	Readme         string `json:"readme"`
 
-	Categories []string          `sql:"-" json:"categories"`
-	Labels     map[string]string `sql:"-" json:"labels"`
+	Categories []string          `gorm:"-" json:"categories"`
+	Labels     map[string]string `gorm:"-" json:"labels"`
 
-	Versions []Version `sql:"-"`
-	Category string    `sql:"-"`
+	Versions []Version `gorm:"-"`
+	Category string    `gorm:"-"`
 }
 
 type TemplateModel struct {
@@ -65,7 +65,7 @@ type TemplateCollection struct {
 
 func LookupTemplate(db *gorm.DB, environmentId, catalog, folderName, base string) *Template {
 	var templateModel TemplateModel
-	if err := db.Raw(`
+	result := db.Raw(`
 SELECT catalog_template.*
 FROM catalog_template, catalog
 WHERE (catalog_template.environment_id = ? OR catalog_template.environment_id = ?)
@@ -73,7 +73,8 @@ AND catalog_template.catalog_id = catalog.id
 AND catalog.name = ?
 AND catalog_template.base = ?
 AND catalog_template.folder_name = ?
-`, environmentId, "global", catalog, base, folderName).Scan(&templateModel).Error; err == gorm.ErrRecordNotFound {
+`, environmentId, "global", catalog, base, folderName).Scan(&templateModel)
+	if result.Error != nil || result.RowsAffected == 0 {
 		return nil
 	}
 
@@ -97,7 +98,7 @@ func templateCategoryMap(db *gorm.DB, templateIDList []int) map[int][]string {
 	SELECT template_id, category_id, name
 	FROM catalog_template_category tc
 	JOIN catalog_category c ON (tc.category_id = c.id)
-	WHERE tc.template_id IN ( ? )`
+	WHERE tc.template_id IN ?`
 
 	catagoryAndTemplateList := []CategoryAndTemplate{}
 	db.Raw(categoriesQuery, templateIDList).Find(&catagoryAndTemplateList)
@@ -116,7 +117,7 @@ func templateCategoryMap(db *gorm.DB, templateIDList []int) map[int][]string {
 }
 
 func templateLabelMap(db *gorm.DB, templateIDList []int) map[int]map[string]string {
-	labelsQuery := "SELECT template_id, `key`, value FROM catalog_label cl WHERE cl.template_id IN ( ? )"
+	labelsQuery := "SELECT template_id, `key`, value FROM catalog_label cl WHERE cl.template_id IN ?"
 
 	var labelAndTemplateList []TemplateLabelModel
 	db.Raw(labelsQuery, templateIDList).Find(&labelAndTemplateList)
@@ -144,7 +145,7 @@ func templateVersionMap(db *gorm.DB, templateIDList []int) map[int][]Version {
 	versionsQuery := `
 	SELECT *
 	FROM catalog_version
-	WHERE catalog_version.template_id IN ( ? )`
+	WHERE catalog_version.template_id IN ?`
 	db.Raw(versionsQuery, templateIDList).Find(&versionList)
 
 	// look up version based on version id
@@ -163,7 +164,7 @@ func templateVersionMap(db *gorm.DB, templateIDList []int) map[int][]Version {
 	versionLabelsQuery := `
 	SELECT *
 	FROM catalog_version_label
-	WHERE catalog_version_label.version_id IN (?)`
+	WHERE catalog_version_label.version_id IN ?`
 
 	db.Raw(versionLabelsQuery, versionIDs).Find(&versionLabelList)
 
@@ -184,7 +185,7 @@ func templateVersionMap(db *gorm.DB, templateIDList []int) map[int][]Version {
 	versionFilesQuery := `
 	SELECT *
 	FROM catalog_file
-	WHERE catalog_file.version_id IN ( ? )`
+	WHERE catalog_file.version_id IN ?`
 	db.Raw(versionFilesQuery, versionIDs).Find(&versionFiles)
 
 	for _, file := range versionFiles {
@@ -210,7 +211,7 @@ func catalogMap(db *gorm.DB, templateIDList []int) map[uint]string {
 	SELECT catalog.*
     FROM catalog
     JOIN catalog_template ON (catalog.id = catalog_template.catalog_id)
-    WHERE catalog_template.id IN ( ? )`
+    WHERE catalog_template.id IN ?`
 
 	var catalogs []CatalogModel
 

@@ -1,8 +1,8 @@
 package model
 
 import (
-	"github.com/jinzhu/gorm"
-	"github.com/rancher/go-rancher/v2"
+	client "github.com/PastureStack/catalog-service/internal/catalogclient"
+	"gorm.io/gorm"
 )
 
 type Catalog struct {
@@ -34,7 +34,9 @@ type CatalogCollection struct {
 
 func GetCatalog(db *gorm.DB, id uint) *Catalog {
 	var catalogModel CatalogModel
-	db.First(&catalogModel, id)
+	if err := db.First(&catalogModel, id).Error; err != nil {
+		return nil
+	}
 	return &catalogModel.Catalog
 }
 
@@ -44,7 +46,7 @@ func LookupCatalog(db *gorm.DB, environmentId, name string) *Catalog {
 		Catalog: Catalog{
 			Name: name,
 		},
-	}).Where("environment_id = ? OR environment_id = ?", environmentId, "global").First(&catalogModel).Error; err == gorm.ErrRecordNotFound {
+	}).Where("environment_id = ? OR environment_id = ?", environmentId, "global").First(&catalogModel).Error; err != nil {
 		return nil
 	}
 	return &catalogModel.Catalog
