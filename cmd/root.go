@@ -193,14 +193,13 @@ func formatDSN(user, password, address, dbname, params string) string {
 			paramsMap[split[0]] = split[1]
 		}
 	}
-	mysqlConfig := &mysqldriver.Config{
-		User:   user,
-		Passwd: password,
-		Net:    "tcp",
-		Addr:   address,
-		DBName: dbname,
-		Params: paramsMap,
-	}
+	mysqlConfig := mysqldriver.NewConfig()
+	mysqlConfig.User = user
+	mysqlConfig.Passwd = password
+	mysqlConfig.Net = "tcp"
+	mysqlConfig.Addr = address
+	mysqlConfig.DBName = dbname
+	mysqlConfig.Params = paramsMap
 	return mysqlConfig.FormatDSN()
 }
 
