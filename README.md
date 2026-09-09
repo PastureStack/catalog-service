@@ -8,7 +8,8 @@ PastureStack is an independent community effort to preserve, audit, and moderniz
 
 ## Project status
 
-The current numeric maintenance candidate is `0.20.11`. It retains the Ubuntu 26.04, Go 1.27.0, database, dependency, version-filter, TLS, and build maintenance completed after the preserved upstream boundary. Product-owned imports, binaries, default configuration, version query, and operator messages use PastureStack naming. The default `repo.json` is intentionally empty; no unreviewed catalog is cloned. Python build and integration-test dependencies are transitively pinned with package hashes and installed from an offline wheelhouse inside the disposable build image. The historical `--track` flag is accepted only for command-line compatibility; the service does not read or transmit an installation identifier. MySQL DSNs are created from the driver's reviewed defaults so existing `mysql_native_password` installations remain compatible after the driver upgrade.
+The current numeric maintenance release is `0.20.11`, consumed by PastureStack
+Server `v1.6.410`. It retains the Ubuntu 26.04, Go 1.27.0, database, dependency, version-filter, TLS, and build maintenance completed after the preserved upstream boundary. Product-owned imports, binaries, default configuration, version query, and operator messages use PastureStack naming. The default `repo.json` is intentionally empty; no unreviewed catalog is cloned. Python build and integration-test dependencies are transitively pinned with package hashes and installed from an offline wheelhouse inside the disposable build image. The historical `--track` flag is accepted only for command-line compatibility; the service does not read or transmit an installation identifier. MySQL DSNs are created from the driver's reviewed defaults so existing `mysql_native_password` installations remain compatible after the driver upgrade.
 
 The archived `docker/libcompose` parser and the unmaintained `go-rancher` client are no longer imported or vendored. A small project-owned compatibility layer now emits only the resource, schema, link, and JSON shapes this service actually uses. Catalog metadata is decoded through YAML v3 with focused compatibility tests for top-level legacy metadata, Compose v2 service metadata, alias fields, precedence, malformed input, and empty metadata. A source gate prevents the removed parser from returning.
 
@@ -54,7 +55,7 @@ make package
 
 Catalog repository URLs must be supplied explicitly in a reviewed configuration. See [COMPATIBILITY.md](COMPATIBILITY.md), [SECURITY.md](SECURITY.md), and [ORIGIN.md](ORIGIN.md).
 
-Before a release is approved, run the **Security release gate** workflow against the exact candidate commit and verify that its source revision, reproducible archive checksum, SBOMs, raw findings, and applicable findings all match that commit. `0.20.11` is a source candidate until that gate succeeds and an immutable `v0.20.11` release is created; it is not deployed by this repository.
+Before a future release is approved, run the **Security release gate** workflow against the exact candidate commit and verify that its source revision, reproducible archive checksum, SBOMs, raw findings, and applicable findings all match that commit. Release `v0.20.11` has completed that gate; this repository still does not deploy the service by itself.
 
 Maintainers can create an immutable release from the current `main` commit with the manual **Release Catalog Service** GitHub workflow. The workflow accepts a semantic release tag, rejects an existing tag or release, and publishes `catalog-service` and `catalog-service-sqlite` together in one checksummed archive.
 
