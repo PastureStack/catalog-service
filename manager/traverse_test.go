@@ -42,16 +42,16 @@ labels:
   io.pasturestack.catalog.name.zh-tw: 原生範本
   io.pasturestack.catalog.description.zh-tw: 零規模測試
 `,
-		"templates/qa-zero-scale-ab/0/docker-compose.yml": "version: '2'\nservices:\n  qa-probe:\n    image: busybox:1.36.1\n",
+		"templates/qa-zero-scale-ab/0/docker-compose.yml":  "version: '2'\nservices:\n  qa-probe:\n    image: busybox:1.36.1\n",
 		"templates/qa-zero-scale-ab/0/rancher-compose.yml": "version: '2'\n.catalog:\n  version: 1.0.0\nservices:\n  qa-probe:\n    scale: 0\n    start_on_create: false\n",
-		"templates/qa-zero-scale-ab/1/docker-compose.yml": "version: '2'\nservices:\n  qa-probe:\n    image: busybox:1.36.1\n",
+		"templates/qa-zero-scale-ab/1/docker-compose.yml":  "version: '2'\nservices:\n  qa-probe:\n    image: busybox:1.36.1\n",
 		"templates/qa-zero-scale-ab/1/rancher-compose.yml": "version: '2'\n.catalog:\n  version: 1.0.1\n  upgrade_from: '=1.0.0'\nservices:\n  qa-probe:\n    scale: 0\n    start_on_create: false\n",
-		".git/hooks/pre-commit.sample": "git metadata\n",
-		".git/info/exclude": "git metadata\n",
-		".git/logs/HEAD": "git metadata\n",
-		".git/objects/ab/object": "git metadata\n",
-		".git/objects/12/object": "git metadata in a numeric object directory\n",
-		".git/refs/heads/qa": "git metadata\n",
+		".git/hooks/pre-commit.sample":                     "git metadata\n",
+		".git/info/exclude":                                "git metadata\n",
+		".git/logs/HEAD":                                   "git metadata\n",
+		".git/objects/ab/object":                           "git metadata\n",
+		".git/objects/12/object":                           "git metadata in a numeric object directory\n",
+		".git/refs/heads/qa":                               "git metadata\n",
 	}
 	for name, contents := range files {
 		writeTraversalFile(t, dir, name, contents)
