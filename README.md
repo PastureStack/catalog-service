@@ -8,10 +8,14 @@ PastureStack is an independent community effort to preserve, audit, and moderniz
 
 ## Project status
 
-This source prepares numeric maintenance release `0.20.12`; the latest published
-release is still `0.20.11`, included in PastureStack Server through `v1.6.513`.
-The next server integration target is `v1.6.514`; publication and 8080 acceptance
-are not yet complete. The indexing fix skips Git's `.git` metadata, validates a
+Published numeric maintenance release
+[`v0.20.12`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.12)
+is included in
+[PastureStack Server `v1.6.514`](https://github.com/PastureStack/server/releases/tag/v1.6.514).
+Official publication and Server packaging checks passed. Isolated upgrade
+checks confirmed removal of empty Git-metadata and README-only index entries
+while preserving valid catalog content; full resource and permission acceptance
+remains in progress. The indexing fix skips Git's `.git` metadata, validates a
 numeric revision or semantic-version folder before reading a version file or
 allocating a template, and rebuilds a same-commit index containing unnamed
 templates through the existing catalog transaction. Other catalogs are not
@@ -83,7 +87,7 @@ make package
 
 Catalog repository URLs must be supplied explicitly in a reviewed configuration. See [COMPATIBILITY.md](COMPATIBILITY.md), [SECURITY.md](SECURITY.md), and [ORIGIN.md](ORIGIN.md).
 
-Before a future release is approved, run the **Security release gate** workflow against the exact candidate commit and verify that its source revision, reproducible archive checksum, SBOMs, raw findings, and applicable findings all match that commit. Release `v0.20.11` has completed that gate; this repository still does not deploy the service by itself.
+Before a future release is approved, run the **Security release gate** workflow against the exact candidate commit and verify that its source revision, reproducible archive checksum, SBOMs, raw findings, and applicable findings all match that commit. Release `v0.20.12` has completed that gate at source `d708579092eae0fd03b2750ac594ff0396cf563b`; this repository still does not deploy the service by itself.
 
 Maintainers can create an immutable release from the current `main` commit with the manual **Release Catalog Service** GitHub workflow. The workflow accepts a semantic release tag, rejects an existing tag or release, and publishes `catalog-service` and `catalog-service-sqlite` together in one checksummed archive.
 
