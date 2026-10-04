@@ -131,11 +131,12 @@ class InstallerRetirement(unittest.TestCase):
         environment = dict(os.environ, PATH=str(binary) + os.pathsep + os.environ["PATH"],
                            PIP_DISABLE_PIP_VERSION_CHECK="1", PIP_CONFIG_FILE=os.devnull)
         # Reproduce the Docker PATH shadowing with a real empty venv interpreter.
-        shadowed = shutil.which(Path(sys.executable).name, path=environment["PATH"])
-        self.assertEqual(Path(shadowed).parent, binary)
+        shadowed = binary / Path(sys.executable).name
+        selected = shutil.which(Path(sys.executable).name, path=environment["PATH"])
+        self.assertEqual(Path(selected), shadowed)
         empty_environment = dict(environment)
         empty_environment.pop("PYTHONPATH", None)
-        old = subprocess.run([shadowed, "-m", "pip", "--python",
+        old = subprocess.run([str(shadowed), "-m", "pip", "--python",
                               str(target), "--version"], env=empty_environment,
                              capture_output=True, text=True, timeout=30)
         self.assertNotEqual(old.returncode, 0)
