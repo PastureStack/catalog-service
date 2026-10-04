@@ -8,8 +8,17 @@ PastureStack is an independent community effort to preserve, audit, and moderniz
 
 ## Project status
 
-The current numeric maintenance release is `0.20.11`, consumed by PastureStack
-Server `v1.6.410`. It retains the Ubuntu 26.04, Go 1.27.0, database, dependency, version-filter, TLS, and build maintenance completed after the preserved upstream boundary. Product-owned imports, binaries, default configuration, version query, and operator messages use PastureStack naming. The default `repo.json` is intentionally empty; no unreviewed catalog is cloned. Python build and integration-test dependencies are transitively pinned with package hashes and installed from an offline wheelhouse inside the disposable build image. The historical `--track` flag is accepted only for command-line compatibility; the service does not read or transmit an installation identifier. MySQL DSNs are created from the driver's reviewed defaults so existing `mysql_native_password` installations remain compatible after the driver upgrade.
+This source prepares numeric maintenance release `0.20.12`; the latest published
+release is still `0.20.11`, included in PastureStack Server through `v1.6.513`.
+The next server integration target is `v1.6.514`; publication and 8080 acceptance
+are not yet complete. The indexing fix skips Git's `.git` metadata, validates a
+numeric revision or semantic-version folder before reading a version file or
+allocating a template, and rebuilds a same-commit index containing unnamed
+templates through the existing catalog transaction. Other catalogs are not
+included in that cache check. Native revision numbers, semantic versions,
+template metadata, labels and public API identifiers remain compatible.
+
+It retains the Ubuntu 26.04, Go 1.27.0, database, dependency, version-filter, TLS, and build maintenance completed after the preserved upstream boundary. Product-owned imports, binaries, default configuration, version query, and operator messages use PastureStack naming. The default `repo.json` is intentionally empty; no unreviewed catalog is cloned. Python build and integration-test dependencies are transitively pinned with package hashes and installed from an offline wheelhouse inside the disposable build image. The historical `--track` flag is accepted only for command-line compatibility; the service does not read or transmit an installation identifier. MySQL DSNs are created from the driver's reviewed defaults so existing `mysql_native_password` installations remain compatible after the driver upgrade.
 
 The archived `docker/libcompose` parser and the unmaintained `go-rancher` client are no longer imported or vendored. A small project-owned compatibility layer now emits only the resource, schema, link, and JSON shapes this service actually uses. Catalog metadata is decoded through YAML v3 with focused compatibility tests for top-level legacy metadata, Compose v2 service metadata, alias fields, precedence, malformed input, and empty metadata. A source gate prevents the removed parser from returning.
 

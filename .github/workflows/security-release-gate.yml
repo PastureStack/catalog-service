@@ -20,7 +20,7 @@ jobs:
     env:
       DAPPER_IMAGE: pasturestack/catalog-service-dapper:${{ github.sha }}
       TRIVY_IMAGE: aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969
-      VERSION_OVERRIDE: v0.20.11
+      VERSION_OVERRIDE: v0.20.12
 
     steps:
       - name: Check out candidate
@@ -71,7 +71,7 @@ jobs:
           }
 
           run_ci
-          artifact="dist/artifacts/catalog-service-0.20.11.tar.xz"
+          artifact="dist/artifacts/catalog-service-0.20.12.tar.xz"
           test -s "$artifact"
           cp "$artifact" /tmp/catalog-service-first.tar.xz
 
@@ -85,8 +85,8 @@ jobs:
           test "$(find evidence/product -maxdepth 1 -type f | wc -l)" -eq 2
           test -x evidence/product/catalog-service
           test -x evidence/product/catalog-service-sqlite
-          test "$(evidence/product/catalog-service --version)" = 'v0.20.11'
-          test "$(evidence/product/catalog-service-sqlite --version)" = 'v0.20.11'
+          test "$(evidence/product/catalog-service --version)" = 'v0.20.12'
+          test "$(evidence/product/catalog-service-sqlite --version)" = 'v0.20.12'
           sha256sum "$artifact" > evidence/catalog-service.tar.xz.sha256
           docker run --rm --entrypoint sh \
             --volume "$PWD:/work:ro" \
