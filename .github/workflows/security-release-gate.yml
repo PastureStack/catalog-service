@@ -125,7 +125,7 @@ jobs:
             "printf 'package\tversion\n'; dpkg-query -W -f='\${binary:Package}\t\${Version}\n' | LC_ALL=C sort" \
             > evidence/dapper-dpkg.tsv
           docker run --rm --entrypoint sh "$DAPPER_IMAGE" -lc \
-            '/opt/tox/bin/pip freeze --all | LC_ALL=C sort' \
+            '/opt/tox/bin/python -I -c '\''import importlib.metadata as m; print("\n".join(sorted(d.metadata["Name"] + "==" + d.version for d in m.distributions())))'\''' \
             > evidence/dapper-python.txt
           docker run --rm \
             -v "$PWD/scripts/verify-dapper-vex:/verify-dapper-vex:ro" \

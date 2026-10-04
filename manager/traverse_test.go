@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"encoding/base64"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -142,6 +143,96 @@ func TestHandleVersionFilePreservesNumericAndSemverFolders(t *testing.T) {
 				}
 			} else if version.Revision != nil || version.Version != folder {
 				t.Fatalf("semver semantics changed: %#v", version)
+			}
+		})
+	}
+}
+
+func TestTraverseGitFilesRejectsMetadataOnlyTemplates(t *testing.T) {
+	for _, invalidConfig := range []bool{false, true} {
+		t.Run(strconv.FormatBool(invalidConfig), func(t *testing.T) {
+			dir := t.TempDir()
+			files := map[string]string{
+				"docs/README.md":                                  "repository documentation\n",
+				"docs/icon.png":                                   "repository icon\n",
+				"templates/metadata-only/README.md":               "template placeholder\n",
+				"templates/metadata-only/catalogIcon.png":         "template placeholder icon\n",
+				"templates/version-only/1.2.3/README.md":          "version placeholder\n",
+				"templates/version-only/1.2.3/docker-compose.yml": "services: {}\n",
+			}
+			if invalidConfig {
+				files["templates/metadata-only/config.yml"] = "name: ["
+			}
+			for name, contents := range files {
+				writeTraversalFile(t, dir, name, contents)
+			}
+			templates, parseErrors, err := traverseGitFiles(openTraversalRoot(t, dir))
+			if err != nil {
+				t.Fatal(err)
+			}
+			wantErrors := 0
+			if invalidConfig {
+				wantErrors = 1
+			}
+			if len(parseErrors) != wantErrors || len(templates) != 0 {
+				t.Fatalf("metadata without a parsed config emitted templates or hid errors: %#v, %v", templates, parseErrors)
+			}
+		})
+	}
+}
+
+func TestTraverseGitFilesPreservesConfiguredMetadataAndVersions(t *testing.T) {
+	for _, configName := range []string{"config.yml", "template.yml"} {
+		t.Run(configName, func(t *testing.T) {
+			dir := t.TempDir()
+			files := map[string]string{
+				"infra-templates/example/" + configName: "name: Example\nversion: 1.2.3\nlabels:\n  kept: metadata\n",
+				"infra-templates/example/README.md":     "template readme\n",
+				"infra-templates/example/icon.png":      "icon bytes\n",
+			}
+			for _, folder := range []string{"0", "12", "1.2.3", "v1.2.3"} {
+				prefix := "infra-templates/example/" + folder + "/"
+				files[prefix+"README.md"] = "version readme " + folder + "\n"
+				if folder == "0" || folder == "12" {
+					files[prefix+"rancher-compose.yml"] = ".catalog:\n  version: 1.0." + folder + "\n"
+				} else {
+					files[prefix+"docker-compose.yml"] = "services: {}\n"
+				}
+			}
+			for name, contents := range files {
+				writeTraversalFile(t, dir, name, contents)
+			}
+			templates, parseErrors, err := traverseGitFiles(openTraversalRoot(t, dir))
+			if err != nil || len(parseErrors) != 0 || len(templates) != 1 {
+				t.Fatalf("configured traversal failed: %v, %v, %#v", err, parseErrors, templates)
+			}
+			template := templates[0]
+			if template.FolderName != "example" || template.Base != "infra" || template.Name != "Example" || template.DefaultVersion != "1.2.3" || !reflect.DeepEqual(template.Labels, map[string]string{"kept": "metadata"}) {
+				t.Fatalf("configured identity or metadata changed: %#v", template)
+			}
+			if template.Readme != "template readme\n" || template.Icon != base64.StdEncoding.EncodeToString([]byte("icon bytes\n")) || template.IconFilename != "icon.png" || len(template.Versions) != 4 {
+				t.Fatalf("configured readme, icon or versions changed: %#v", template)
+			}
+			seen := map[string]bool{}
+			for _, version := range template.Versions {
+				folder := version.Version
+				if version.Revision != nil {
+					folder = strconv.Itoa(*version.Revision)
+					if (folder != "0" && folder != "12") || version.Version != "1.0."+folder {
+						t.Fatalf("numeric version semantics changed: %#v", version)
+					}
+				} else if folder != "1.2.3" && folder != "v1.2.3" {
+					t.Fatalf("semver semantics changed: %#v", version)
+				}
+				if seen[folder] || version.Readme != "version readme "+folder+"\n" || len(version.Files) != 2 {
+					t.Fatalf("version metadata changed: %#v", version)
+				}
+				seen[folder] = true
+				for _, file := range version.Files {
+					if file.Contents != files["infra-templates/example/"+folder+"/"+file.Name] {
+						t.Fatalf("version file changed: %#v", file)
+					}
+				}
 			}
 		})
 	}

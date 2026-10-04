@@ -17,6 +17,12 @@ allocating a template, and rebuilds a same-commit index containing unnamed
 templates through the existing catalog transaction. Other catalogs are not
 included in that cache check. Native revision numbers, semantic versions,
 template metadata, labels and public API identifiers remain compatible.
+README, icon and version files alone do not emit templates: a successfully
+parsed `config.yml` or `template.yml` must establish the folder identity.
+Root README files are resolved from their containing directory rather than
+mistaken for version folders. This repairs previously empty root README fields
+from repository bytes; version README files, icons and valid numeric or semantic
+versions retain their existing contents and interpretation.
 
 It retains the Ubuntu 26.04, Go 1.27.0, database, dependency, version-filter, TLS, and build maintenance completed after the preserved upstream boundary. Product-owned imports, binaries, default configuration, version query, and operator messages use PastureStack naming. The default `repo.json` is intentionally empty; no unreviewed catalog is cloned. Python build and integration-test dependencies are transitively pinned with package hashes and installed from an offline wheelhouse inside the disposable build image. The historical `--track` flag is accepted only for command-line compatibility; the service does not read or transmit an installation identifier. MySQL DSNs are created from the driver's reviewed defaults so existing `mysql_native_password` installations remain compatible after the driver upgrade.
 
@@ -24,7 +30,18 @@ The archived `docker/libcompose` parser and the unmaintained `go-rancher` client
 
 Database access uses GORM v2 with current MySQL and SQLite drivers. Dependencies are resolved by Go Modules, locked by `go.mod` and `go.sum`, and rebuilt into `vendor/` so release builds remain offline and reproducible.
 
-The disposable build image is pinned by digest. Its Ubuntu package source is fixed to the `20260808T000000Z` official snapshot, and every directly installed APT package has an exact version in `ubuntu-apt.lock`. The candidate security workflow builds and packages twice, runs the complete test, race, validation, and packaging path, scans source, product binaries, and the exported build-image filesystem, and uploads review evidence without publishing or deploying anything. Both the image-metadata and exported-filesystem raw reports are retained. Findings originating from an embedded third-party SBOM require exact OpenVEX set equality plus executable checks that the affected implementation and call path are absent; installed package databases remain independent evidence and product binaries are gated separately.
+The disposable build image is pinned by digest. Its Ubuntu package source is fixed to the `20261002T000000Z` official snapshot, and every directly installed APT package has an exact version in `ubuntu-apt.lock`. The candidate security workflow builds and packages twice, runs the complete test, race, validation, and packaging path, scans source, product binaries, and the exported build-image filesystem, and uploads review evidence without publishing or deploying anything. Both the image-metadata and exported-filesystem raw reports are retained. Findings originating from an embedded third-party SBOM require exact OpenVEX set equality plus executable checks that the affected implementation and call path are absent; installed package databases remain independent evidence and product binaries are gated separately.
+
+The same hash-locked integration dependencies are preinstalled in the isolated
+`/opt/tox` environment, which runs flake8 and pytest directly without seeding
+another environment. The official pip installer, tox and virtualenv are retired
+with their supported uninstall commands after preparation; the system pip
+packages are explicitly purged without autoremove. The developer `tox.ini` is
+retained. Bootstrap dependency locks remain provenance, not a claim that the
+bootstrap phase has no vulnerabilities: pip's embedded urllib3 is not fixed by
+installing an unrelated top-level urllib3. The final image must prove that the
+retired installer code and packages are absent and that the exact test
+dependencies remain installed; no urllib3 OpenVEX exception is permitted.
 
 Catalog sources are denied unless their exact origin is authorized by the service operator. Reviewed public GitHub origins are built in. Add private HTTPS origins as a comma-separated list in `PASTURESTACK_CATALOG_ALLOWED_EXTERNAL_ORIGINS`; each entry must contain only a scheme, hostname, and optional port. Plain HTTP is accepted only for loopback tests. Local Git catalogs are restricted to isolated tests: `PASTURESTACK_CATALOG_ALLOWED_LOCAL_ROOTS` may enable only the platform temporary root. Catalog documents, API callers, redirects, icon links, and chart links cannot expand either policy.
 

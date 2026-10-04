@@ -208,6 +208,10 @@ func traverseGitFiles(root *os.Root) ([]model.Template, []error, error) {
 
 	templates := []model.Template{}
 	for _, template := range templateIndex {
+		// Metadata and version files may precede config; only parsed config gives a template its identity.
+		if template.FolderName == "" {
+			continue
+		}
 		for i, version := range template.Versions {
 			var readme string
 			for _, file := range version.Files {
@@ -329,7 +333,7 @@ func handleFile(root *os.Root, templateIndex map[string]*model.Template, relativ
 			return nil
 		}
 
-		_, _, _, parsedCorrectly = parse.VersionPath(relativePath)
+		_, _, _, parsedCorrectly = parse.VersionPath(path.Dir(relativePath))
 		if parsedCorrectly {
 			return handleVersionFile(root, templateIndex, relativePath, filename)
 		}
