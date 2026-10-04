@@ -43,6 +43,9 @@ RUN set -eux; \
         gcc="${UBUNTU_APT_GCC_VERSION}" \
         git="${UBUNTU_APT_GIT_VERSION}" \
         libc6-dev="${UBUNTU_APT_LIBC6_DEV_VERSION}" \
+        libssl3t64="${UBUNTU_APT_OPENSSL_VERSION}" \
+        openssl="${UBUNTU_APT_OPENSSL_VERSION}" \
+        openssl-provider-legacy="${UBUNTU_APT_OPENSSL_VERSION}" \
         python3="${UBUNTU_APT_PYTHON3_VERSION}" \
         python3-pip="${UBUNTU_APT_PYTHON3_PIP_VERSION}" \
         python3-venv="${UBUNTU_APT_PYTHON3_VENV_VERSION}" \

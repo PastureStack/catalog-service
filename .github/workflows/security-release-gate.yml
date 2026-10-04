@@ -60,6 +60,9 @@ jobs:
           source_path="$GITHUB_WORKSPACE"
           source_epoch="$(git show -s --format=%ct HEAD)"
           run_ci() {
+            # Generated review artifacts are ignored; any actual source drift
+            # must fail before Go captures vcs.modified in the binaries.
+            test -z "$(git status --porcelain)"
             docker run --rm \
               --volume "${source_path}:/go/src/github.com/PastureStack/catalog-service" \
               --env "DAPPER_UID=$(id -u)" \
@@ -105,6 +108,10 @@ jobs:
             > evidence/product-linkage.txt
           grep -F $'build\tCGO_ENABLED=0' evidence/catalog-service-go-version.txt >/dev/null
           grep -F $'build\tCGO_ENABLED=1' evidence/catalog-service-sqlite-go-version.txt >/dev/null
+          for metadata in evidence/catalog-service-go-version.txt evidence/catalog-service-sqlite-go-version.txt; do
+            grep -Fx $'\tbuild\tvcs.revision='"$GITHUB_SHA" "$metadata" >/dev/null
+            grep -Fx $'\tbuild\tvcs.modified=false' "$metadata" >/dev/null
+          done
           grep -Eq 'catalog-service:[[:space:]]+ELF' evidence/product-linkage.txt
           grep -F 'statically linked' evidence/product-linkage.txt >/dev/null
           grep -Eq 'catalog-service-sqlite:[[:space:]]+ELF' evidence/product-linkage.txt

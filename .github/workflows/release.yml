@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: Numeric semantic release tag, for example v0.20.11
+        description: Numeric semantic release tag, for example v0.20.12
         required: true
         type: string
 
@@ -72,6 +72,7 @@ jobs:
 
           run_build() {
             local command=$1
+            test -z "$(git -C source status --porcelain)"
             docker run --rm \
               --volume "${source_path}:/go/src/github.com/PastureStack/catalog-service" \
               --env "DAPPER_UID=$(id -u)" \
@@ -97,6 +98,14 @@ jobs:
           test -x artifact-check/catalog-service
           test -x artifact-check/catalog-service-sqlite
           test "$(find artifact-check -maxdepth 1 -type f | wc -l)" -eq 2
+          for binary in catalog-service catalog-service-sqlite; do
+            test "$(artifact-check/"$binary" --version)" = "$RELEASE_TAG"
+            docker run --rm --entrypoint sh \
+              --volume "$PWD/artifact-check:/artifacts:ro" "$image" -lc \
+              "go version -m /artifacts/$binary" >"artifact-check/$binary.buildinfo"
+            grep -Fx $'\tbuild\tvcs.revision='"$SOURCE_SHA" "artifact-check/$binary.buildinfo" >/dev/null
+            grep -Fx $'\tbuild\tvcs.modified=false' "artifact-check/$binary.buildinfo" >/dev/null
+          done
           sha256sum "$artifact" |
             sed "s#  source/dist/artifacts/#  #" \
             >"${artifact}.sha256"
@@ -117,7 +126,7 @@ jobs:
 
           {
             printf '# PastureStack Catalog Service %s\n\n' "$RELEASE_TAG"
-            printf 'This release enforces operator-authorized catalog origins, rooted cache access, bounded Helm inputs, and plain-text readme delivery.\n\n'
+            printf 'This release excludes Git metadata from template traversal, validates version directories before allocating templates, and rebuilds same-commit empty or unnamed template indexes transactionally. Existing catalog origin, rooted-cache and bounded-input protections are retained.\n\n'
             printf '## Immutable coordinates\n\n'
             printf -- '- Source commit: `%s`\n' "$SOURCE_SHA"
             printf -- '- Artifact SHA-256: `%s`\n\n' "$artifact_sha"
