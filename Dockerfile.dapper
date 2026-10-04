@@ -67,8 +67,8 @@ RUN case "${DAPPER_HOST_ARCH}" in \
     echo "${go_sha}  /tmp/go.tgz" | sha256sum -c - && \
     tar -C /usr/local -xzf /tmp/go.tgz && \
     rm -f /tmp/go.tgz && \
-    python3 -m venv --without-pip /opt/tox && \
-    python3 -m pip --python /opt/tox install --no-cache-dir --require-hashes \
+    /usr/bin/python3 -m venv --without-pip /opt/tox && \
+    /usr/bin/python3 -m pip --python /opt/tox install --no-cache-dir --require-hashes \
         --requirement /tmp/catalog-service-build-requirements.lock && \
     mkdir -p /go/bin /go/src && \
     go version && \

@@ -4,10 +4,16 @@ from contextlib import redirect_stdout
 from hashlib import sha256
 import io
 import json
+import os
 from pathlib import Path
 import re
+import shutil
+import subprocess
+import sys
 import tempfile
 import unittest
+import venv
+import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -103,8 +109,8 @@ class InstallerRetirement(unittest.TestCase):
     def test_source_contract_and_same_test_entry_points(self):
         self.assertEqual(MODULE["TEST_LOCK_SHA256"], sha256((ROOT / "integration/requirements.lock").read_bytes()).hexdigest())
         docker = (ROOT / "Dockerfile.dapper").read_text(encoding="utf-8")
-        self.assertIn("venv --without-pip /opt/tox", docker)
-        self.assertIn("pip --python /opt/tox install --no-cache-dir --require-hashes", docker)
+        self.assertIn("/usr/bin/python3 -m venv --without-pip /opt/tox", docker)
+        self.assertIn("/usr/bin/python3 -m pip --python /opt/tox install --no-cache-dir --require-hashes", docker)
         self.assertNotIn("autoremove", docker)
         self.assertIn("for package in python3-pip python3-pip-whl; do", docker)
         self.assertIn('apt-get purge -y "${package}" || exit 1;', docker)
@@ -116,6 +122,46 @@ class InstallerRetirement(unittest.TestCase):
         runner = (ROOT / "scripts/test").read_text(encoding="utf-8")
         self.assertIn("go test -mod=vendor ${RACE} -cover -tags=test ./...", runner)
         self.assertTrue(runner.endswith("cd integration\n/opt/tox/bin/python -I -m flake8 core\ncd core\n/opt/tox/bin/python -I -m pytest --durations=20\n"))
+
+    def test_absolute_bootstrap_with_seedless_venv_first_on_path(self):
+        root = Path(self.temporary.name)
+        target = root / "venv"
+        venv.EnvBuilder(with_pip=False).create(target)
+        binary = target / ("Scripts" if os.name == "nt" else "bin")
+        environment = dict(os.environ, PATH=str(binary) + os.pathsep + os.environ["PATH"],
+                           PIP_DISABLE_PIP_VERSION_CHECK="1", PIP_CONFIG_FILE=os.devnull)
+        # Reproduce the Docker PATH shadowing with a real empty venv interpreter.
+        shadowed = shutil.which(Path(sys.executable).name, path=environment["PATH"])
+        self.assertEqual(Path(shadowed).parent, binary)
+        empty_environment = dict(environment)
+        empty_environment.pop("PYTHONPATH", None)
+        old = subprocess.run([shadowed, "-m", "pip", "--python",
+                              str(target), "--version"], env=empty_environment,
+                             capture_output=True, text=True, timeout=30)
+        self.assertNotEqual(old.returncode, 0)
+        self.assertIn("No module named pip", old.stderr)
+
+        wheel = root / "bootstrap_probe-1.0-py3-none-any.whl"
+        metadata = "bootstrap_probe-1.0.dist-info/"
+        with zipfile.ZipFile(wheel, "w") as archive:
+            archive.writestr("bootstrap_probe.py", "VALUE = 1\n")
+            archive.writestr(metadata + "METADATA", "Metadata-Version: 2.1\nName: bootstrap-probe\nVersion: 1.0\n")
+            archive.writestr(metadata + "WHEEL", "Wheel-Version: 1.0\nGenerator: regression-test\nRoot-Is-Purelib: true\nTag: py3-none-any\n")
+            archive.writestr(metadata + "RECORD", "")
+        lock = root / "bootstrap.lock"
+        lock.write_text(str(wheel) + " --hash=sha256:" + sha256(wheel.read_bytes()).hexdigest() + "\n", encoding="utf-8")
+        # The absolute base interpreter delegates to the same seedless target.
+        fixed = subprocess.run([sys.executable, "-m", "pip", "--python", str(target),
+                                "install", "--no-index", "--no-cache-dir", "--no-deps",
+                                "--require-hashes", "--requirement", str(lock)],
+                               env=environment, capture_output=True, text=True, timeout=30)
+        self.assertEqual(fixed.returncode, 0, fixed.stderr)
+        check = subprocess.run([str(binary / Path(sys.executable).name), "-I", "-c",
+                                "import bootstrap_probe,importlib.util; "
+                                "assert bootstrap_probe.VALUE == 1; "
+                                "assert importlib.util.find_spec('pip') is None"],
+                               env=environment, capture_output=True, text=True, timeout=30)
+        self.assertEqual(check.returncode, 0, check.stderr)
 
     def test_vex_only_exact_reviewed_header_package(self):
         vex = json.loads((ROOT / "security/dapper.openvex.json").read_text(encoding="utf-8"))

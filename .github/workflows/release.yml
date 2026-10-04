@@ -126,11 +126,12 @@ jobs:
 
           {
             printf '# PastureStack Catalog Service %s\n\n' "$RELEASE_TAG"
-            printf 'This release excludes Git metadata from template traversal, validates version directories before allocating templates, and rebuilds same-commit empty or unnamed template indexes transactionally. Existing catalog origin, rooted-cache and bounded-input protections are retained.\n\n'
+            printf 'This release excludes Git metadata from template traversal, validates version directories before allocating templates, omits metadata-only entries without a template definition, preserves template/version READMEs and icons, and rebuilds same-commit empty or unnamed indexes transactionally. Existing catalog origin, rooted-cache and bounded-input protections are retained.\n\n'
             printf '## Immutable coordinates\n\n'
             printf -- '- Source commit: `%s`\n' "$SOURCE_SHA"
             printf -- '- Artifact SHA-256: `%s`\n\n' "$artifact_sha"
             printf 'The full test suite passed, and two clean builds produced byte-identical archives.\n\n'
+            printf 'Python test dependencies are hash-locked; bootstrap installers are removed from the completed build image. Build-header VEX exceptions remain explicitly recorded and do not claim an absence of all CVEs. Server packaging and real catalog migration/UI acceptance are separate and not claimed by this component release.\n\n'
             printf 'PastureStack is an independent community effort to preserve, audit, and modernize the Rancher 1.6 ecosystem. It is not affiliated with or endorsed by Rancher Labs or SUSE.\n'
           } >release-notes.md
 

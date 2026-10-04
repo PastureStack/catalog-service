@@ -34,7 +34,9 @@ The disposable build image is pinned by digest. Its Ubuntu package source is fix
 
 The same hash-locked integration dependencies are preinstalled in the isolated
 `/opt/tox` environment, which runs flake8 and pytest directly without seeding
-another environment. The official pip installer, tox and virtualenv are retired
+another environment. Bootstrap invokes Ubuntu's `/usr/bin/python3` explicitly
+so the seedless environment placed first on PATH cannot shadow the installer.
+The official pip installer, tox and virtualenv are retired
 with their supported uninstall commands after preparation; the system pip
 packages are explicitly purged without autoremove. The developer `tox.ini` is
 retained. Bootstrap dependency locks remain provenance, not a claim that the
