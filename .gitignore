@@ -1,6 +1,7 @@
 /.dapper
 /bin
 /dist
+/evidence
 *.swp
 /.trash-cache
 /cache

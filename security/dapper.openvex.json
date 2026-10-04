@@ -1,919 +1,22 @@
 {
   "@context": "https://openvex.dev/ns/v0.2.0",
-  "@id": "https://github.com/PastureStack/catalog-service/security/openvex/dapper/2026-08-26",
+  "@id": "https://github.com/PastureStack/catalog-service/security/openvex/dapper/2026-10-04",
   "author": "PastureStack contributors",
-  "timestamp": "2026-08-26T03:04:43Z",
-  "version": 3,
+  "timestamp": "2026-10-04T03:58:17Z",
+  "version": 4,
   "statements": [
-    {
-      "vulnerability": {
-        "name": "CVE-2025-10263"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
     {
       "vulnerability": {
         "name": "CVE-2025-40190"
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2025-47273"
-      },
-      "products": [
-        {
-          "@id": "pkg:pypi/setuptools@70.3.0"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "pip 26.2.1 records setuptools 70.3.0 in its embedded SBOM, but pip's vendored subset in this ephemeral builder does not contain setuptools/package_index.py or the vulnerable PackageIndex._resolve_download_filename implementation. PastureStack verifies that absence inside the built image and fails closed if pip or its vendored subset changes. The independently installed setuptools is 84.0.0, and the builder is not shipped as the product."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-52908"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-52909"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-52910"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53145"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53148"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53153"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53159"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53170"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53171"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53172"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53173"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53178"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53182"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53183"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53185"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53192"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53193"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53196"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53198"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53235"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53239"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53240"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53250"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53254"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53256"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53259"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53262"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53264"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53266"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53269"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53270"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53275"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53276"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53356"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53388"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53398"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-53399"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-63801"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-63809"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-63815"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-63823"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64188"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64191"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64260"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64266"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64269"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64276"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64300"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64361"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64367"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64380"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64383"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64385"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64386"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64387"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64390"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64393"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64396"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64423"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64432"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64440"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64441"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64442"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64467"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64490"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64531"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64535"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -921,12 +24,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -934,12 +37,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -947,12 +50,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -960,12 +63,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -973,12 +76,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -986,12 +89,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -999,12 +102,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1012,51 +115,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64597"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-64601"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-68085"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1064,12 +128,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1077,12 +141,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1090,12 +154,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1103,12 +167,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1116,12 +180,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1129,12 +193,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1142,12 +206,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1155,12 +219,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1168,12 +232,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1181,12 +245,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1194,12 +258,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1207,12 +271,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1220,12 +284,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1233,12 +297,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1246,12 +310,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1259,12 +323,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1272,12 +336,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1285,12 +349,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1298,12 +362,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1311,12 +375,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1324,12 +388,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1337,12 +401,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1350,12 +414,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1363,12 +427,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1376,12 +440,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1389,12 +453,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1402,12 +466,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1415,12 +479,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1428,12 +492,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1441,12 +505,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1454,12 +518,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1467,38 +531,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-72287"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-72288"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1506,12 +544,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1519,12 +557,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1532,12 +570,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1545,12 +583,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1558,12 +596,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1571,25 +609,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-72472"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1597,25 +622,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-74268"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1623,12 +635,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1636,12 +648,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1649,12 +661,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1662,12 +674,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1675,12 +687,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1688,25 +700,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-74394"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1714,25 +713,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
-    },
-    {
-      "vulnerability": {
-        "name": "CVE-2026-74427"
-      },
-      "products": [
-        {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
-        }
-      ],
-      "status": "not_affected",
-      "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1740,12 +726,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1753,12 +739,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1766,12 +752,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1779,12 +765,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1792,12 +778,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1805,12 +791,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1818,12 +804,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1831,12 +817,12 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
@@ -1844,25 +830,246 @@
       },
       "products": [
         {
-          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-29.29?arch=amd64&distro=ubuntu-26.04"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "linux-libc-dev is present only in the ephemeral Dapper builder as user-space API headers pulled by libc6-dev for GCC and Go race tests. The builder contains no Linux kernel image or module package and is never shipped or run as the product. The shipped archive contains the reviewed catalog-service and catalog-service-sqlite executables; their raw Trivy scan is enforced separately and reports zero Critical or High findings."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     },
     {
       "vulnerability": {
-        "name": "GHSA-6v7p-g79w-8964"
+        "name": "CVE-2026-80631"
       },
       "products": [
         {
-          "@id": "pkg:pypi/msgpack@1.1.2"
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
         }
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "pip 26.2.1 records msgpack 1.1.2 in its embedded SBOM, but this ephemeral builder contains only pip's pure-Python fallback and no _cmsgpack extension whose reusable parser context causes the advisory's out-of-bounds read and process crash. PastureStack's enforced inspection also proves that pip has no caller of the vendored streaming Unpacker outside the msgpack library; its cache serializer uses one-shot loads. The builder is not shipped as the product, and any pip or vendored-version change fails the review assertion."
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80634"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80637"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80644"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80668"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80671"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80681"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80683"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80691"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80692"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80693"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80700"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80702"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80710"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80714"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80716"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80718"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-80721"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "The exact linux-libc-dev 7.0.0-38.38 amd64 package contains user-space API headers and documentation only. It is present in the ephemeral Dapper builder for GCC and Go race tests, with no Linux kernel image or module package. Kernel implementations affected by this vulnerability are absent. The builder is not shipped as the product; product binaries and raw builder findings are gated separately. This statement does not cover Python installer or runtime libraries."
     }
   ]
 }

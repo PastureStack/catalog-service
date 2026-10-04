@@ -15,3 +15,11 @@ The `0.20.9` candidate replaces MD5 cache directory names with SHA-256 names. Th
 The `0.20.11` candidate preserves those database table names and JSON resource shapes while moving to GORM v2 and a bounded project-owned catalog API compatibility layer. The retired Rancher client HTML renderer is intentionally not preserved; Catalog API responses are JSON. Its MySQL DSN construction preserves the current driver's compatibility defaults required by existing installations.
 
 Release validation covers `platformVersion` precedence and legacy fallback, both legacy metadata layouts, catalog refresh, database migration, empty default configuration, icon and readme routes, version ordering, upgrade links, malformed repositories, empty-index recovery, outbound-origin and path boundaries, Helm archive limits, SQLite and non-SQLite binaries, and rollback.
+
+The `0.20.12` source adds Git-metadata exclusion and rejects invalid version
+folders before reading or allocating a template. A same-commit index containing
+an empty or NULL template folder is rebuilt by the existing catalog transaction;
+the check is confined to the selected catalog name and environment. The database
+surrogate IDs may change on reindexing, as on an ordinary catalog refresh, while
+public catalog/template identifiers and the reviewed source commit remain
+unchanged. No operator SQL cleanup or catalog recreation is required.

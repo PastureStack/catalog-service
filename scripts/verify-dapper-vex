@@ -3,105 +3,76 @@
 set -euo pipefail
 
 python3 - <<'PY'
+from hashlib import sha256
 from importlib.metadata import Distribution
-import os
 from pathlib import Path
 import re
-import sys
 
-expected_pip = "26.2.1"
-expected_setuptools = "84.0.0"
-site_packages = Path(
-    os.environ.get(
-        "PASTURESTACK_DAPPER_SITE_PACKAGES",
-        "/opt/tox/lib/python3.14/site-packages",
-    )
+TEST_LOCK_SHA256 = "7b6c0962b69cf4bff9ae08f9f6da0c4088f959bcbd7a58ef10bd8d6db2ac3a91"
+RETIRED = {"pip", "tox", "virtualenv"}
+
+
+def canonical(name):
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
+def require(condition, message):
+    if not condition:
+        raise SystemExit(message)
+
+
+def verify(site_packages, requirements, system_site, seed_wheels, wheelhouse,
+           expected_lock_sha256):
+    lock_bytes = requirements.read_bytes()
+    require(sha256(lock_bytes).hexdigest() == expected_lock_sha256,
+            "test requirements differ from the reviewed lock")
+    expected = {}
+    wheel_hashes = set()
+    for line in lock_bytes.decode("utf-8").splitlines():
+        match = re.fullmatch(r"([A-Za-z0-9_.-]+)==([^\s]+) --hash=sha256:([0-9a-f]{64})", line)
+        require(match is not None, "test requirement is not an exact hash-locked wheel")
+        name, version, wheel_hash = match.groups()
+        name = canonical(name)
+        require(name not in expected and wheel_hash not in wheel_hashes,
+                "duplicate test requirement")
+        expected[name] = version
+        wheel_hashes.add(wheel_hash)
+    require(len(expected) == 19 and not (set(expected) & RETIRED),
+            "review the exact integration dependency set")
+
+    installed = {}
+    for distribution in Distribution.discover(path=[str(site_packages)]):
+        name = canonical(distribution.metadata["Name"])
+        require(name not in installed, "duplicate installed test distribution")
+        installed[name] = distribution.version
+    require(installed == expected, "installed distributions differ from the test lock")
+    for root in (site_packages, system_site):
+        require(not any((root / name).exists() for name in RETIRED),
+                "retired installer code is still present")
+        require(not any(canonical(d.metadata["Name"]) in RETIRED
+                        for d in Distribution.discover(path=[str(root)])),
+                "retired installer distribution is still present")
+    require(not list(seed_wheels.glob("pip*.whl")),
+            "system pip seed wheel is still present")
+    wheels = list(wheelhouse.iterdir())
+    require(len(wheels) == 19 and all(p.is_file() and p.suffix == ".whl" for p in wheels),
+            "wheelhouse contains an unreviewed artifact")
+    require({sha256(p.read_bytes()).hexdigest() for p in wheels} == wheel_hashes,
+            "wheelhouse differs from the test lock")
+    print("test_dependencies=19")
+    print("retired_installer_code=absent")
+    print("retired_installer_distributions=absent")
+    print("system_pip_seed_wheels=absent")
+    print("test_wheelhouse=exact_hash_locked_19")
+    print("installed_urllib3=" + installed["urllib3"])
+
+
+verify(
+    Path("/opt/tox/lib/python3.14/site-packages"),
+    Path("/licenses/CATALOG-SERVICE-TEST-REQUIREMENTS.lock"),
+    Path("/usr/lib/python3/dist-packages"),
+    Path("/usr/share/python-wheels"),
+    Path("/opt/catalog-service-wheelhouse"),
+    TEST_LOCK_SHA256,
 )
-
-
-def exact_installed_version(package_name):
-    matches = sorted(site_packages.glob(f"{package_name}-*.dist-info"))
-    if len(matches) != 1:
-        sys.exit(
-            f"expected one {package_name} distribution in {site_packages}, "
-            f"found {len(matches)}"
-        )
-    return Distribution.at(matches[0]).version
-
-
-installed_pip = exact_installed_version("pip")
-if installed_pip != expected_pip:
-    sys.exit(
-        f"pip changed from the reviewed {expected_pip} to {installed_pip}; "
-        "review the vendored SBOM and OpenVEX statements again"
-    )
-
-installed_setuptools = exact_installed_version("setuptools")
-if installed_setuptools != expected_setuptools:
-    sys.exit(
-        f"setuptools changed from the reviewed {expected_setuptools} to "
-        f"{installed_setuptools}; review CVE-2025-47273 again"
-    )
-
-pip_root = site_packages / "pip"
-vendor_root = pip_root / "_vendor"
-vendor_manifest = vendor_root / "vendor.txt"
-if not vendor_manifest.is_file():
-    sys.exit(f"missing pip vendor manifest: {vendor_manifest}")
-
-vendored_versions = {}
-for raw_line in vendor_manifest.read_text(encoding="utf-8").splitlines():
-    line = raw_line.strip()
-    if "==" not in line:
-        continue
-    name, package_version = line.split("==", 1)
-    vendored_versions[name] = package_version
-
-if vendored_versions.get("msgpack") != "1.1.2":
-    sys.exit("pip's reviewed vendored msgpack version changed")
-if vendored_versions.get("setuptools") != "70.3.0":
-    sys.exit("pip's reviewed vendored setuptools version changed")
-
-msgpack_root = vendor_root / "msgpack"
-if not (msgpack_root / "fallback.py").is_file():
-    sys.exit("pip's reviewed pure-Python msgpack fallback is missing")
-compiled_unpackers = sorted(msgpack_root.glob("_cmsgpack*"))
-if compiled_unpackers:
-    sys.exit(
-        "the vendored msgpack C extension is present; "
-        "GHSA-6v7p-g79w-8964 must be treated as applicable"
-    )
-
-streaming_unpacker_patterns = (
-    re.compile(r"\bmsgpack\.Unpacker\s*\("),
-    re.compile(r"\bfrom\s+pip\._vendor\.msgpack\s+import\s+.*\bUnpacker\b"),
-)
-streaming_unpacker_callers = []
-for source in pip_root.rglob("*.py"):
-    relative = source.relative_to(pip_root)
-    if relative.parts[:2] == ("_vendor", "msgpack"):
-        continue
-    text = source.read_text(encoding="utf-8", errors="strict")
-    if any(pattern.search(text) for pattern in streaming_unpacker_patterns):
-        streaming_unpacker_callers.append(str(relative))
-if streaming_unpacker_callers:
-    sys.exit(
-        "pip calls the vendored streaming msgpack Unpacker outside its library: "
-        + ", ".join(streaming_unpacker_callers)
-    )
-
-vulnerable_package_index = vendor_root / "setuptools" / "package_index.py"
-if vulnerable_package_index.exists():
-    sys.exit(
-        "setuptools/package_index.py is present; "
-        "CVE-2025-47273 must be treated as applicable"
-    )
-
-print(f"pip={installed_pip}")
-print(f"installed_setuptools={installed_setuptools}")
-print(f"vendored_msgpack={vendored_versions['msgpack']}")
-print("msgpack_compiled_unpacker=absent")
-print("msgpack_streaming_unpacker_callers=0")
-print(f"vendored_setuptools={vendored_versions['setuptools']}")
-print("setuptools_package_index=absent")
 PY

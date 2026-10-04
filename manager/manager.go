@@ -134,7 +134,7 @@ func (m *Manager) refreshCatalog(catalog model.Catalog, update bool) error {
 			log.Debug("Catalog is already up to date")
 			return nil
 		}
-		log.Warn("Catalog has no indexed templates; rebuilding")
+		log.Warn("Catalog index is empty or contains unnamed templates; rebuilding")
 	}
 
 	templates, errs, err := traverseFiles(repoRoot, catalog.Kind, catalogType, m.httpClient, catalog.URL)
@@ -154,10 +154,14 @@ func (m *Manager) refreshCatalog(catalog model.Catalog, update bool) error {
 }
 
 func (m *Manager) catalogHasTemplates(catalog model.Catalog) (bool, error) {
-	var count int64
+	var counts struct {
+		Total int64
+		Blank int64
+	}
 	err := m.db.Table("catalog_template").
+		Select("COUNT(*) AS total, COALESCE(SUM(CASE WHEN catalog_template.folder_name IS NULL OR catalog_template.folder_name = '' THEN 1 ELSE 0 END), 0) AS blank").
 		Joins("JOIN catalog ON catalog.id = catalog_template.catalog_id").
 		Where("catalog.name = ? AND catalog.environment_id = ?", catalog.Name, catalog.EnvironmentId).
-		Count(&count).Error
-	return count > 0, err
+		Scan(&counts).Error
+	return counts.Total > 0 && counts.Blank == 0, err
 }

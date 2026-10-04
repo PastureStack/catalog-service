@@ -43,15 +43,13 @@ RUN set -eux; \
         gcc="${UBUNTU_APT_GCC_VERSION}" \
         git="${UBUNTU_APT_GIT_VERSION}" \
         libc6-dev="${UBUNTU_APT_LIBC6_DEV_VERSION}" \
+        libssl3t64="${UBUNTU_APT_OPENSSL_VERSION}" \
+        openssl="${UBUNTU_APT_OPENSSL_VERSION}" \
+        openssl-provider-legacy="${UBUNTU_APT_OPENSSL_VERSION}" \
         python3="${UBUNTU_APT_PYTHON3_VERSION}" \
         python3-pip="${UBUNTU_APT_PYTHON3_PIP_VERSION}" \
-        python3-venv="${UBUNTU_APT_PYTHON3_VENV_VERSION}" \
         tar="${UBUNTU_APT_TAR_VERSION}" \
         xz-utils="${UBUNTU_APT_XZ_UTILS_VERSION}"; \
-    { \
-        printf 'snapshot\t%s\n' "${UBUNTU_APT_SNAPSHOT}"; \
-        dpkg-query -W -f='${binary:Package}\t${Version}\n' | LC_ALL=C sort; \
-    } > /licenses/CATALOG-SERVICE-UBUNTU-APT-PACKAGES.tsv; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/bin/pebble; \
     rm -f /bin/sh; \
@@ -69,8 +67,8 @@ RUN case "${DAPPER_HOST_ARCH}" in \
     echo "${go_sha}  /tmp/go.tgz" | sha256sum -c - && \
     tar -C /usr/local -xzf /tmp/go.tgz && \
     rm -f /tmp/go.tgz && \
-    python3 -m venv /opt/tox && \
-    /opt/tox/bin/pip install --no-cache-dir --require-hashes \
+    /usr/bin/python3 -m venv --without-pip /opt/tox && \
+    /usr/bin/python3 -m pip --python /opt/tox install --no-cache-dir --require-hashes \
         --requirement /tmp/catalog-service-build-requirements.lock && \
     mkdir -p /go/bin /go/src && \
     go version && \
@@ -79,10 +77,31 @@ RUN case "${DAPPER_HOST_ARCH}" in \
 
 COPY integration/requirements.lock /tmp/catalog-service-test-requirements.lock
 RUN mkdir -p /opt/catalog-service-wheelhouse && \
-    /opt/tox/bin/pip download --require-hashes --no-deps --only-binary=:all: \
+    /opt/tox/bin/pip download --no-cache-dir --require-hashes --no-deps --only-binary=:all: \
         --platform any --python-version 3.14 --implementation py --abi none \
         --dest /opt/catalog-service-wheelhouse \
         --requirement /tmp/catalog-service-test-requirements.lock && \
+    /opt/tox/bin/pip install --no-cache-dir --require-hashes --no-deps \
+        --no-index --find-links=/opt/catalog-service-wheelhouse \
+        --requirement /tmp/catalog-service-test-requirements.lock && \
+    cp /tmp/catalog-service-test-requirements.lock \
+        /licenses/CATALOG-SERVICE-TEST-REQUIREMENTS.lock && \
+    /opt/tox/bin/pip uninstall -y cachetools distlib filelock platformdirs \
+        pyproject-api python-discovery setuptools tomli-w tox virtualenv wheel && \
+    /opt/tox/bin/pip uninstall -y pip && \
+    for package in python3-pip python3-pip-whl; do \
+        if dpkg-query -W -f='${db:Status-Status}\n' "${package}" 2>/dev/null \
+            | grep -qx installed; then \
+            apt-get purge -y "${package}" || exit 1; \
+        fi; \
+    done && \
+    . /licenses/ubuntu-apt.lock && \
+    { \
+        printf 'snapshot\t%s\n' "${UBUNTU_APT_SNAPSHOT}"; \
+        dpkg-query -W -f='${binary:Package}\t${Version}\n' | LC_ALL=C sort; \
+    } > /licenses/CATALOG-SERVICE-UBUNTU-APT-PACKAGES.tsv && \
+    /opt/tox/bin/python -I -m flake8 --version && \
+    /opt/tox/bin/python -I -m pytest --version && \
     rm -f /tmp/catalog-service-build-requirements.lock \
         /tmp/catalog-service-test-requirements.lock
 

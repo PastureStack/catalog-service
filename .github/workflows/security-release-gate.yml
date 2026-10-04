@@ -20,7 +20,7 @@ jobs:
     env:
       DAPPER_IMAGE: pasturestack/catalog-service-dapper:${{ github.sha }}
       TRIVY_IMAGE: aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969
-      VERSION_OVERRIDE: v0.20.11
+      VERSION_OVERRIDE: v0.20.12
 
     steps:
       - name: Check out candidate
@@ -60,6 +60,9 @@ jobs:
           source_path="$GITHUB_WORKSPACE"
           source_epoch="$(git show -s --format=%ct HEAD)"
           run_ci() {
+            # Generated review artifacts are ignored; any actual source drift
+            # must fail before Go captures vcs.modified in the binaries.
+            test -z "$(git status --porcelain)"
             docker run --rm \
               --volume "${source_path}:/go/src/github.com/PastureStack/catalog-service" \
               --env "DAPPER_UID=$(id -u)" \
@@ -71,7 +74,7 @@ jobs:
           }
 
           run_ci
-          artifact="dist/artifacts/catalog-service-0.20.11.tar.xz"
+          artifact="dist/artifacts/catalog-service-0.20.12.tar.xz"
           test -s "$artifact"
           cp "$artifact" /tmp/catalog-service-first.tar.xz
 
@@ -85,8 +88,8 @@ jobs:
           test "$(find evidence/product -maxdepth 1 -type f | wc -l)" -eq 2
           test -x evidence/product/catalog-service
           test -x evidence/product/catalog-service-sqlite
-          test "$(evidence/product/catalog-service --version)" = 'v0.20.11'
-          test "$(evidence/product/catalog-service-sqlite --version)" = 'v0.20.11'
+          test "$(evidence/product/catalog-service --version)" = 'v0.20.12'
+          test "$(evidence/product/catalog-service-sqlite --version)" = 'v0.20.12'
           sha256sum "$artifact" > evidence/catalog-service.tar.xz.sha256
           docker run --rm --entrypoint sh \
             --volume "$PWD:/work:ro" \
@@ -105,6 +108,10 @@ jobs:
             > evidence/product-linkage.txt
           grep -F $'build\tCGO_ENABLED=0' evidence/catalog-service-go-version.txt >/dev/null
           grep -F $'build\tCGO_ENABLED=1' evidence/catalog-service-sqlite-go-version.txt >/dev/null
+          for metadata in evidence/catalog-service-go-version.txt evidence/catalog-service-sqlite-go-version.txt; do
+            grep -Fx $'\tbuild\tvcs.revision='"$GITHUB_SHA" "$metadata" >/dev/null
+            grep -Fx $'\tbuild\tvcs.modified=false' "$metadata" >/dev/null
+          done
           grep -Eq 'catalog-service:[[:space:]]+ELF' evidence/product-linkage.txt
           grep -F 'statically linked' evidence/product-linkage.txt >/dev/null
           grep -Eq 'catalog-service-sqlite:[[:space:]]+ELF' evidence/product-linkage.txt
@@ -118,7 +125,7 @@ jobs:
             "printf 'package\tversion\n'; dpkg-query -W -f='\${binary:Package}\t\${Version}\n' | LC_ALL=C sort" \
             > evidence/dapper-dpkg.tsv
           docker run --rm --entrypoint sh "$DAPPER_IMAGE" -lc \
-            '/opt/tox/bin/pip freeze --all | LC_ALL=C sort' \
+            '/opt/tox/bin/python -I -c '\''import importlib.metadata as m; print("\n".join(sorted(d.metadata["Name"] + "==" + d.version for d in m.distributions())))'\''' \
             > evidence/dapper-python.txt
           docker run --rm \
             -v "$PWD/scripts/verify-dapper-vex:/verify-dapper-vex:ro" \

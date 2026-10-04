@@ -37,4 +37,6 @@ go test -mod=vendor ${RACE} -cover -tags=test ./...
 ./bin/catalog-service-sqlite --sqlite --config scripts/test-repo.json -p 8088 --track=false &
 SERVICE_PID=$!
 cd integration
-tox -e flake8,py314
+/opt/tox/bin/python -I -m flake8 core
+cd core
+/opt/tox/bin/python -I -m pytest --durations=20

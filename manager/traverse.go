@@ -176,6 +176,9 @@ func traverseGitFiles(root *os.Root) ([]model.Template, []error, error) {
 		if err != nil {
 			return err
 		}
+		if relativePath == ".git" && entry != nil && entry.IsDir() {
+			return fs.SkipDir
+		}
 		if relativePath == "." || entry == nil || entry.IsDir() {
 			return nil
 		}
@@ -205,6 +208,10 @@ func traverseGitFiles(root *os.Root) ([]model.Template, []error, error) {
 
 	templates := []model.Template{}
 	for _, template := range templateIndex {
+		// Metadata and version files may precede config; only parsed config gives a template its identity.
+		if template.FolderName == "" {
+			continue
+		}
 		for i, version := range template.Versions {
 			var readme string
 			for _, file := range version.Files {
@@ -326,7 +333,7 @@ func handleFile(root *os.Root, templateIndex map[string]*model.Template, relativ
 			return nil
 		}
 
-		_, _, _, parsedCorrectly = parse.VersionPath(relativePath)
+		_, _, _, parsedCorrectly = parse.VersionPath(path.Dir(relativePath))
 		if parsedCorrectly {
 			return handleVersionFile(root, templateIndex, relativePath, filename)
 		}
@@ -355,6 +362,13 @@ func handleVersionFile(root *os.Root, templateIndex map[string]*model.Template, 
 		return nil
 	}
 
+	revision, revisionErr := strconv.Atoi(folderName)
+	if revisionErr != nil {
+		if _, versionErr := semver.StrictNewVersion(strings.Trim(folderName, "v")); versionErr != nil {
+			return nil
+		}
+	}
+
 	contents, err := readRepositoryFile(root, relativePath)
 	if err != nil {
 		return err
@@ -371,8 +385,7 @@ func handleVersionFile(root *os.Root, templateIndex map[string]*model.Template, 
 	}
 
 	// Handle case where folder name is a revision (just a number)
-	revision, err := strconv.Atoi(folderName)
-	if err == nil {
+	if revisionErr == nil {
 		for i, version := range templateIndex[key].Versions {
 			if version.Revision != nil && *version.Revision == revision {
 				templateIndex[key].Versions[i].Files = append(version.Files, file)
@@ -387,20 +400,16 @@ func handleVersionFile(root *os.Root, templateIndex map[string]*model.Template, 
 	}
 
 	// Handle case where folder name is version (must be in semver format)
-	_, err = semver.StrictNewVersion(strings.Trim(folderName, "v"))
-	if err == nil {
-		for i, version := range templateIndex[key].Versions {
-			if version.Version == folderName {
-				templateIndex[key].Versions[i].Files = append(version.Files, file)
-				return nil
-			}
+	for i, version := range templateIndex[key].Versions {
+		if version.Version == folderName {
+			templateIndex[key].Versions[i].Files = append(version.Files, file)
+			return nil
 		}
-		templateIndex[key].Versions = append(templateIndex[key].Versions, model.Version{
-			Version: folderName,
-			Files:   []model.File{file},
-		})
-		return nil
 	}
+	templateIndex[key].Versions = append(templateIndex[key].Versions, model.Version{
+		Version: folderName,
+		Files:   []model.File{file},
+	})
 
 	return nil
 }
