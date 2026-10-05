@@ -14,13 +14,18 @@ is included in
 [PastureStack Server `v1.6.514`](https://github.com/PastureStack/server/releases/tag/v1.6.514).
 Official publication and Server packaging checks passed. Isolated upgrade
 checks confirmed removal of empty Git-metadata and README-only index entries
-while preserving valid catalog content; full resource and permission acceptance
-remains in progress. The indexing fix skips Git's `.git` metadata, validates a
+while preserving valid catalog content. A separate isolated test completed the
+remaining upgrade steps and cleanup of an existing catalog. This verifies only
+that remaining flow; earlier incomplete results are not retroactively passed.
+The full resource and permission matrix remains INCOMPLETE. The indexing fix skips Git's
+`.git` metadata, validates a
 numeric revision or semantic-version folder before reading a version file or
 allocating a template, and rebuilds a same-commit index containing unnamed
 templates through the existing catalog transaction. Other catalogs are not
 included in that cache check. Native revision numbers, semantic versions,
-template metadata, labels and public API identifiers remain compatible.
+template metadata and labels retain their meaning. Surrogate and API template
+IDs may change during transactional reindexing; identify content by catalog
+origin, template key and version, not by assuming those IDs are permanent.
 README, icon and version files alone do not emit templates: a successfully
 parsed `config.yml` or `template.yml` must establish the folder identity.
 Root README files are resolved from their containing directory rather than
