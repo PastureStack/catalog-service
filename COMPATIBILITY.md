@@ -20,6 +20,9 @@ The `0.20.12` source adds Git-metadata exclusion and rejects invalid version
 folders before reading or allocating a template. A same-commit index containing
 an empty or NULL template folder is rebuilt by the existing catalog transaction;
 the check is confined to the selected catalog name and environment. The database
-surrogate IDs may change on reindexing, as on an ordinary catalog refresh, while
-public catalog/template identifiers and the reviewed source commit remain
-unchanged. No operator SQL cleanup or catalog recreation is required.
+surrogate and API template IDs may change during transactional reindexing.
+Preserve and compare catalog origin, template keys, versions, content and labels
+independently of those IDs; the pinned source commit is unchanged.
+No operator SQL cleanup or catalog recreation is required. The isolated native
+B-upgrade remainder has a separate scoped result, not complete lifecycle or
+permission-matrix acceptance; historical HOLDs remain unchanged.
