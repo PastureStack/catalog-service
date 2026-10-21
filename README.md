@@ -24,6 +24,13 @@ published tags and release assets remain immutable. Candidate publication and
 matching Server acceptance are not yet complete. For published installations,
 use the `v0.20.12` release above rather than an unpublished candidate artifact.
 
+The disposable AMD64 release builder also pins the official curl
+8.18.0-1ubuntu2.8 payloads and certifi 2026.10.19 wheel; its existing
+OpenSSL 3.5.5-1ubuntu3.7 pin is retained. Refreshed exact header-only VEX
+statements cover only the reviewed linux-libc-dev 7.0.0-38.38 package,
+not a host kernel or the Go runtime. Raw-to-VEX equality, no-kernel-package
+and independent product gates remain unchanged.
+
 The retained indexing fix skips Git's `.git` metadata, validates a
 numeric revision or semantic-version folder before reading a version file or
 allocating a template, and rebuilds a same-commit index containing unnamed

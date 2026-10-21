@@ -167,8 +167,8 @@ class InstallerRetirement(unittest.TestCase):
     def test_vex_only_exact_reviewed_header_package(self):
         vex = json.loads((ROOT / "security/dapper.openvex.json").read_text(encoding="utf-8"))
         pairs = [(s["vulnerability"]["name"], s["products"][0]["@id"]) for s in vex["statements"]]
-        self.assertEqual(len(pairs), 82)
-        self.assertEqual(len(set(pairs)), 82)
+        self.assertEqual(len(pairs), 295)
+        self.assertEqual(len(set(pairs)), 295)
         self.assertEqual({p for _, p in pairs}, {"pkg:deb/ubuntu/linux-libc-dev@7.0.0-38.38?arch=amd64&distro=ubuntu-26.04"})
         self.assertTrue(all(s["status"] == "not_affected" and s["justification"] == "vulnerable_code_not_present" for s in vex["statements"]))
 

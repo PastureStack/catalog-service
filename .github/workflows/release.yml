@@ -123,6 +123,13 @@ jobs:
           version="${RELEASE_TAG#v}"
           artifact="source/dist/artifacts/catalog-service-${version}.tar.xz"
           checksum="${artifact}.sha256"
+          license="source/dist/artifacts/catalog-service-${version}-LICENSE.txt"
+          cp source/LICENSE "$license"
+          (
+            cd source/dist/artifacts
+            sha256sum "catalog-service-${version}-LICENSE.txt" > "catalog-service-${version}-LICENSE.txt.sha256"
+            sha256sum --check "catalog-service-${version}-LICENSE.txt.sha256"
+          )
           artifact_sha="$(sha256sum "$artifact" | awk '{print $1}')"
 
           {
@@ -140,6 +147,8 @@ jobs:
           gh release create "$RELEASE_TAG" \
             "$artifact" \
             "$checksum" \
+            "$license" \
+            "${license}.sha256" \
             --repo "$GITHUB_REPOSITORY" \
             --target "$SOURCE_SHA" \
             --title "PastureStack Catalog Service ${RELEASE_TAG}" \

@@ -8,7 +8,7 @@ from importlib.metadata import Distribution
 from pathlib import Path
 import re
 
-TEST_LOCK_SHA256 = "7b6c0962b69cf4bff9ae08f9f6da0c4088f959bcbd7a58ef10bd8d6db2ac3a91"
+TEST_LOCK_SHA256 = "9e5265b73ebe47b57af6ea742e2ab204c3846fbd1f0b995ad793593c5057772b"
 RETIRED = {"pip", "tox", "virtualenv"}
 
 
