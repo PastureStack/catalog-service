@@ -8,21 +8,20 @@ PastureStack is an independent community effort to preserve, audit, and moderniz
 
 ## Project status
 
-Published numeric maintenance release
-[`v0.20.12`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.12)
-is included in
-[PastureStack Server `v1.6.514`](https://github.com/PastureStack/server/releases/tag/v1.6.514).
-Official publication and Server packaging checks passed. Isolated upgrade
-checks confirmed removal of empty Git-metadata and README-only index entries
-while preserving valid catalog content. A separate isolated test completed the
-remaining upgrade steps and cleanup of an existing catalog. This verifies only
-that remaining flow; earlier incomplete results are not retroactively passed.
-The full resource and permission matrix remains INCOMPLETE.
+The current published numeric maintenance release is
+[`v0.20.14`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.14),
+built with Go 1.27.3. The actual archive and both binary producers are source
+commit `9b0c0f40dc81eb83673df85f3de96f7e6f89b985`. Its archive, archive checksum,
+license and license checksum are published immutable assets. Official
+publication and reproducible packaging checks passed; matching Server
+integration and acceptance remain separate and are not established by this
+component release.
 
-This source prepares numeric maintenance release `0.20.14` with Go 1.27.3;
-published tags and release assets remain immutable. Candidate publication and
-matching Server acceptance are not yet complete. For published installations,
-use the `v0.20.12` release above rather than an unpublished candidate artifact.
+Earlier isolated upgrade checks confirmed removal of empty Git-metadata and
+README-only index entries while preserving valid catalog content, plus the
+remaining upgrade steps and cleanup of an existing catalog. That evidence
+covers only those flows; earlier incomplete results are not retroactively
+passed. The full resource and permission matrix remains INCOMPLETE.
 
 The disposable AMD64 release builder also pins the official curl
 8.18.0-1ubuntu2.8 payloads and certifi 2026.10.19 wheel; its existing
@@ -69,7 +68,7 @@ dependencies remain installed; no urllib3 OpenVEX exception is permitted.
 
 Catalog sources are denied unless their exact origin is authorized by the service operator. Reviewed public GitHub origins are built in. Add private HTTPS origins as a comma-separated list in `PASTURESTACK_CATALOG_ALLOWED_EXTERNAL_ORIGINS`; each entry must contain only a scheme, hostname, and optional port. Plain HTTP is accepted only for loopback tests. Local Git catalogs are restricted to isolated tests: `PASTURESTACK_CATALOG_ALLOWED_LOCAL_ROOTS` may enable only the platform temporary root. Catalog documents, API callers, redirects, icon links, and chart links cannot expand either policy.
 
-Release packaging is manual and reproducible. The GitHub release workflow runs only when an organization maintainer explicitly dispatches it. It builds and tests the selected main-branch commit twice, requires byte-identical packages, and publishes the binaries and checksum to a GitHub Release. It does not deploy a service or publish a catalog.
+Release packaging is manual and reproducible. The GitHub release workflow runs only when an organization maintainer explicitly dispatches it. It builds and tests the selected main-branch commit twice, requires byte-identical packages, and publishes both binaries in one checksummed archive, plus the license and its checksum, to a GitHub Release. It does not deploy a service or publish a catalog.
 
 ## Pinned GitHub catalogs
 
@@ -97,9 +96,10 @@ Use `platformVersion` when filtering templates and upgrade links. The historical
 
 From a Docker-capable Linux host:
 
-Set `VERSION_OVERRIDE=v0.20.14` for formal candidate packaging. The default
-Go 1.27.3 archive pins cover Linux/amd64 and Linux/armv6l; this candidate's
-artifact qualification covers Linux/amd64 only, not an ARM binary build.
+To rebuild the published source, check out `v0.20.14` and set
+`VERSION_OVERRIDE=v0.20.14`. The default Go 1.27.3 archive pins cover
+Linux/amd64 and Linux/armv6l; the published artifact qualification covers
+Linux/amd64 only, not an ARM binary build.
 
 ```sh
 make test
@@ -109,7 +109,7 @@ make package
 
 Catalog repository URLs must be supplied explicitly in a reviewed configuration. See [COMPATIBILITY.md](COMPATIBILITY.md), [SECURITY.md](SECURITY.md), and [ORIGIN.md](ORIGIN.md).
 
-Before a future release is approved, run the **Security release gate** workflow against the exact candidate commit and verify that its source revision, reproducible archive checksum, SBOMs, raw findings, and applicable findings all match that commit. Release `v0.20.12` has completed that gate at source `d708579092eae0fd03b2750ac594ff0396cf563b`; this repository still does not deploy the service by itself.
+Before a future release is approved, run the **Security release gate** workflow against the exact candidate commit and verify that its source revision, reproducible archive checksum, SBOMs, raw findings, and applicable findings all match that commit. Release `v0.20.14` passed that gate on candidate `a3f1b047ae43efbeb52707074f3a7477e5942de6`, whose whole source tree exactly matched the published producer above. The release workflow separately built the actual published producer twice; candidate bytes were not substituted. This repository still does not deploy the service by itself.
 
 Maintainers can create an immutable release from the current `main` commit with the manual **Release Catalog Service** GitHub workflow. The workflow accepts a semantic release tag, rejects an existing tag or release, and publishes `catalog-service` and `catalog-service-sqlite` together in one checksummed archive.
 
