@@ -19,10 +19,17 @@ remaining upgrade steps and cleanup of an existing catalog. This verifies only
 that remaining flow; earlier incomplete results are not retroactively passed.
 The full resource and permission matrix remains INCOMPLETE.
 
-This source prepares numeric maintenance release `0.20.13` with Go 1.27.2;
+This source prepares numeric maintenance release `0.20.14` with Go 1.27.3;
 published tags and release assets remain immutable. Candidate publication and
 matching Server acceptance are not yet complete. For published installations,
 use the `v0.20.12` release above rather than an unpublished candidate artifact.
+
+The disposable AMD64 release builder also pins the official curl
+8.18.0-1ubuntu2.8 payloads and certifi 2026.10.19 wheel; its existing
+OpenSSL 3.5.5-1ubuntu3.7 pin is retained. Refreshed exact header-only VEX
+statements cover only the reviewed linux-libc-dev 7.0.0-38.38 package,
+not a host kernel or the Go runtime. Raw-to-VEX equality, no-kernel-package
+and independent product gates remain unchanged.
 
 The retained indexing fix skips Git's `.git` metadata, validates a
 numeric revision or semantic-version folder before reading a version file or
@@ -39,7 +46,7 @@ mistaken for version folders. This repairs previously empty root README fields
 from repository bytes; version README files, icons and valid numeric or semantic
 versions retain their existing contents and interpretation.
 
-It retains the Ubuntu 26.04, database, dependency, version-filter, TLS, and build maintenance completed after the preserved upstream boundary, with the compiler updated to Go 1.27.2. Product-owned imports, binaries, default configuration, version query, and operator messages use PastureStack naming. The default `repo.json` is intentionally empty; no unreviewed catalog is cloned. Python build and integration-test dependencies are transitively pinned with package hashes and installed from an offline wheelhouse inside the disposable build image. The historical `--track` flag is accepted only for command-line compatibility; the service does not read or transmit an installation identifier. MySQL DSNs are created from the driver's reviewed defaults so existing `mysql_native_password` installations remain compatible after the driver upgrade.
+It retains the Ubuntu 26.04, database, dependency, version-filter, TLS, and build maintenance completed after the preserved upstream boundary, with the compiler updated to Go 1.27.3 for the crypto/x509 fix CVE-2026-111943. Product-owned imports, binaries, default configuration, version query, and operator messages use PastureStack naming. The default `repo.json` is intentionally empty; no unreviewed catalog is cloned. Python build and integration-test dependencies are transitively pinned with package hashes and installed from an offline wheelhouse inside the disposable build image. The historical `--track` flag is accepted only for command-line compatibility; the service does not read or transmit an installation identifier. MySQL DSNs are created from the driver's reviewed defaults so existing `mysql_native_password` installations remain compatible after the driver upgrade.
 
 The archived `docker/libcompose` parser and the unmaintained `go-rancher` client are no longer imported or vendored. A small project-owned compatibility layer now emits only the resource, schema, link, and JSON shapes this service actually uses. Catalog metadata is decoded through YAML v3 with focused compatibility tests for top-level legacy metadata, Compose v2 service metadata, alias fields, precedence, malformed input, and empty metadata. A source gate prevents the removed parser from returning.
 
@@ -90,8 +97,8 @@ Use `platformVersion` when filtering templates and upgrade links. The historical
 
 From a Docker-capable Linux host:
 
-Set `VERSION_OVERRIDE=v0.20.13` for formal candidate packaging. The default
-Go 1.27.2 archive pins cover Linux/amd64 and Linux/armv6l; this candidate's
+Set `VERSION_OVERRIDE=v0.20.14` for formal candidate packaging. The default
+Go 1.27.3 archive pins cover Linux/amd64 and Linux/armv6l; this candidate's
 artifact qualification covers Linux/amd64 only, not an ARM binary build.
 
 ```sh
