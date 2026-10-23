@@ -11,7 +11,7 @@ PastureStack is an independent community effort to preserve, audit, and moderniz
 The current published numeric maintenance release is
 [`v0.20.15`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.15),
 built with Go 1.27.3. The actual archive and both binary producers are source
-commit `9b0c0f40dc81eb83673df85f3de96f7e6f89b985`. Its archive, archive checksum,
+commit `6ea547594065f7f95d5877b82f0c1bc553e72640`. Its archive, archive checksum,
 license and license checksum are published immutable assets. Official
 publication and reproducible packaging checks passed; matching Server
 integration and acceptance remain separate and are not established by this
@@ -109,7 +109,7 @@ make package
 
 Catalog repository URLs must be supplied explicitly in a reviewed configuration. See [COMPATIBILITY.md](COMPATIBILITY.md), [SECURITY.md](SECURITY.md), and [ORIGIN.md](ORIGIN.md).
 
-Before a future release is approved, run the **Security release gate** workflow against the exact candidate commit and verify that its source revision, reproducible archive checksum, SBOMs, raw findings, and applicable findings all match that commit. Release `v0.20.15` passed that gate on candidate `a3f1b047ae43efbeb52707074f3a7477e5942de6`, whose whole source tree exactly matched the published producer above. The release workflow separately built the actual published producer twice; candidate bytes were not substituted. This repository still does not deploy the service by itself.
+Before a future release is approved, run the **Security release gate** workflow against the exact candidate commit and verify that its source revision, reproducible archive checksum, SBOMs, raw findings, and applicable findings all match that commit. Release `v0.20.15` passed that gate on candidate `4379307d07941ee2a4e8d6fbeb0686d519c4753e`, whose whole source tree exactly matched the published producer above. The release workflow separately built the actual published producer twice; candidate bytes were not substituted. This repository still does not deploy the service by itself.
 
 Maintainers can create an immutable release from the current `main` commit with the manual **Release Catalog Service** GitHub workflow. The workflow accepts a semantic release tag, rejects an existing tag or release, and publishes `catalog-service` and `catalog-service-sqlite` together in one checksummed archive.
 
