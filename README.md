@@ -9,7 +9,7 @@ PastureStack is an independent community effort to preserve, audit, and moderniz
 ## Project status
 
 The current published numeric maintenance release is
-[`v0.20.14`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.14),
+[`v0.20.15`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.15),
 built with Go 1.27.3. The actual archive and both binary producers are source
 commit `9b0c0f40dc81eb83673df85f3de96f7e6f89b985`. Its archive, archive checksum,
 license and license checksum are published immutable assets. Official
@@ -96,8 +96,8 @@ Use `platformVersion` when filtering templates and upgrade links. The historical
 
 From a Docker-capable Linux host:
 
-To rebuild the published source, check out `v0.20.14` and set
-`VERSION_OVERRIDE=v0.20.14`. The default Go 1.27.3 archive pins cover
+To rebuild the published source, check out `v0.20.15` and set
+`VERSION_OVERRIDE=v0.20.15`. The default Go 1.27.3 archive pins cover
 Linux/amd64 and Linux/armv6l; the published artifact qualification covers
 Linux/amd64 only, not an ARM binary build.
 
@@ -109,10 +109,14 @@ make package
 
 Catalog repository URLs must be supplied explicitly in a reviewed configuration. See [COMPATIBILITY.md](COMPATIBILITY.md), [SECURITY.md](SECURITY.md), and [ORIGIN.md](ORIGIN.md).
 
-Before a future release is approved, run the **Security release gate** workflow against the exact candidate commit and verify that its source revision, reproducible archive checksum, SBOMs, raw findings, and applicable findings all match that commit. Release `v0.20.14` passed that gate on candidate `a3f1b047ae43efbeb52707074f3a7477e5942de6`, whose whole source tree exactly matched the published producer above. The release workflow separately built the actual published producer twice; candidate bytes were not substituted. This repository still does not deploy the service by itself.
+Before a future release is approved, run the **Security release gate** workflow against the exact candidate commit and verify that its source revision, reproducible archive checksum, SBOMs, raw findings, and applicable findings all match that commit. Release `v0.20.15` passed that gate on candidate `a3f1b047ae43efbeb52707074f3a7477e5942de6`, whose whole source tree exactly matched the published producer above. The release workflow separately built the actual published producer twice; candidate bytes were not substituted. This repository still does not deploy the service by itself.
 
 Maintainers can create an immutable release from the current `main` commit with the manual **Release Catalog Service** GitHub workflow. The workflow accepts a semantic release tag, rejects an existing tag or release, and publishes `catalog-service` and `catalog-service-sqlite` together in one checksummed archive.
 
 ## License and attribution
 
 The inherited project remains licensed under [Apache License 2.0](LICENSE). Copyright and attribution for inherited work and vendored dependencies remain with their respective authors and contributors. PastureStack contributors claim authorship only for their own changes.
+
+## October 2026 security maintenance
+
+Maintained Go builds select the patched Go 1.27.3 compiler without raising the existing Go language requirement. Ubuntu build/runtime stages apply the checksum-pinned `ca-certificates 20260816ubuntu0.26.04.1` security package after their frozen APT baseline; the final trust store and installed version are verified. Python tooling uses the patched pip/CA path; CI interpreter pins remain on the Python 3.14 series. Release artifacts must pass the repository's existing checks before publication.

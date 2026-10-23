@@ -2,7 +2,7 @@ FROM ubuntu:26.04@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea264
 
 COPY ubuntu-apt.lock /licenses/ubuntu-apt.lock
 COPY --chmod=0755 scripts/install-snapshot-packages /usr/local/bin/install-snapshot-packages
-ADD --checksum=sha256:6077d27c6b6f8b23590cb01ff877ed8c804a67a5442cc32b5a33da10d2bd0e90 https://archive.ubuntu.com/ubuntu/pool/main/c/ca-certificates/ca-certificates_20260601~26.04.1_all.deb /tmp/ca-certificates.deb
+ADD --checksum=sha256:5b6326f1932cfd7be57130561dc78192f09ed9f58bfbe6606ed0c50510c3b6cd https://archive.ubuntu.com/ubuntu/pool/main/c/ca-certificates/ca-certificates_20260816ubuntu0.26.04.1_all.deb /tmp/ca-certificates.deb
 ADD --checksum=sha256:2c418a61d7165d0cde01d9cb05ae025cc41fc75ef6d3f095996bd045ba0945dc https://security.ubuntu.com/ubuntu/pool/main/c/curl/curl_8.18.0-1ubuntu2.8_amd64.deb /tmp/curl.deb
 ADD --checksum=sha256:8db913e1fa5a694ca6ba7b828bd18c5204e6853ac07fe7ed9c6e1f94e3444d8e https://security.ubuntu.com/ubuntu/pool/main/c/curl/libcurl3t64-gnutls_8.18.0-1ubuntu2.8_amd64.deb /tmp/libcurl3t64-gnutls.deb
 ADD --checksum=sha256:7c0b37592f83a629cc22f0c98effa176da9edbd6d77b3f38184a9d0ddc5e0266 https://security.ubuntu.com/ubuntu/pool/main/c/curl/libcurl4t64_8.18.0-1ubuntu2.8_amd64.deb /tmp/libcurl4t64.deb
@@ -24,6 +24,7 @@ ENV HOST_ARCH=${DAPPER_HOST_ARCH} \
     PATH=/opt/tox/bin:/go/bin:/usr/local/go/bin:${PATH} \
     SHELL=/bin/bash
 
+ADD --checksum=sha256:5b6326f1932cfd7be57130561dc78192f09ed9f58bfbe6606ed0c50510c3b6cd https://archive.ubuntu.com/ubuntu/pool/main/c/ca-certificates/ca-certificates_20260816ubuntu0.26.04.1_all.deb /opt/pasturestack-ca-certificates.deb
 RUN set -eux; \
     . /licenses/ubuntu-apt.lock; \
     rm -f /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources; \
@@ -41,7 +42,7 @@ RUN set -eux; \
     apt-get update; \
     install-snapshot-packages install -y --no-install-recommends \
         bash="${UBUNTU_APT_BASH_VERSION}" \
-        ca-certificates="${UBUNTU_APT_CA_CERTIFICATES_VERSION}" \
+        ca-certificates="${UBUNTU_APT_CA_CERTIFICATES_BOOTSTRAP_VERSION}" \
         curl="${UBUNTU_APT_CURL_BOOTSTRAP_VERSION}" \
         file="${UBUNTU_APT_FILE_VERSION}" \
         gcc="${UBUNTU_APT_GCC_VERSION}" \
@@ -63,6 +64,11 @@ RUN set -eux; \
     for package in curl libcurl3t64-gnutls libcurl4t64; do \
         test "$(dpkg-query -W -f='${Version}' "${package}")" = "${UBUNTU_APT_CURL_VERSION}"; \
     done; \
+    dpkg -i /opt/pasturestack-ca-certificates.deb && \
+    update-ca-certificates --fresh && \
+    test "$(dpkg-query -W -f='${Version}' ca-certificates)" = '20260816ubuntu0.26.04.1' && \
+    test ! -e /usr/share/ca-certificates/mozilla/emSign_ECC_Root_CA_-_G3.crt && \
+    rm -f /opt/pasturestack-ca-certificates.deb && \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/bin/pebble; \
     rm -f /bin/sh; \
@@ -71,6 +77,7 @@ RUN set -eux; \
 RUN git config --system --add safe.directory '*'
 
 COPY integration/build-requirements.lock /tmp/catalog-service-build-requirements.lock
+ADD --checksum=sha256:fd7f4dfa8190e014013b9f08f3e973f4e4c26ffd179a204895533a7254813a70 https://files.pythonhosted.org/packages/3f/06/3e4420302363fbb71be3c7f35ce042f54bfca330e3e66b3a2e3c4cca579f/pip-26.2.2-py3-none-any.whl /tmp/pip-26.2.2-py3-none-any.whl
 RUN case "${DAPPER_HOST_ARCH}" in \
         amd64) go_arch=amd64; go_sha="${GO_SHA256_amd64}" ;; \
         arm) go_arch=armv6l; go_sha="${GO_SHA256_arm}" ;; \
@@ -81,8 +88,9 @@ RUN case "${DAPPER_HOST_ARCH}" in \
     tar -C /usr/local -xzf /tmp/go.tgz && \
     rm -f /tmp/go.tgz && \
     /usr/bin/python3 -m venv --without-pip /opt/tox && \
-    /usr/bin/python3 -m pip --python /opt/tox install --no-cache-dir --require-hashes \
+    PYTHONPATH=/tmp/pip-26.2.2-py3-none-any.whl /usr/bin/python3 -m pip --python /opt/tox install --no-cache-dir --require-hashes \
         --requirement /tmp/catalog-service-build-requirements.lock && \
+    rm -f /tmp/pip-26.2.2-py3-none-any.whl && \
     mkdir -p /go/bin /go/src && \
     go version && \
     python3 --version && \
