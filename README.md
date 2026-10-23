@@ -120,3 +120,7 @@ The inherited project remains licensed under [Apache License 2.0](LICENSE). Copy
 ## October 2026 security maintenance
 
 Maintained Go builds select the patched Go 1.27.3 compiler without raising the existing Go language requirement. Ubuntu build/runtime stages apply the checksum-pinned `ca-certificates 20260816ubuntu0.26.04.1` security package after their frozen APT baseline; the final trust store and installed version are verified. Python tooling uses the patched pip/CA path; CI interpreter pins remain on the Python 3.14 series. Release artifacts must pass the repository's existing checks before publication.
+# Build-only pip security refresh
+
+The installer bootstrap is reproducibly rebuilt from official pip 26.2.2 and urllib3 2.8.0 using the pinned upstream vendoring machinery. Its local version is `26.2.2+pasturestack.1`, not an official PyPA release. The expected wheel SHA-256 is `be5f63d537bbe611dc422fabb6740a44b5997888b592888df5091727f023802a`. Streaming and TLS controls run before dependency download; installers and seed wheels are then retired as before. This build-only change does not replace the already verified v0.20.15 runtime archive.
+
