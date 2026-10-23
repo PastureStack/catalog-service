@@ -308,6 +308,7 @@ jobs:
           test "$product_high" -eq 0
           test "$product_medium" -eq 0
           test "$product_low" -eq 0
+          test "$(jq '[.Results[]?.Vulnerabilities[]?] | length' evidence/product-security.json)" -eq 0
           test "$dapper_applicable_critical" -eq 0
           test "$dapper_applicable_high" -eq 0
           test "$dapper_secrets" -eq 0
