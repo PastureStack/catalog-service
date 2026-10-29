@@ -4,9 +4,9 @@ The migration preserves `/v1-catalog` routes, generated catalog schemas, databas
 
 The published typed metadata interface, `GET /v1-catalog/ai/templates`, keeps
 project/global visibility, bounded paging and logical template/version IDs.
-The v0.20.17 candidate adds fixed launch-options/material/validate routes for
-the matching Engine. It does not replace ordinary Catalog resource IDs, migrate
-database content, render Compose or create Stack resources.
+The published v0.20.17 adds fixed launch-options/material/validate routes for
+Engine 0.183.359's matching private boundary. It does not replace ordinary
+Catalog resource IDs, migrate database content, render Compose or create Stack resources.
 
 The ordinary version API and the typed owner share the existing question-file
 precedence. Typed safe definitions omit defaults; sensitive inputs and resource
@@ -17,11 +17,13 @@ explicit string variables. Source changes invalidate old plans.
 The matching Engine must deny `/v1-catalog/ai` at all public proxy entry points
 and redirects. Actual loopback transport is required but is not an independent
 authorization grant: active actor/project admission, platform Catalog read,
-destination create/update/reference grants, Key revision/revocation, human
+destination read/create/update/reference grants, Key revision/revocation, human
 confirmation and private-answer protection remain Engine responsibilities.
 Public Catalog UI/API flows keep their existing authorization and payloads.
 Version bounds are metadata, never an automatic compatibility or launch verdict.
-Component source/unit gates and full runtime acceptance remain separate.
+Component CI and original public assets passed verification; matching Server559
+runtime/browser/role/weak-model acceptance remains pending. An older Engine
+without the private proxy boundary is not a compatible launch gateway.
 
 Legacy metadata parsing remains compatible without the archived general-purpose Compose parser. Top-level `catalog` and `.catalog` blocks continue to work, Compose v2 continues to read `services[".catalog"]`, and an explicit top-level block keeps precedence when both forms are present. Unrelated service definitions are not interpreted by Catalog Service.
 

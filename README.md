@@ -9,30 +9,30 @@ PastureStack is an independent community effort to preserve, audit, and moderniz
 ## Project status
 
 The current published numeric maintenance release is
-[`v0.20.16`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.16),
+[`v0.20.17`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.17),
 built with Go 1.27.3 from producer
-`7e17e8c6d76bcd96116012b0fe0ebc1a20d53cbc`. Its original archive, both binaries
-and public evidence were anonymously verified. The source of those immutable
-assets is distinct from later documentation or merge commits. Matching
+`2f70559e340865eb6243662ed33d8cbc7b1efa90`. Its original archive, both binaries
+and all sixteen public assets were anonymously verified. Their immutable source
+is distinct from later documentation or merge commits. Matching
 Engine/Web/Server runtime acceptance remains separate.
 
-The next numeric candidate, **v0.20.17**, adds bounded launch material, safe
+This release adds bounded launch material, safe
 question definitions and owner-side answer validation for Engine-owned Catalog
 launch plans. Catalog retains the existing question parser and constraints;
 it returns explicit string variables without filling private defaults.
 Compose rendering and Stack creation stay with their existing owners. See
 [the launch owner contract](docs/ai-catalog-launch-owner.md) and
-[candidate release note](docs/releases/catalog-service-0.20.17.md).
+[release note](docs/releases/catalog-service-0.20.17.md).
 
-These private routes require the matching Engine to block the complete
-`/v1-catalog/ai` namespace at every public proxy entrance and redirect. The real
+These private routes require Engine 0.183.359's matching boundary to block the
+complete `/v1-catalog/ai` namespace at every public proxy entrance and redirect. The real
 loopback peer and effective project header identify the internal transport only;
 they do not replace caller/Key authorization. The Engine owns live account and
 Key limits, source CAS, human-only inputs, encrypted private plans and exact
-delegated execution. This candidate is unpublished; official gates and matching
-runtime/browser/role/weak-model acceptance are pending.
+delegated execution. Official component gates and publication passed; matching
+Server559 runtime/browser/role/weak-model acceptance remains pending.
 
-The candidate builder applies Ubuntu's checksum-pinned
+The release builder applies Ubuntu's checksum-pinned
 `libbrotli1=1.2.0-3ubuntu0.1` same-series security update for
 [USN-8956-1](https://ubuntu.com/security/notices/USN-8956-1). Installed package
 identity/version/architecture are checked before the existing raw-to-VEX
@@ -115,8 +115,8 @@ Use `platformVersion` when filtering templates and upgrade links. The historical
 
 From a Docker-capable Linux host:
 
-To rebuild the published source, check out `v0.20.16` and set
-`VERSION_OVERRIDE=v0.20.16`. The default Go 1.27.3 archive pins cover
+To rebuild the published source, check out `v0.20.17` and set
+`VERSION_OVERRIDE=v0.20.17`. The default Go 1.27.3 archive pins cover
 Linux/amd64 and Linux/armv6l; the published artifact qualification covers
 Linux/amd64 only, not an ARM binary build.
 
