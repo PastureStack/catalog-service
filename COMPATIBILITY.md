@@ -2,6 +2,17 @@
 
 The migration preserves `/v1-catalog` routes, generated catalog schemas, database table names, template and version resource fields, legacy Compose metadata, version suffix ordering, and upgrade-link behavior.
 
+The v0.20.16 candidate adds only `GET /v1-catalog/ai/templates`, a private
+same-container metadata contract for an authenticated Engine gateway. It uses
+the effective project/global visibility of the original Catalog API, with
+template/version projection, bounded paging and stable logical identifiers.
+It does not replace public Catalog resource IDs or migrate/delete catalog
+data. Caller authorization and live Key platform-read evaluation remain in
+the Engine; forwarding a client role or IP header cannot authorize this route.
+Version bounds are metadata, not a compatibility or launch verdict. Existing
+files, questions, readme and launch APIs remain unchanged and outside this
+typed interface. Component publication and runtime acceptance remain separate.
+
 Legacy metadata parsing remains compatible without the archived general-purpose Compose parser. Top-level `catalog` and `.catalog` blocks continue to work, Compose v2 continues to read `services[".catalog"]`, and an explicit top-level block keeps precedence when both forms are present. Unrelated service definitions are not interpreted by Catalog Service.
 
 `platformVersion` is the preferred public query parameter. Historical version-query names, `rancher-compose.yml`, `minimumRancherVersion` and `maximumRancherVersion` schema fields, generated `RancherCompose` and `RancherClient` types, legacy repository fixtures, and vendored `github.com/rancher/*` paths remain only as catalog-data, HTTP, or inherited dependency contracts.

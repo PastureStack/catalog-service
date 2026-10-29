@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/PastureStack/catalog-service/internal/aimetadata"
 	"net/http"
 
 	api "github.com/PastureStack/catalog-service/internal/catalogapi"
@@ -82,6 +83,13 @@ func NewRouter(manager *manager.Manager, gormDb *gorm.DB) *mux.Router {
 
 	// API framework routes
 	router := mux.NewRouter().StrictSlash(true)
+	var metadataSource aimetadata.Source
+	if gormDb != nil {
+		if sqlDB, err := gormDb.DB(); err == nil {
+			metadataSource = aimetadata.SQLSource{DB: sqlDB}
+		}
+	}
+	router.Methods("GET").Path(aimetadata.Path).Name("GetAIMetadata").Handler(aimetadata.NewHandler(metadataSource))
 
 	router.Methods("GET").Path("/").Handler(api.VersionsHandler(schemas, "v1-catalog"))
 	router.Methods("GET").Path("/v1-catalog/schemas").Handler(api.SchemasHandler(schemas))
