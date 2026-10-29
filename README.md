@@ -17,6 +17,21 @@ publication and reproducible packaging checks passed; matching Server
 integration and acceptance remain separate and are not established by this
 component release.
 
+The next numeric candidate, **v0.20.16**, adds a private loopback-only Catalog
+metadata interface for typed Engine reads. Template and version IDs derive
+from logical catalog identity rather than disposable cache rows. Bounded
+responses exclude repository credentials, launch files, questions, defaults
+and readme; existing Catalog APIs keep their contracts. See
+[the metadata contract](docs/ai-metadata.md). This candidate is not published;
+its official Go 1.27.3/security gates and matching Engine/Web runtime
+integration are pending.
+
+The candidate builder applies Ubuntu's checksum-pinned
+`libbrotli1=1.2.0-3ubuntu0.1` same-series security update for
+[USN-8956-1](https://ubuntu.com/security/notices/USN-8956-1). Installed package
+identity/version/architecture are checked before the existing raw-to-VEX
+equality gate; no Brotli VEX exception is added.
+
 Earlier isolated upgrade checks confirmed removal of empty Git-metadata and
 README-only index entries while preserving valid catalog content, plus the
 remaining upgrade steps and cleanup of an existing catalog. That evidence
