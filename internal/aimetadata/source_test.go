@@ -23,6 +23,7 @@ var recordedQuery string
 var recordedArgs []driver.NamedValue
 var fixtureRows [][]driver.Value
 var fixtureVersionRows [][]driver.Value
+var fixtureLaunchRows [][]driver.Value
 var queryCount int
 
 func (captureDriver) Open(string) (driver.Conn, error)        { return captureConnection{}, nil }
@@ -34,6 +35,9 @@ func (captureConnection) QueryContext(_ context.Context, q string, args []driver
 	recordedArgs = append([]driver.NamedValue(nil), args...)
 	queryCount++
 	rows := [][]driver.Value{}
+	if strings.Contains(q, "LEFT JOIN catalog_file") {
+		return &captureRows{rows: fixtureLaunchRows}, nil
+	}
 	if strings.Contains(q, "FROM catalog_version v") {
 		point := args[2].Value.(int64)
 		limit := args[len(args)-1].Value.(int64)
@@ -85,6 +89,7 @@ func sourceFixture(t *testing.T) SQLSource {
 	t.Cleanup(func() { db.Close() })
 	queryCount = 0
 	fixtureVersionRows = nil
+	fixtureLaunchRows = nil
 	fixtureRows = [][]driver.Value{sourceRow(51, "https://example.test/repo.git")}
 	return SQLSource{DB: db}
 }

@@ -2,16 +2,26 @@
 
 The migration preserves `/v1-catalog` routes, generated catalog schemas, database table names, template and version resource fields, legacy Compose metadata, version suffix ordering, and upgrade-link behavior.
 
-The v0.20.16 candidate adds only `GET /v1-catalog/ai/templates`, a private
-same-container metadata contract for an authenticated Engine gateway. It uses
-the effective project/global visibility of the original Catalog API, with
-template/version projection, bounded paging and stable logical identifiers.
-It does not replace public Catalog resource IDs or migrate/delete catalog
-data. Caller authorization and live Key platform-read evaluation remain in
-the Engine; forwarding a client role or IP header cannot authorize this route.
-Version bounds are metadata, not a compatibility or launch verdict. Existing
-files, questions, readme and launch APIs remain unchanged and outside this
-typed interface. Component publication and runtime acceptance remain separate.
+The published typed metadata interface, `GET /v1-catalog/ai/templates`, keeps
+project/global visibility, bounded paging and logical template/version IDs.
+The v0.20.17 candidate adds fixed launch-options/material/validate routes for
+the matching Engine. It does not replace ordinary Catalog resource IDs, migrate
+database content, render Compose or create Stack resources.
+
+The ordinary version API and the typed owner share the existing question-file
+precedence. Typed safe definitions omit defaults; sensitive inputs and resource
+references require explicit channels even when optional or privately defaulted.
+Validation re-reads the same source and checks its digest before returning
+explicit string variables. Source changes invalidate old plans.
+
+The matching Engine must deny `/v1-catalog/ai` at all public proxy entry points
+and redirects. Actual loopback transport is required but is not an independent
+authorization grant: active actor/project admission, platform Catalog read,
+destination create/update/reference grants, Key revision/revocation, human
+confirmation and private-answer protection remain Engine responsibilities.
+Public Catalog UI/API flows keep their existing authorization and payloads.
+Version bounds are metadata, never an automatic compatibility or launch verdict.
+Component source/unit gates and full runtime acceptance remain separate.
 
 Legacy metadata parsing remains compatible without the archived general-purpose Compose parser. Top-level `catalog` and `.catalog` blocks continue to work, Compose v2 continues to read `services[".catalog"]`, and an explicit top-level block keeps precedence when both forms are present. Unrelated service definitions are not interpreted by Catalog Service.
 

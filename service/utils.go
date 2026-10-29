@@ -55,20 +55,11 @@ func URLEncoded(str string) string {
 }
 
 func generateVersionId(catalogName string, template model.Template, version model.Version) string {
-	versionId := generateTemplateId(catalogName, template)
-	if version.Revision == nil {
-		versionId += fmt.Sprintf(":%s", version.Version)
-	} else {
-		versionId += fmt.Sprintf(":%d", *version.Revision)
-	}
-	return versionId
+	return model.VersionAPIID(catalogName, template, version)
 }
 
 func generateTemplateId(catalogName string, template model.Template) string {
-	if template.Base == "" {
-		return fmt.Sprintf("%s:%s", catalogName, template.FolderName)
-	}
-	return fmt.Sprintf("%s:%s*%s", catalogName, template.Base, template.FolderName)
+	return model.TemplateAPIID(catalogName, template)
 }
 
 func catalogResource(catalog model.Catalog, apiContext *api.APIContext, envId string) *model.CatalogResource {
@@ -180,28 +171,9 @@ func versionResource(apiContext *api.APIContext, catalogName string, template mo
 		filesMap[file.Name] = file.Contents
 	}
 
-	var questions []model.Question
-	templateVersion, templateVersionExists := filesMap["template-version.yml"]
-	compose, composeExists := filesMap["compose.yml"]
-	legacyCompose, legacyComposeExists := filesMap["rancher-compose.yml"]
-	if templateVersionExists {
-		catalogInfo, err := parse.CatalogInfoFromTemplateVersion([]byte(templateVersion))
-		if err != nil {
-			return nil, err
-		}
-		questions = catalogInfo.Questions
-	} else if composeExists {
-		catalogInfo, err := parse.CatalogInfoFromCompose([]byte(compose))
-		if err != nil {
-			return nil, err
-		}
-		questions = catalogInfo.Questions
-	} else if legacyComposeExists {
-		catalogInfo, err := parse.CatalogInfoFromLegacyCompose([]byte(legacyCompose))
-		if err != nil {
-			return nil, err
-		}
-		questions = catalogInfo.Questions
+	questions, err := parse.QuestionsFromFiles(filesMap)
+	if err != nil {
+		return nil, err
 	}
 
 	links := map[string]string{}
