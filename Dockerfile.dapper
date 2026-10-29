@@ -6,6 +6,7 @@ ADD --checksum=sha256:5b6326f1932cfd7be57130561dc78192f09ed9f58bfbe6606ed0c50510
 ADD --checksum=sha256:2c418a61d7165d0cde01d9cb05ae025cc41fc75ef6d3f095996bd045ba0945dc https://security.ubuntu.com/ubuntu/pool/main/c/curl/curl_8.18.0-1ubuntu2.8_amd64.deb /tmp/curl.deb
 ADD --checksum=sha256:8db913e1fa5a694ca6ba7b828bd18c5204e6853ac07fe7ed9c6e1f94e3444d8e https://security.ubuntu.com/ubuntu/pool/main/c/curl/libcurl3t64-gnutls_8.18.0-1ubuntu2.8_amd64.deb /tmp/libcurl3t64-gnutls.deb
 ADD --checksum=sha256:7c0b37592f83a629cc22f0c98effa176da9edbd6d77b3f38184a9d0ddc5e0266 https://security.ubuntu.com/ubuntu/pool/main/c/curl/libcurl4t64_8.18.0-1ubuntu2.8_amd64.deb /tmp/libcurl4t64.deb
+ADD --checksum=sha256:bedeef1cf3268f90338c411cdb0a45b224d0660fd2240f310f380316c8244606 https://security.ubuntu.com/ubuntu/pool/main/b/brotli/libbrotli1_1.2.0-3ubuntu0.1_amd64.deb /tmp/libbrotli1.deb
 
 ARG DAPPER_HOST_ARCH=amd64
 ARG GO_VERSION=1.27.3
@@ -64,6 +65,12 @@ RUN set -eux; \
     for package in curl libcurl3t64-gnutls libcurl4t64; do \
         test "$(dpkg-query -W -f='${Version}' "${package}")" = "${UBUNTU_APT_CURL_VERSION}"; \
     done; \
+    test "$(dpkg-query -W -f='${db:Status-Status}' libbrotli1)" = installed; \
+    test "$(dpkg-deb -f /tmp/libbrotli1.deb Package)" = libbrotli1; \
+    test "$(dpkg-deb -f /tmp/libbrotli1.deb Version)" = "${UBUNTU_APT_BROTLI_VERSION}"; \
+    test "$(dpkg-deb -f /tmp/libbrotli1.deb Architecture)" = amd64; \
+    dpkg -i /tmp/libbrotli1.deb; \
+    test "$(dpkg-query -W -f='${Version}' libbrotli1)" = "${UBUNTU_APT_BROTLI_VERSION}"; \
     dpkg -i /opt/pasturestack-ca-certificates.deb && \
     update-ca-certificates --fresh && \
     test "$(dpkg-query -W -f='${Version}' ca-certificates)" = '20260816ubuntu0.26.04.1' && \

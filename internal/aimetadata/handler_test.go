@@ -3,6 +3,7 @@ package aimetadata
 import (
 	"context"
 	"crypto/sha256"
+	"database/sql/driver"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -32,7 +33,29 @@ func serve(h http.Handler, r *http.Request) *httptest.ResponseRecorder {
 }
 func template(id int) Template {
 	digest := sha256.Sum256([]byte(fmt.Sprintf("fixture-%d", id)))
-	return Template{ID: "ctm-" + hex.EncodeToString(digest[:]), rowID: int64(id), Name: "same-name", CatalogScope: "global"}
+	return Template{ID: "ctm-" + hex.EncodeToString(digest[:]), rowID: int64(id), Name: "same-name", TemplateKey: fmt.Sprintf("folder-%d", id), CatalogScope: "global"}
+}
+
+func TestMetadataTemplateKeyUsesOnlyFolderNameAndDistinguishesDuplicateDisplayNames(t *testing.T) {
+	s := sourceFixture(t)
+	fixtureRows = [][]driver.Value{sourceRow(51, "https://example.test/repo.git"), sourceRow(52, "https://example.test/repo.git")}
+	fixtureRows[0][12] = "wordpress-small"
+	fixtureRows[1][12] = "wordpress-large"
+	rows, err := s.Read(context.Background(), "1a5", Query{}, 51)
+	if err != nil || len(rows) != 2 || rows[0].Name != rows[1].Name || rows[0].Description != rows[1].Description || rows[0].ID == rows[1].ID {
+		t.Fatal("fixture must preserve duplicate display metadata and different identity")
+	}
+	h := NewHandler(sourceFunc(func(context.Context, string, Query, int) ([]Template, error) { return rows, nil }))
+	w := serve(h, request(""))
+	if w.Code != 200 || !strings.Contains(w.Body.String(), `"templateKey":"wordpress-small"`) || !strings.Contains(w.Body.String(), `"templateKey":"wordpress-large"`) || strings.Contains(w.Body.String(), "https://") {
+		t.Fatal("safe logical template keys unavailable")
+	}
+	for _, bad := range []string{"", ".", "..", "/tmp/cache/template", `C:\cache\template`, "https://example.test/repo", "folder/child", "key\nother"} {
+		rows[0].TemplateKey = bad
+		if serve(h, request("")).Code != 503 {
+			t.Fatalf("local path or non-key accepted: %q", bad)
+		}
+	}
 }
 
 func TestMetadataCallerUsesRealRemoteAddressNotForwardedOrRoleHeaders(t *testing.T) {

@@ -10,6 +10,13 @@ typed Catalog reader. It returns project-visible and global template metadata
 and parent-bound version selection metadata without source credentials, files,
 questions, default answers, readme or arbitrary links.
 
+Safe `templateKey` values preserve logical folder identity beside the display
+name, so two folders with identical names/descriptions remain selectable. They
+cannot contain an absolute/local path, URL or separator. The builder also
+applies Ubuntu's exact checksum-pinned libbrotli1 1.2.0-3ubuntu0.1 update for
+USN-8956-1, without adding a vulnerability exception or changing the frozen
+package baseline.
+
 Logical template IDs bind the catalog scope, name, sanitized repository origin,
 branch/pin and template path. Version IDs also bind version and nullable
 revision. Cache rebuilds preserve identity; a changed source or reused cache

@@ -93,7 +93,7 @@ AND c.environment_id = t.environment_id`
 			return nil, errUnavailable
 		}
 		result = append(result, Template{ID: logical, rowID: id, Name: name.String, Description: description.String,
-			CatalogID: catalog.String, TemplateBase: base.String, CatalogScope: scope, DefaultVersion: version.String, Maintainer: maintainer.String, License: license.String})
+			CatalogID: catalog.String, TemplateBase: base.String, TemplateKey: folder.String, CatalogScope: scope, DefaultVersion: version.String, Maintainer: maintainer.String, License: license.String})
 	}
 	return result, rows.Err()
 }

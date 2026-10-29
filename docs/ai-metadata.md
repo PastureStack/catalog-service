@@ -34,7 +34,11 @@ logical hash, without accepting a caller's DB ID. A larger scan fails closed.
 
 The response is `{resourceType: "catalogTemplate", data: [...], nextMarker}`.
 Only template name, description, catalog name, base, scope, configured default
-version, maintainer and license are returned. Descriptions preserve 1024 UTF-16
+version, maintainer, license and `templateKey` are returned. The key is the
+indexer's logical single-component `FolderName`, distinct from display name;
+local cache `Path`, absolute paths, URLs, separators and control characters are
+rejected. This makes same-name/same-description templates distinguishable
+without exposing a local path. Descriptions preserve 1024 UTF-16
 units. Truncation is explicit and never splits a Unicode scalar. Catalog URLs,
 credentials, compose files, labels, questions/default answers, readme, icons
 and version links are excluded. Configured default version is metadata; this

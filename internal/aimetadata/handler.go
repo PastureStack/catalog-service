@@ -30,6 +30,7 @@ type Template struct {
 	Description     string   `json:"description"`
 	CatalogID       string   `json:"catalogId"`
 	TemplateBase    string   `json:"templateBase"`
+	TemplateKey     string   `json:"templateKey"`
 	CatalogScope    string   `json:"catalogScope"`
 	DefaultVersion  string   `json:"defaultVersion"`
 	Maintainer      string   `json:"maintainer"`
@@ -107,7 +108,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	seen := map[string]bool{}
 	for i := range rows {
 		if !metadataID.MatchString(rows[i].ID) || rows[i].rowID <= prior || seen[rows[i].ID] || query.ExactID != "" && rows[i].ID != query.ExactID ||
-			(rows[i].CatalogScope != "global" && rows[i].CatalogScope != "project") {
+			(rows[i].CatalogScope != "global" && rows[i].CatalogScope != "project") || !safeTemplateKey(rows[i].TemplateKey) {
 			fail(w, http.StatusServiceUnavailable, "CatalogMetadataUnavailable")
 			return
 		}
@@ -136,6 +137,20 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	result.Data = append(result.Data, rows...)
 	writeJSON(w, http.StatusOK, result)
+}
+
+// FolderName is the logical single-component key set by the Git/Helm indexer,
+// unlike Template.Path, which is a local cache path and is never projected.
+func safeTemplateKey(key string) bool {
+	if key == "" || key == "." || key == ".." || len(utf16.Encode([]rune(key))) > 512 {
+		return false
+	}
+	for _, value := range key {
+		if value < 0x20 || value == 0x7f || value == '/' || value == '\\' || value == ':' {
+			return false
+		}
+	}
+	return true
 }
 
 func parseQuery(r *http.Request, project string) (Query, bool) {
