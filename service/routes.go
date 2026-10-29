@@ -84,12 +84,17 @@ func NewRouter(manager *manager.Manager, gormDb *gorm.DB) *mux.Router {
 	// API framework routes
 	router := mux.NewRouter().StrictSlash(true)
 	var metadataSource aimetadata.Source
+	var launchSource aimetadata.LaunchSource
 	if gormDb != nil {
 		if sqlDB, err := gormDb.DB(); err == nil {
 			metadataSource = aimetadata.SQLSource{DB: sqlDB}
+			launchSource = aimetadata.SQLSource{DB: sqlDB}
 		}
 	}
 	router.Methods("GET").Path(aimetadata.Path).Name("GetAIMetadata").Handler(aimetadata.NewHandler(metadataSource))
+	router.Methods("GET").Path(aimetadata.LaunchOptionsPath).Name("GetAILaunchOptions").Handler(aimetadata.NewLaunchOptionsHandler(launchSource))
+	router.Methods("GET").Path(aimetadata.LaunchMaterialPath).Name("GetAILaunchMaterial").Handler(aimetadata.NewLaunchMaterialHandler(launchSource))
+	router.Methods("POST").Path(aimetadata.LaunchValidatePath).Name("ValidateAILaunch").Handler(aimetadata.NewLaunchValidateHandler(launchSource))
 
 	router.Methods("GET").Path("/").Handler(api.VersionsHandler(schemas, "v1-catalog"))
 	router.Methods("GET").Path("/v1-catalog/schemas").Handler(api.SchemasHandler(schemas))

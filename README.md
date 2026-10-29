@@ -9,22 +9,28 @@ PastureStack is an independent community effort to preserve, audit, and moderniz
 ## Project status
 
 The current published numeric maintenance release is
-[`v0.20.15`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.15),
-built with Go 1.27.3. The actual archive and both binary producers are source
-commit `6ea547594065f7f95d5877b82f0c1bc553e72640`. Its archive, archive checksum,
-license and license checksum are published immutable assets. Official
-publication and reproducible packaging checks passed; matching Server
-integration and acceptance remain separate and are not established by this
-component release.
+[`v0.20.16`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.16),
+built with Go 1.27.3 from producer
+`7e17e8c6d76bcd96116012b0fe0ebc1a20d53cbc`. Its original archive, both binaries
+and public evidence were anonymously verified. The source of those immutable
+assets is distinct from later documentation or merge commits. Matching
+Engine/Web/Server runtime acceptance remains separate.
 
-The next numeric candidate, **v0.20.16**, adds a private loopback-only Catalog
-metadata interface for typed Engine reads. Template and version IDs derive
-from logical catalog identity rather than disposable cache rows. Bounded
-responses exclude repository credentials, launch files, questions, defaults
-and readme; existing Catalog APIs keep their contracts. See
-[the metadata contract](docs/ai-metadata.md). This candidate is not published;
-its official Go 1.27.3/security gates and matching Engine/Web runtime
-integration are pending.
+The next numeric candidate, **v0.20.17**, adds bounded launch material, safe
+question definitions and owner-side answer validation for Engine-owned Catalog
+launch plans. Catalog retains the existing question parser and constraints;
+it returns explicit string variables without filling private defaults.
+Compose rendering and Stack creation stay with their existing owners. See
+[the launch owner contract](docs/ai-catalog-launch-owner.md) and
+[candidate release note](docs/releases/catalog-service-0.20.17.md).
+
+These private routes require the matching Engine to block the complete
+`/v1-catalog/ai` namespace at every public proxy entrance and redirect. The real
+loopback peer and effective project header identify the internal transport only;
+they do not replace caller/Key authorization. The Engine owns live account and
+Key limits, source CAS, human-only inputs, encrypted private plans and exact
+delegated execution. This candidate is unpublished; official gates and matching
+runtime/browser/role/weak-model acceptance are pending.
 
 The candidate builder applies Ubuntu's checksum-pinned
 `libbrotli1=1.2.0-3ubuntu0.1` same-series security update for
@@ -32,11 +38,9 @@ The candidate builder applies Ubuntu's checksum-pinned
 identity/version/architecture are checked before the existing raw-to-VEX
 equality gate; no Brotli VEX exception is added.
 
-Earlier isolated upgrade checks confirmed removal of empty Git-metadata and
-README-only index entries while preserving valid catalog content, plus the
-remaining upgrade steps and cleanup of an existing catalog. That evidence
-covers only those flows; earlier incomplete results are not retroactively
-passed. The full resource and permission matrix remains INCOMPLETE.
+Existing index, refresh and upgrade-link contracts remain in place. Component
+publication never establishes the complete Catalog create/edit/launch UI,
+resource lifecycle or permission matrix; those results remain INCOMPLETE.
 
 The disposable AMD64 release builder also pins the official curl
 8.18.0-1ubuntu2.8 payloads and certifi 2026.10.19 wheel; its existing
@@ -111,8 +115,8 @@ Use `platformVersion` when filtering templates and upgrade links. The historical
 
 From a Docker-capable Linux host:
 
-To rebuild the published source, check out `v0.20.15` and set
-`VERSION_OVERRIDE=v0.20.15`. The default Go 1.27.3 archive pins cover
+To rebuild the published source, check out `v0.20.16` and set
+`VERSION_OVERRIDE=v0.20.16`. The default Go 1.27.3 archive pins cover
 Linux/amd64 and Linux/armv6l; the published artifact qualification covers
 Linux/amd64 only, not an ARM binary build.
 
@@ -124,7 +128,7 @@ make package
 
 Catalog repository URLs must be supplied explicitly in a reviewed configuration. See [COMPATIBILITY.md](COMPATIBILITY.md), [SECURITY.md](SECURITY.md), and [ORIGIN.md](ORIGIN.md).
 
-Before a future release is approved, run the **Security release gate** workflow against the exact candidate commit and verify that its source revision, reproducible archive checksum, SBOMs, raw findings, and applicable findings all match that commit. Release `v0.20.15` passed that gate on candidate `4379307d07941ee2a4e8d6fbeb0686d519c4753e`, whose whole source tree exactly matched the published producer above. The release workflow separately built the actual published producer twice; candidate bytes were not substituted. This repository still does not deploy the service by itself.
+Before a future release is approved, run the **Security release gate** workflow against the exact candidate commit and verify that its source revision, reproducible archive checksum, SBOMs, raw findings, and applicable findings all match that commit. Official producer identity and original tested bytes must be verified independently of a later documentation commit; no candidate result is a runtime or publication claim. This repository still does not deploy the service by itself.
 
 Maintainers can create an immutable release from the current `main` commit with the manual **Release Catalog Service** GitHub workflow. The workflow accepts a semantic release tag, rejects an existing tag or release, and publishes `catalog-service` and `catalog-service-sqlite` together in one checksummed archive.
 
@@ -137,7 +141,7 @@ The inherited project remains licensed under [Apache License 2.0](LICENSE). Copy
 Maintained Go builds select the patched Go 1.27.3 compiler without raising the existing Go language requirement. Ubuntu build/runtime stages apply the checksum-pinned `ca-certificates 20260816ubuntu0.26.04.1` security package after their frozen APT baseline; the final trust store and installed version are verified. Python tooling uses the patched pip/CA path; CI interpreter pins remain on the Python 3.14 series. Release artifacts must pass the repository's existing checks before publication.
 # Build-only pip security refresh
 
-The installer bootstrap is reproducibly rebuilt from official pip 26.2.2 and urllib3 2.8.0 using the pinned upstream vendoring machinery. Its local version is `26.2.2+pasturestack.1`, not an official PyPA release. The expected wheel SHA-256 is `be5f63d537bbe611dc422fabb6740a44b5997888b592888df5091727f023802a`. Streaming and TLS controls run before dependency download; installers and seed wheels are then retired as before. This build-only change does not replace the already verified v0.20.15 runtime archive.
+The installer bootstrap is reproducibly rebuilt from official pip 26.2.2 and urllib3 2.8.0 using the pinned upstream vendoring machinery. Its local version is `26.2.2+pasturestack.1`, not an official PyPA release. The expected wheel SHA-256 is `be5f63d537bbe611dc422fabb6740a44b5997888b592888df5091727f023802a`. Streaming and TLS controls run before dependency download; installers and seed wheels are then retired as before. Build-only maintenance does not replace any published immutable runtime archive.
 
 Future release gates retain and evaluate every product severity, including UNKNOWN.
 No newly reported or officially fixable product vulnerability is accepted; this
