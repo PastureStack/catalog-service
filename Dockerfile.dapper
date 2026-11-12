@@ -9,9 +9,9 @@ ADD --checksum=sha256:7c0b37592f83a629cc22f0c98effa176da9edbd6d77b3f38184a9d0ddc
 ADD --checksum=sha256:bedeef1cf3268f90338c411cdb0a45b224d0660fd2240f310f380316c8244606 https://security.ubuntu.com/ubuntu/pool/main/b/brotli/libbrotli1_1.2.0-3ubuntu0.1_amd64.deb /tmp/libbrotli1.deb
 
 ARG DAPPER_HOST_ARCH=amd64
-ARG GO_VERSION=1.27.3
-ARG GO_SHA256_amd64=65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40
-ARG GO_SHA256_arm=d6f4e11dd7157030d7ac11c51c8f73201a2db932d593c3106b1da11cc32bfdf8
+ARG GO_VERSION=1.27.4
+ARG GO_SHA256_amd64=7226736c2339719cda28fbf3a54d71aa63bcefe376e98cef00034268dab24840
+ARG GO_SHA256_arm=e50964c41c6e187375387939e2f380de7250eba44e2259dfeb75c540d9d585c3
 ENV HOST_ARCH=${DAPPER_HOST_ARCH} \
     ARCH=${DAPPER_HOST_ARCH} \
     DEBIAN_FRONTEND=noninteractive \
@@ -40,7 +40,7 @@ RUN set -eux; \
     printf 'Types: deb\nURIs: https://snapshot.ubuntu.com/ubuntu/%s\nSuites: resolute resolute-updates resolute-backports resolute-security\nComponents: main universe\nSigned-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg\nSnapshot: no\n' \
         "${UBUNTU_APT_SNAPSHOT}" > /etc/apt/sources.list.d/pasturestack-snapshot.sources; \
     printf 'Acquire::Retries "5";\nAcquire::http::Timeout "30";\nAcquire::https::Timeout "30";\nAcquire::http::Pipeline-Depth "0";\nAcquire::https::CaInfo "/etc/ssl/certs/ca-certificates.crt";\nAcquire::https::Verify-Peer "true";\nAcquire::https::Verify-Host "true";\nAcquire::AllowInsecureRepositories "false";\nAPT::Get::AllowUnauthenticated "false";\n' > /etc/apt/apt.conf.d/80pasturestack-retries; \
-    apt-get update; \
+    apt-get update --error-on=any; \
     install-snapshot-packages install -y --no-install-recommends \
         bash="${UBUNTU_APT_BASH_VERSION}" \
         ca-certificates="${UBUNTU_APT_CA_CERTIFICATES_BOOTSTRAP_VERSION}" \

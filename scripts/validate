@@ -5,9 +5,9 @@ cd $(dirname $0)/..
 
 echo Running validation
 
-test "$(go env GOVERSION)" = go1.27.3
+test "$(go env GOVERSION)" = go1.27.4
 for binary in catalog-service catalog-service-sqlite; do
-    test "$(go version "bin/${binary}" | awk '{print $2}')" = go1.27.3
+    test "$(go version "bin/${binary}" | awk '{print $2}')" = go1.27.4
 done
 
 export CGO_CFLAGS="${CGO_CFLAGS:-} -Wno-return-local-addr"
