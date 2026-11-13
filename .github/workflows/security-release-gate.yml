@@ -228,7 +228,7 @@ jobs:
             exit 1
           fi
           docker run --rm --entrypoint sh "$DAPPER_IMAGE" -ec '
-            test "$(dpkg-query -W -f="${Version}" linux-libc-dev)" = 7.0.0-43.43
+            test "$(dpkg-query -W -f="\${Version}" linux-libc-dev)" = 7.0.0-43.43
             dpkg-query -L linux-libc-dev | while IFS= read -r file; do
               if test -f "$file"; then
                 case "$file" in
