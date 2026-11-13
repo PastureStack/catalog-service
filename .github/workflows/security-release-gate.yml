@@ -74,7 +74,7 @@ jobs:
           }
 
           run_ci
-          artifact="dist/artifacts/catalog-service-0.20.17.tar.xz"
+          artifact="dist/artifacts/catalog-service-0.20.18.tar.xz"
           test -s "$artifact"
           cp "$artifact" /tmp/catalog-service-first.tar.xz
 
