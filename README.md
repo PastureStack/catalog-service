@@ -9,8 +9,8 @@ PastureStack is an independent community effort to preserve, audit, and moderniz
 ## Project status
 
 The current published numeric maintenance release is
-[`v0.20.17`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.17),
-built with Go 1.27.3 from producer
+[`v0.20.18`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.18),
+built with Go 1.27.4 from producer
 `2f70559e340865eb6243662ed33d8cbc7b1efa90`. Its original archive, both binaries
 and all sixteen public assets were anonymously verified. Their immutable source
 is distinct from later documentation or merge commits. Matching
@@ -64,7 +64,7 @@ mistaken for version folders. This repairs previously empty root README fields
 from repository bytes; version README files, icons and valid numeric or semantic
 versions retain their existing contents and interpretation.
 
-It retains the Ubuntu 26.04, database, dependency, version-filter, TLS, and build maintenance completed after the preserved upstream boundary, with the compiler updated to Go 1.27.3 for the crypto/x509 fix CVE-2026-111943. Product-owned imports, binaries, default configuration, version query, and operator messages use PastureStack naming. The default `repo.json` is intentionally empty; no unreviewed catalog is cloned. Python build and integration-test dependencies are transitively pinned with package hashes and installed from an offline wheelhouse inside the disposable build image. The historical `--track` flag is accepted only for command-line compatibility; the service does not read or transmit an installation identifier. MySQL DSNs are created from the driver's reviewed defaults so existing `mysql_native_password` installations remain compatible after the driver upgrade.
+It retains the Ubuntu 26.04, database, dependency, version-filter, TLS, and build maintenance completed after the preserved upstream boundary, with the compiler updated to Go 1.27.4 for the crypto/x509 fix CVE-2026-111943. Product-owned imports, binaries, default configuration, version query, and operator messages use PastureStack naming. The default `repo.json` is intentionally empty; no unreviewed catalog is cloned. Python build and integration-test dependencies are transitively pinned with package hashes and installed from an offline wheelhouse inside the disposable build image. The historical `--track` flag is accepted only for command-line compatibility; the service does not read or transmit an installation identifier. MySQL DSNs are created from the driver's reviewed defaults so existing `mysql_native_password` installations remain compatible after the driver upgrade.
 
 The archived `docker/libcompose` parser and the unmaintained `go-rancher` client are no longer imported or vendored. A small project-owned compatibility layer now emits only the resource, schema, link, and JSON shapes this service actually uses. Catalog metadata is decoded through YAML v3 with focused compatibility tests for top-level legacy metadata, Compose v2 service metadata, alias fields, precedence, malformed input, and empty metadata. A source gate prevents the removed parser from returning.
 
@@ -115,8 +115,8 @@ Use `platformVersion` when filtering templates and upgrade links. The historical
 
 From a Docker-capable Linux host:
 
-To rebuild the published source, check out `v0.20.17` and set
-`VERSION_OVERRIDE=v0.20.17`. The default Go 1.27.3 archive pins cover
+To rebuild the published source, check out `v0.20.18` and set
+`VERSION_OVERRIDE=v0.20.18`. The default Go 1.27.4 archive pins cover
 Linux/amd64 and Linux/armv6l; the published artifact qualification covers
 Linux/amd64 only, not an ARM binary build.
 
@@ -138,7 +138,7 @@ The inherited project remains licensed under [Apache License 2.0](LICENSE). Copy
 
 ## October 2026 security maintenance
 
-Maintained Go builds select the patched Go 1.27.3 compiler without raising the existing Go language requirement. Ubuntu build/runtime stages apply the checksum-pinned `ca-certificates 20260816ubuntu0.26.04.1` security package after their frozen APT baseline; the final trust store and installed version are verified. Python tooling uses the patched pip/CA path; CI interpreter pins remain on the Python 3.14 series. Release artifacts must pass the repository's existing checks before publication.
+Maintained Go builds select the patched Go 1.27.4 compiler without raising the existing Go language requirement. Ubuntu build/runtime stages apply the checksum-pinned `ca-certificates 20260816ubuntu0.26.04.1` security package after their frozen APT baseline; the final trust store and installed version are verified. Python tooling uses the patched pip/CA path; CI interpreter pins remain on the Python 3.14 series. Release artifacts must pass the repository's existing checks before publication.
 # Build-only pip security refresh
 
 The installer bootstrap is reproducibly rebuilt from official pip 26.2.2 and urllib3 2.8.0 using the pinned upstream vendoring machinery. Its local version is `26.2.2+pasturestack.1`, not an official PyPA release. The expected wheel SHA-256 is `be5f63d537bbe611dc422fabb6740a44b5997888b592888df5091727f023802a`. Streaming and TLS controls run before dependency download; installers and seed wheels are then retired as before. Build-only maintenance does not replace any published immutable runtime archive.
