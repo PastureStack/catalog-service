@@ -38,7 +38,7 @@ jobs:
           git rev-parse HEAD > evidence/source-revision.txt
           sha256sum \
             Dockerfile.dapper \
-            ubuntu-apt.lock \
+            ubuntu-apt.lock ubuntu-security-packages.lock scripts/install-ubuntu-security-updates \
             go.mod \
             go.sum \
             vendor/modules.txt \
@@ -227,6 +227,17 @@ jobs:
             printf 'Unexpected Linux kernel runtime package in Dapper image\n' >&2
             exit 1
           fi
+          docker run --rm --entrypoint sh "$DAPPER_IMAGE" -ec '
+            test "$(dpkg-query -W -f="${Version}" linux-libc-dev)" = 7.0.0-43.43
+            dpkg-query -L linux-libc-dev | while IFS= read -r file; do
+              if test -f "$file"; then
+                case "$file" in
+                  /usr/include/*|/usr/share/doc/linux-libc-dev/*|/usr/share/lintian/overrides/linux-libc-dev) ;;
+                  *) echo "Unexpected linux-libc-dev file: $file" >&2; exit 1 ;;
+                esac
+              fi
+            done
+          '
           docker run --rm \
             -v "$dapper_rootfs:/scan:ro" \
             -v "$PWD:/work:ro" -w /work \
