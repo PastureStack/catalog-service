@@ -81,6 +81,7 @@ jobs:
           rm -rf bin dist cache local.db integration/*.egg-info integration/core/__pycache__
           run_ci
           cmp /tmp/catalog-service-first.tar.xz "$artifact"
+          bash scripts/test-source-version-gate
           ./scripts/check-pasturestack-source
 
           mkdir -p evidence/product
