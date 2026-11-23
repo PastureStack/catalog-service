@@ -2,6 +2,7 @@ package manager
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/PastureStack/catalog-service/model"
 	"github.com/PastureStack/catalog-service/outbound"
@@ -23,14 +24,29 @@ type Manager struct {
 	db           *gorm.DB
 	sourcePolicy *outbound.SourcePolicy
 	httpClient   *outbound.Client
+	refreshMu    sync.Mutex
+	bundled      *bundledSources
 }
 
 func NewManager(cacheRoot string, configFile string, strict bool, db *gorm.DB) (*Manager, error) {
+	return NewManagerWithBundledSources(cacheRoot, configFile, strict, db, "")
+}
+
+// NewManagerWithBundledSources accepts an operator-owned local manifest. Catalog
+// API inputs cannot select local bundles or change the outbound source policy.
+func NewManagerWithBundledSources(cacheRoot string, configFile string, strict bool, db *gorm.DB, manifest string) (*Manager, error) {
 	policy, err := outbound.FromEnvironment()
 	if err != nil {
 		return nil, err
 	}
-	return newManagerWithPolicy(cacheRoot, configFile, strict, db, policy), nil
+	m := newManagerWithPolicy(cacheRoot, configFile, strict, db, policy)
+	if manifest != "" {
+		m.bundled, err = loadBundledSources(manifest)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return m, nil
 }
 
 func newManagerWithPolicy(cacheRoot string, configFile string, strict bool, db *gorm.DB, policy *outbound.SourcePolicy) *Manager {
@@ -45,6 +61,8 @@ func newManagerWithPolicy(cacheRoot string, configFile string, strict bool, db *
 }
 
 func (m *Manager) RefreshAll(update bool) error {
+	m.refreshMu.Lock()
+	defer m.refreshMu.Unlock()
 	if err := m.refreshConfigCatalogs(update); err != nil {
 		return err
 	}
@@ -52,6 +70,8 @@ func (m *Manager) RefreshAll(update bool) error {
 }
 
 func (m *Manager) Refresh(environmentId string, update bool) error {
+	m.refreshMu.Lock()
+	defer m.refreshMu.Unlock()
 	if environmentId == "global" {
 		return m.refreshConfigCatalogs(update)
 	}
@@ -87,7 +107,7 @@ func (m *Manager) refreshConfigCatalogs(update bool) error {
 		existingCatalog, err := m.lookupCatalog("global", name)
 		if err == nil && existingCatalog.URL == catalog.URL &&
 			existingCatalog.Branch == catalog.Branch &&
-			existingCatalog.PinnedCommit == catalog.PinnedCommit {
+			existingCatalog.PinnedCommit == catalog.PinnedCommit && effectiveCatalogKind(existingCatalog.Kind) == effectiveCatalogKind(catalog.Kind) {
 			catalog = existingCatalog
 		}
 		if err := m.refreshCatalog(catalog, update); err != nil {
@@ -118,17 +138,30 @@ func (m *Manager) refreshEnvironmentCatalogs(environmentId string, update bool) 
 	return nil
 }
 
-func (m *Manager) refreshCatalog(catalog model.Catalog, update bool) error {
+func (m *Manager) refreshCatalog(catalog model.Catalog, update bool) (err error) {
+	if source := m.bundled.matchCatalog(catalog); source != nil {
+		defer func() {
+			if err != nil {
+				m.bundled.setVerified(catalog, false)
+			}
+		}()
+	}
 	repoRoot, commit, catalogType, err := m.prepareRepoPath(catalog, update)
 	if err != nil {
 		return err
 	}
 	defer repoRoot.Close()
 
-	if commit == catalog.Commit {
+	if commit == catalog.Commit && !m.bundled.needsReindex(catalog) {
 		hasTemplates, err := m.catalogHasTemplates(catalog)
 		if err != nil {
 			return fmt.Errorf("Catalog index check failed: %w", err)
+		}
+		if hasTemplates {
+			hasTemplates, err = m.bundledRequirementsPresent(catalog)
+			if err != nil {
+				return err
+			}
 		}
 		if hasTemplates {
 			log.Debug("Catalog is already up to date")
@@ -143,14 +176,21 @@ func (m *Manager) refreshCatalog(catalog model.Catalog, update bool) error {
 	}
 
 	if len(errs) != 0 {
-		if m.strict {
+		if m.strict || m.bundled.matchCatalog(catalog) != nil {
 			return fmt.Errorf("%v", errs)
 		}
 		log.WithField("error_count", len(errs)).Warn("Catalog contains entries that could not be parsed")
 	}
+	if err := m.validateBundledTemplates(catalog, templates); err != nil {
+		return err
+	}
 
 	log.Debug("Updating catalog")
-	return m.updateDb(catalog, templates, commit)
+	if err := m.updateDb(catalog, templates, commit); err != nil {
+		return err
+	}
+	m.bundled.setNeedsReindex(catalog, false)
+	return nil
 }
 
 func (m *Manager) catalogHasTemplates(catalog model.Catalog) (bool, error) {

@@ -24,6 +24,7 @@ var (
 	port            int
 	cacheRoot       string
 	configFile      string
+	bundledSources  string
 	validateOnly    bool
 	sqlite          bool
 	migrateDb       bool
@@ -69,6 +70,7 @@ func init() {
 	RootCmd.PersistentFlags().IntVarP(&port, "port", "p", 8088, "")
 	RootCmd.PersistentFlags().StringVar(&cacheRoot, "cache", "./cache", "")
 	RootCmd.PersistentFlags().StringVar(&configFile, "config", "./repo.json", "")
+	RootCmd.PersistentFlags().StringVar(&bundledSources, "bundled-sources", os.Getenv("CATALOG_SERVICE_BUNDLED_SOURCES"), "Operator-owned manifest of SHA256-verified offline catalog Git bundles")
 	RootCmd.PersistentFlags().BoolVar(&validateOnly, "validate", false, "")
 	RootCmd.PersistentFlags().BoolVar(&sqlite, "sqlite", false, "")
 	RootCmd.PersistentFlags().BoolVar(&migrateDb, "migrate-db", false, "")
@@ -155,15 +157,18 @@ func run(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	m, err := manager.NewManager(cacheRoot, configFile, validateOnly, db)
+	m, err := manager.NewManagerWithBundledSources(cacheRoot, configFile, validateOnly, db, bundledSources)
 	if err != nil {
-		log.Fatal("Invalid catalog source policy")
+		log.Fatal("Invalid catalog source policy or bundled catalog manifest")
 	}
 	if validateOnly {
 		if err := m.RefreshAll(true); err != nil {
 			log.Fatal("Failed to validate catalog")
 		}
 		return
+	}
+	if err := m.BootstrapBundled(); err != nil {
+		log.Error("Bundled catalog bootstrap failed; healthcheck remains unavailable until recovery")
 	}
 	go autoRefresh(m, refreshInterval)
 

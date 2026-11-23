@@ -1,11 +1,34 @@
 package cmd
 
 import (
+	"os"
+	"os/exec"
 	"testing"
 
 	"github.com/PastureStack/catalog-service/model"
 	mysqldriver "github.com/go-sql-driver/mysql"
 )
+
+func TestBundledSourcesEnvironmentAndFlag(t *testing.T) {
+	if os.Getenv("PASTURESTACK_BUNDLED_FLAG_HELPER") == "1" {
+		if bundledSources != "/operator/from-env/manifest.json" {
+			t.Fatalf("CATALOG_SERVICE_BUNDLED_SOURCES = %q", bundledSources)
+		}
+		if err := RootCmd.ParseFlags([]string{"--bundled-sources", "/operator/from-flag/manifest.json"}); err != nil {
+			t.Fatal(err)
+		}
+		if bundledSources != "/operator/from-flag/manifest.json" {
+			t.Fatalf("explicit flag did not override env: %q", bundledSources)
+		}
+		return
+	}
+	t.Setenv("PASTURESTACK_BUNDLED_FLAG_HELPER", "1")
+	t.Setenv("CATALOG_SERVICE_BUNDLED_SOURCES", "/operator/from-env/manifest.json")
+	command := exec.Command(os.Args[0], "-test.run=^TestBundledSourcesEnvironmentAndFlag$")
+	if output, err := command.CombinedOutput(); err != nil {
+		t.Fatalf("flag/env subprocess failed: %v\n%s", err, output)
+	}
+}
 
 func TestTraditionalChineseOperatorMessage(t *testing.T) {
 	if got := operatorMessage("zh-TW", "start"); got != "正在啟動 PastureStack 應用目錄服務" {

@@ -83,6 +83,15 @@ func NewRouter(manager *manager.Manager, gormDb *gorm.DB) *mux.Router {
 
 	// API framework routes
 	router := mux.NewRouter().StrictSlash(true)
+	router.Methods(http.MethodGet).Path("/healthcheck").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if err := manager.CheckBundledReady(); err != nil {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			_, _ = w.Write([]byte(`{"ready":false}`))
+			return
+		}
+		_, _ = w.Write([]byte(`{"ready":true}`))
+	})
 	var metadataSource aimetadata.Source
 	var launchSource aimetadata.LaunchSource
 	if gormDb != nil {
