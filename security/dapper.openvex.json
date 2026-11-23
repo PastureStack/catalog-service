@@ -1,9 +1,9 @@
 {
   "@context": "https://openvex.dev/ns/v0.2.0",
-  "@id": "https://github.com/PastureStack/catalog-service/security/openvex/dapper/2026-11-13",
+  "@id": "https://github.com/PastureStack/catalog-service/security/openvex/dapper/2026-11-23",
   "author": "PastureStack contributors",
-  "timestamp": "2026-11-13T00:00:00Z",
-  "version": 6,
+  "timestamp": "2026-11-23T00:00:00Z",
+  "version": 7,
   "statements": [
     {
       "vulnerability": {
@@ -16,7 +16,7 @@
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "The exact Ubuntu 26.04 amd64 7.0.0-43.43 linux-libc-dev package contains user-space API headers only. The gate checks the native package contents, absence of kernel images and modules, and the exact current raw findings and package identity. This statement covers only these kernel implementation findings in the build stage. The two products are scanned separately."
+      "impact_statement": "Linux CNA identifies android: binder: stop saving a pointer to the VMA in drivers/android/binder_alloc.c, drivers/android/binder_alloc.h, drivers/android/binder_alloc_selftest.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2022-50240). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
     },
     {
       "vulnerability": {
@@ -29,7 +29,20 @@
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "The exact Ubuntu 26.04 amd64 7.0.0-43.43 linux-libc-dev package contains user-space API headers only. The gate checks the native package contents, absence of kernel images and modules, and the exact current raw findings and package identity. This statement covers only these kernel implementation findings in the build stage. The two products are scanned separately."
+      "impact_statement": "Linux CNA identifies ext4: guard against EA inode refcount underflow in xattr update in fs/ext4/xattr.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2025-40190). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-100081"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies xen-netback: defer xenvif_mcast_addr_list_free() in drivers/net/xen-netback/interface.c, drivers/net/xen-netback/xenbus.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-100081). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
     },
     {
       "vulnerability": {
@@ -42,7 +55,7 @@
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "The exact Ubuntu 26.04 amd64 7.0.0-43.43 linux-libc-dev package contains user-space API headers only. The gate checks the native package contents, absence of kernel images and modules, and the exact current raw findings and package identity. This statement covers only these kernel implementation findings in the build stage. The two products are scanned separately."
+      "impact_statement": "Linux CNA identifies drm/amdgpu: reject mapping a reserved doorbell to a new queue in drivers/gpu/drm/amd/amdgpu/amdgpu_userq.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-68103). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
     },
     {
       "vulnerability": {
@@ -55,7 +68,7 @@
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "The exact Ubuntu 26.04 amd64 7.0.0-43.43 linux-libc-dev package contains user-space API headers only. The gate checks the native package contents, absence of kernel images and modules, and the exact current raw findings and package identity. This statement covers only these kernel implementation findings in the build stage. The two products are scanned separately."
+      "impact_statement": "Linux CNA identifies ntfs: reject non-resident records for resident-only attributes in fs/ntfs/attrib.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-72198). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
     },
     {
       "vulnerability": {
@@ -68,7 +81,7 @@
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "The exact Ubuntu 26.04 amd64 7.0.0-43.43 linux-libc-dev package contains user-space API headers only. The gate checks the native package contents, absence of kernel images and modules, and the exact current raw findings and package identity. This statement covers only these kernel implementation findings in the build stage. The two products are scanned separately."
+      "impact_statement": "Linux CNA identifies crypto: algif_skcipher - force synchronous processing on trees without ctx->state in crypto/algif_skcipher.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-74578). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
     },
     {
       "vulnerability": {
@@ -81,7 +94,7 @@
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "The exact Ubuntu 26.04 amd64 7.0.0-43.43 linux-libc-dev package contains user-space API headers only. The gate checks the native package contents, absence of kernel images and modules, and the exact current raw findings and package identity. This statement covers only these kernel implementation findings in the build stage. The two products are scanned separately."
+      "impact_statement": "Linux CNA identifies drm/pagemap: Fix folio allocation fallback and use-after-put in drivers/gpu/drm/drm_pagemap.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-89805). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
     },
     {
       "vulnerability": {
@@ -94,7 +107,7 @@
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "The exact Ubuntu 26.04 amd64 7.0.0-43.43 linux-libc-dev package contains user-space API headers only. The gate checks the native package contents, absence of kernel images and modules, and the exact current raw findings and package identity. This statement covers only these kernel implementation findings in the build stage. The two products are scanned separately."
+      "impact_statement": "Linux CNA identifies bpf: Use array_map_meta_equal for percpu array inner map replacement in kernel/bpf/arraymap.c, tools/testing/selftests/bpf/prog_tests/percpu_array_inner_map.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-98376). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
     },
     {
       "vulnerability": {
@@ -107,7 +120,592 @@
       ],
       "status": "not_affected",
       "justification": "vulnerable_code_not_present",
-      "impact_statement": "The exact Ubuntu 26.04 amd64 7.0.0-43.43 linux-libc-dev package contains user-space API headers only. The gate checks the native package contents, absence of kernel images and modules, and the exact current raw findings and package identity. This statement covers only these kernel implementation findings in the build stage. The two products are scanned separately."
+      "impact_statement": "Linux CNA identifies ksmbd: follow SMB2 session expiration semantics in fs/smb/server/connection.c, fs/smb/server/connection.h, fs/smb/server/mgmt/user_session.c, fs/smb/server/mgmt/user_session.h, fs/smb/server/proc.c, fs/smb/server/server.c, fs/smb/server/smb2pdu.c, fs/smb/server/smb2pdu.h, fs/smb/server/stats.h. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-98420). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-98869"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies bpf: Infer zext_dst based on static register liveness analysis in include/linux/bpf_verifier.h, kernel/bpf/fixups.c, kernel/bpf/liveness.c, kernel/bpf/verifier.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-98869). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-98890"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies wifi: libertas: reject short monitor TX frames in drivers/net/wireless/marvell/libertas/tx.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-98890). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99083"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies ksmbd: fix heap out-of-bounds write in krb5_authenticate() in fs/smb/server/smb2pdu.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99083). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99109"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies smb: client: reject SetEA requests that do not fit the request buffer in fs/smb/client/cifssmb.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99109). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99110"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies smb: client: fix heap overflow in cifs_do_set_acl() in fs/smb/client/cifssmb.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99110). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99116"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies net: psp: do not inherit the Rx association on clone in net/core/sock.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99116). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99117"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies net: bridge: mcast: don't truncate the port group walk on teardown in net/bridge/br_multicast.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99117). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99126"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies s390/ctcm: Prevent XID null dereference in drivers/s390/net/ctcm_mpc.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99126). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99128"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies sctp: validate chunk length in the inqueue parser in net/sctp/inqueue.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99128). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99138"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies tcp: fix use-after-free in do_tcp_getsockopt(TCP_CC_INFO) in net/ipv4/tcp.c, net/ipv4/tcp_dctcp.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99138). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99147"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies drm/exec: don't immediately add prelocked obj to array of locked objs in drivers/gpu/drm/drm_exec.c, include/drm/drm_exec.h. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99147). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99152"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies scsi: libiscsi: Validate the task named by a management response in drivers/scsi/libiscsi.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99152). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99153"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies scsi: libiscsi: Validate the ITT reflected in a Reject PDU in drivers/scsi/libiscsi.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99153). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99154"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies scsi: libiscsi: Reject a negative task index from parse_pdu_itt in drivers/scsi/libiscsi.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99154). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99164"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies spi: imx: fix slab corruption from undersized DMA bounce buffers in drivers/spi/spi-imx.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99164). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99166"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies net: rds: fix uninitialized trans dereference in CM event handler in net/rds/rdma_transport.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99166). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99167"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies net/sched: fix use-after-free in __tcf_action_put() in net/sched/act_api.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99167). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99185"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies firewire: core: fix race condition in split transaction handling in drivers/firewire/core-transaction.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99185). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99203"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies pipe: preserve existing fasync readers on writer setup failure in fs/pipe.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99203). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99212"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies net/rds: don't let the rdma_cm destroy an id RDS still owns on route failure in net/rds/rdma_transport.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99212). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99213"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies vsock: treat TCP_CLOSING as once-established in net/vmw_vsock/af_vsock.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99213). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99218"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies coredump: hold RCU while releasing parked threads in fs/coredump.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99218). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99227"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies io_uring/waitid: prevent cancel reference wrap in io_uring/waitid.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99227). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99231"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies io_uring/waitid: own the request before clearing ->head in io_uring/waitid.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99231). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99236"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies tracing: Reject incomplete event filter expressions in kernel/trace/trace_events_filter.c, tools/testing/selftests/ftrace/test.d/filter/event-filter-incomplete.tc. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99236). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99239"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies Bluetooth: L2CAP: refuse __l2cap_chan_add if chan already has conn in net/bluetooth/l2cap_core.c, net/bluetooth/l2cap_sock.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99239). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99260"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies ntfs: fix resident conversion in ntfs_new_attr_flags in fs/ntfs/ea.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99260). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99270"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies tcp: Fix potential UAF in reqsk_timer_handler() in net/ipv4/inet_connection_sock.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99270). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99272"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies smb: client: validate the data area in SMB2_read() in fs/smb/client/smb2pdu.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99272). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99274"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies smb: client: fix fiemap wild read on empty truncated response in fs/smb/client/smb2ops.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99274). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99275"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies smb: client: reject short SESSION_SETUP responses in fs/smb/client/smb2misc.c, fs/smb/client/smb2pdu.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99275). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99282"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies net/sched: sch_teql: fix use-after-free on lower qdisc drop in net/sched/sch_teql.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99282). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99284"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies net: skbuff: propagate shared-frag marker in skb_zerocopy() in net/core/skbuff.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99284). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99287"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies xen-netback: Zero out sring pointers on unmap in drivers/net/xen-netback/netback.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99287). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99288"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies inet: reject unhashed sockets during established lookups in net/ipv4/inet_connection_sock.c, net/ipv4/inet_hashtables.c, net/ipv4/syncookies.c, net/ipv4/tcp_input.c, net/ipv6/inet6_hashtables.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99288). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99290"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies ksmbd: fix use-after-free after a failed durable reconnect in fs/smb/server/smb2pdu.c, fs/smb/server/vfs_cache.c, fs/smb/server/vfs_cache.h. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99290). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99292"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies smb: client: fix slab-out-of-bounds write in id_mode_to_cifs_acl() in fs/smb/client/cifsacl.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99292). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99295"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies smb: client: stop processing a read response after a receive error in fs/smb/client/transport.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99295). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99302"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies nvmet-rdma: reject short connection requests in drivers/nvme/target/rdma.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99302). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99304"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies ceph: fix integer overflow in the snap trace bounds check in fs/ceph/snap.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99304). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99306"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies ceph: reject mdsmaps that claim more than CEPH_MAX_MDS ranks in fs/ceph/mdsmap.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99306). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99310"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies nfsd: hold cl_lock in client_has_openowners() in fs/nfsd/nfs4state.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99310). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99311"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies udf: fix return value for non-recorded-allocated extents in udf_map_block() in fs/udf/inode.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99311). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99312"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies KVM: x86: Unconditionally reset MMU context when emulating INIT in arch/x86/kvm/x86.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99312). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2026-99317"
+      },
+      "products": [
+        {
+          "@id": "pkg:deb/ubuntu/linux-libc-dev@7.0.0-43.43?arch=amd64&distro=ubuntu-26.04"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_present",
+      "impact_statement": "Linux CNA identifies ALSA: hwdep: Serialize DSP load requests in include/sound/hwdep.h, sound/core/hwdep.c. These are private kernel implementation/test files, not exported UAPI implementation code in this exact linux-libc-dev package. The reviewed Ubuntu 26.04 amd64 7.0.0-43.43 payload contains only exported headers and package metadata and no ELF; affected private headers are absent. The unchanged gate checks installed identity, native package paths, absence of kernel images/modules, and exact raw CVE/PURL equality. Source and per-CVE review: security/dapper-kernel-header-review-2026-11-23.md (CVE-2026-99317). This statement covers only this build-stage package, not the host kernel or separately scanned product binaries."
     }
   ]
 }
