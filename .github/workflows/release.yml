@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: Numeric semantic release tag, for example v0.20.19
+        description: Numeric semantic release tag, for example v0.20.20
         required: true
         type: string
 
@@ -134,8 +134,8 @@ jobs:
 
           {
             printf '# PastureStack Catalog Service %s\n\n' "$RELEASE_TAG"
-            printf 'This maintenance release adds native SHA256-verified offline catalog Git bundles, exact pinned-source matching, transactional repair of required revisions, serialized refresh and bounded Git commands. Both binaries retain checksum-pinned Go 1.27.4. Existing tags and assets remain immutable.\n\n'
-            printf 'Operator-owned manifests keep local bundle paths outside Catalog API inputs. Matching bundles bootstrap before custom network refresh, reject hash or pin mismatches, repair dirty caches and missing required revisions, and preserve the previous readable index on failure. The bundled healthcheck reports incomplete state without blocking existing APIs. Existing catalog origin, rooted-cache and bounded-input protections are retained.\n\n'
+            printf 'This maintenance release adds a scoped read-only bridge for the historical library container-crontab identity, preserves exact revision and upgrade links, and hides compatibility-only templates from new-install lists. Both binaries retain checksum-pinned Go 1.27.4. Existing tags and assets remain immutable.\n\n'
+            printf 'Normal Stack actions own scheduler upgrades and rollback; no GET rewrites Stack identities or creates duplicate catalogs. Custom library sources keep precedence. Operator-owned manifests keep local bundle paths outside Catalog API inputs. Matching bundles bootstrap before custom network refresh, reject hash or pin mismatches, repair dirty caches and missing required revisions, and preserve the previous readable index on failure. The bundled healthcheck reports incomplete state without blocking existing APIs. Existing catalog origin, rooted-cache and bounded-input protections are retained.\n\n'
             printf '## Immutable coordinates\n\n'
             printf -- '- Source commit: `%s`\n' "$SOURCE_SHA"
             printf -- '- Artifact SHA-256: `%s`\n\n' "$artifact_sha"

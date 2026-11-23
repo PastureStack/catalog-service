@@ -20,7 +20,7 @@ jobs:
     env:
       DAPPER_IMAGE: pasturestack/catalog-service-dapper:${{ github.sha }}
       TRIVY_IMAGE: ghcr.io/aquasecurity/trivy:0.76.2@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb
-      VERSION_OVERRIDE: v0.20.19
+      VERSION_OVERRIDE: v0.20.20
 
     steps:
       - name: Check out candidate
@@ -74,13 +74,14 @@ jobs:
           }
 
           run_ci
-          artifact="dist/artifacts/catalog-service-0.20.19.tar.xz"
+          artifact="dist/artifacts/catalog-service-0.20.20.tar.xz"
           test -s "$artifact"
           cp "$artifact" /tmp/catalog-service-first.tar.xz
 
           rm -rf bin dist cache local.db integration/*.egg-info integration/core/__pycache__
           run_ci
           cmp /tmp/catalog-service-first.tar.xz "$artifact"
+          bash scripts/test-source-version-gate
           ./scripts/check-pasturestack-source
 
           mkdir -p evidence/product
@@ -88,8 +89,8 @@ jobs:
           test "$(find evidence/product -maxdepth 1 -type f | wc -l)" -eq 2
           test -x evidence/product/catalog-service
           test -x evidence/product/catalog-service-sqlite
-          test "$(evidence/product/catalog-service --version)" = 'v0.20.19'
-          test "$(evidence/product/catalog-service-sqlite --version)" = 'v0.20.19'
+          test "$(evidence/product/catalog-service --version)" = 'v0.20.20'
+          test "$(evidence/product/catalog-service-sqlite --version)" = 'v0.20.20'
           sha256sum "$artifact" > evidence/catalog-service.tar.xz.sha256
           cp "$artifact" evidence/
           docker run --rm --entrypoint sh \

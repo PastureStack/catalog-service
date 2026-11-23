@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+fixture=$(mktemp -d)
+trap 'rm -rf -- "$fixture"' EXIT
+mkdir -p "$fixture/scripts"
+cp "$root_dir/scripts/check-pasturestack-source" "$fixture/scripts/"
+
+check_value() {
+    local expected=$1 value=$2 output status=0
+    printf 'package fixture\nconst value = "%s"\n' "$value" > "$fixture/example.go"
+    output=$(bash "$fixture/scripts/check-pasturestack-source" 2>&1) || status=$?
+    if [[ "$expected" == pass ]]; then
+        if [[ "$status" -ne 0 ]]; then
+            printf 'Legal metadata/version rejected: %s\n%s\n' "$value" "$output" >&2
+            exit 1
+        fi
+    elif [[ "$status" -eq 0 ]] ||
+        ! grep -Fq 'New product versions must be numeric SemVer without product suffixes' <<< "$output"; then
+        printf 'Product version suffix was not rejected by its gate: %s\n%s\n' "$value" "$output" >&2
+        exit 1
+    fi
+}
+
+check_value pass 'io.pasturestack.catalog.compatibility-only'
+check_value pass '0.20.20'
+check_value pass 'v0.20.20'
+
+# Assemble invalid versions so source scanning does not treat fixtures as product pins.
+version=0.20.20
+for prefix in '' v; do
+    for suffix in '-pasturestack.1' '.pasturestack.1' '-rancher1' '.rancher1'; do
+        check_value fail "${prefix}${version}${suffix}"
+    done
+done
+printf 'Source version gate regression passed: 3 legal and 8 forbidden values.\n'
