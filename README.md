@@ -29,17 +29,19 @@ PastureStack is an independent community effort to preserve, audit, and moderniz
 ## Project status
 
 The current published maintenance release is
-[`v0.20.19`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.19),
+[`v0.20.20`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.20),
 built with checksum-pinned Go 1.27.4 from producer
-[`151d62fff93deaca9b2486b0b071df6772d1a27b`](https://github.com/PastureStack/catalog-service/commit/151d62fff93deaca9b2486b0b071df6772d1a27b).
-It adds native offline catalog bundles, exact pinned-source matching,
-transactional repair of required template revisions, serialized refresh, and
-bounded Git commands. The
-[security gate](https://github.com/PastureStack/catalog-service/actions/runs/45100342078)
-and [release workflow](https://github.com/PastureStack/catalog-service/actions/runs/45101142629)
-passed for this producer; the published archive matches the gate archive byte for
-byte. [The release note](docs/releases/catalog-service-0.20.19.md) records its
-checksums. Server assembly, deployment, and runtime acceptance remain separate.
+[`bced4b96b0c6a0fe7d3db044f5c30a5b33d01172`](https://github.com/PastureStack/catalog-service/commit/bced4b96b0c6a0fe7d3db044f5c30a5b33d01172).
+It adds the historical scheduler bridge described above while retaining native
+offline catalog bundles, pinned-source index repair, and existing source boundaries.
+The reviewed candidate passed the
+[security gate](https://github.com/PastureStack/catalog-service/actions/runs/45131943562)
+before merge. The
+[release workflow](https://github.com/PastureStack/catalog-service/actions/runs/45133228172)
+validated the signed producer above and published reproducible archives.
+[The release note](docs/releases/catalog-service-0.20.20.md) records the official
+archive, binary, and license checksums. Server assembly, deployment, and runtime
+acceptance remain separate.
 
 The existing bounded launch material, question definitions, and owner-side
 answer validation remain in place. Catalog returns explicit string variables
@@ -183,8 +185,8 @@ Use `platformVersion` when filtering templates and upgrade links. The historical
 
 From a Docker-capable Linux host:
 
-To rebuild the published release, check out `v0.20.19` at the producer above and set
-`VERSION_OVERRIDE=v0.20.19`. The default Go 1.27.4 archive pins cover
+To rebuild the published release, check out `v0.20.20` at the producer above and set
+`VERSION_OVERRIDE=v0.20.20`. The default Go 1.27.4 archive pins cover
 Linux/amd64 and Linux/armv6l; the published artifact qualification covers
 Linux/amd64 only, not an ARM binary build.
 
