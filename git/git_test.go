@@ -1,14 +1,33 @@
 package git
 
 import (
+	"context"
+	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/PastureStack/catalog-service/outbound"
 )
+
+func TestGitCommandTimeout(t *testing.T) {
+	if os.Getenv("PASTURESTACK_GIT_TIMEOUT_HELPER") == "1" {
+		time.Sleep(30 * time.Second)
+		os.Exit(0)
+	}
+	t.Setenv("PASTURESTACK_GIT_TIMEOUT_HELPER", "1")
+	started := time.Now()
+	_, err := runCommand(context.Background(), 100*time.Millisecond, os.Args[0], "-test.run=^TestGitCommandTimeout$")
+	if !errors.Is(err, context.DeadlineExceeded) {
+		t.Fatalf("timeout error = %v", err)
+	}
+	if time.Since(started) > 3*time.Second {
+		t.Fatalf("command was not bounded: %s", time.Since(started))
+	}
+}
 
 func runGitTestCommand(t *testing.T, dir string, args ...string) string {
 	t.Helper()

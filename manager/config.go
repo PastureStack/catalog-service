@@ -22,17 +22,23 @@ type CatalogConfig struct {
 }
 
 func (m *Manager) readConfig() error {
-	configContents, err := ioutil.ReadFile(m.configFile)
+	config, err := readCatalogConfig(m.configFile)
+	if err == nil {
+		m.config = config
+	}
+	return err
+}
+
+func readCatalogConfig(path string) (map[string]CatalogConfig, error) {
+	configContents, err := ioutil.ReadFile(path)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	var config map[string]map[string]CatalogConfig
 	if err = json.Unmarshal(configContents, &config); err != nil {
-		return err
+		return nil, err
 	}
 
-	m.config = config["catalogs"]
-
-	return nil
+	return config["catalogs"], nil
 }

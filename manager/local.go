@@ -44,6 +44,9 @@ func (m *Manager) prepareRepoPath(catalog model.Catalog, update bool) (*os.Root,
 		return m.prepareGitRepoPath(catalog, update, CatalogTypeNative)
 	}
 	if catalog.Kind == HelmTemplateType {
+		if m.bundled.matchCatalog(catalog) != nil {
+			return m.prepareGitRepoPath(catalog, update, CatalogTypeHelmGitRepo)
+		}
 		if source, err := m.sourcePolicy.AuthorizeGitSource(catalog.URL); err == nil && git.IsValid(source) {
 			return m.prepareGitRepoPath(catalog, update, CatalogTypeHelmGitRepo)
 		}
@@ -85,6 +88,9 @@ func (m *Manager) prepareGitRepoPath(catalog model.Catalog, update bool, catalog
 		return nil, "", catalogType, fmt.Errorf("Pinned commit must be a full 40-character Git commit SHA")
 	}
 	pinnedCommit = strings.ToLower(pinnedCommit)
+	if bundled := m.bundled.match(catalog.URL, branch, pinnedCommit); bundled != nil {
+		return m.prepareBundledRepoPath(catalog, branch, pinnedCommit, catalogType, bundled)
+	}
 
 	sum := sha256.Sum256([]byte(catalog.URL + "\x00" + branch + "\x00" + pinnedCommit))
 	repoBranchHash := hex.EncodeToString(sum[:])

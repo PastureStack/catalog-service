@@ -8,28 +8,23 @@ PastureStack is an independent community effort to preserve, audit, and moderniz
 
 ## Project status
 
-The current published numeric maintenance release is
-[`v0.20.18`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.18),
-built with Go 1.27.4 from producer
-`2f70559e340865eb6243662ed33d8cbc7b1efa90`. Its original archive, both binaries
-and all sixteen public assets were anonymously verified. Their immutable source
-is distinct from later documentation or merge commits. Matching
-Engine/Web/Server runtime acceptance remains separate.
+The current maintenance candidate is `v0.20.19`, built with checksum-pinned
+Go 1.27.4. It adds native offline catalog bundles, exact pinned-source matching,
+transactional repair of required template revisions, serialized refresh, and
+bounded Git commands. Publication and Server runtime acceptance remain separate.
+See [the release note](docs/releases/catalog-service-0.20.19.md).
 
-This release adds bounded launch material, safe
-question definitions and owner-side answer validation for Engine-owned Catalog
-launch plans. Catalog retains the existing question parser and constraints;
-it returns explicit string variables without filling private defaults.
-Compose rendering and Stack creation stay with their existing owners. See
-[the launch owner contract](docs/ai-catalog-launch-owner.md) and
-[release note](docs/releases/catalog-service-0.20.17.md).
+The existing bounded launch material, question definitions, and owner-side
+answer validation remain in place. Catalog returns explicit string variables
+without filling private defaults; Compose rendering and Stack creation stay
+with their existing owners. See [the launch owner contract](docs/ai-catalog-launch-owner.md).
 
 These private routes require Engine 0.183.359's matching boundary to block the
 complete `/v1-catalog/ai` namespace at every public proxy entrance and redirect. The real
 loopback peer and effective project header identify the internal transport only;
 they do not replace caller/Key authorization. The Engine owns live account and
 Key limits, source CAS, human-only inputs, encrypted private plans and exact
-delegated execution. Official component gates and publication passed; matching
+delegated execution. The earlier launch-metadata component passed its gates and publication; matching
 Server559 runtime/browser/role/weak-model acceptance remains pending.
 
 The release builder applies Ubuntu's checksum-pinned
@@ -107,6 +102,52 @@ Git catalogs may specify both a branch and a full 40-character `pinnedCommit`. T
 
 The placeholder above must be replaced with a reviewed commit. An omitted `pinnedCommit` preserves the historical moving-branch behavior for compatibility and is not suitable for a PastureStack release gate.
 
+## Operator-provided offline bundles
+
+Set `--bundled-sources /usr/share/pasturestack/catalog-sources/manifest.json`
+or `CATALOG_SERVICE_BUNDLED_SOURCES` to an operator-owned manifest. The explicit
+flag overrides the environment variable. Catalog API inputs and `repo.json`
+cannot select local bundle paths. A manifest has the following shape:
+
+```json
+{
+  "version": 1,
+  "sources": [{
+    "url": "https://github.com/PastureStack/catalog-templates.git",
+    "branch": "main",
+    "pinnedCommit": "FULL_40_CHARACTER_COMMIT_SHA",
+    "bundle": "catalog-templates.bundle",
+    "sha256": "FULL_64_CHARACTER_LOWERCASE_SHA256",
+    "requiredTemplates": [{"base": "infra", "name": "healthcheck", "revision": 7}]
+  }]
+}
+```
+
+The URL, effective branch, and full commit must match a configured catalog
+exactly; existing outbound authorization still applies. Bundles must be complete
+(no missing Git prerequisites), advertise the exact pinned commit through a
+`refs/heads/` ref, and reside within the manifest directory. The advertised ref
+may have a different name from the upstream branch. Absolute paths, traversal,
+symlink escapes, mismatched SHA256 values, and missing pins are rejected.
+
+Configured matching sources are reconciled before background network refreshes.
+Unmatched custom sources retain their existing refresh behavior and cannot delay
+bundled readiness. A verified staged repository replaces a missing or polluted
+cache; tracked changes, ignored or untracked files, and index flags that hide
+changes trigger repair. Parsing and required-revision checks precede the existing
+catalog database transaction. A failed import or reindex retains the readable
+previous index and does not fall back to a remote source.
+
+`GET /healthcheck` returns `200 {"ready":true}` only after matching bundles have
+been verified and the current database contains their pinned commits, named
+templates, and all required revisions; otherwise it returns `503 {"ready":false}`.
+This endpoint covers the configured bundled sources. Existing Catalog APIs remain
+available during a failed refresh, and later automatic or manual refreshes can
+repair the failure. With no matching bundled source it imposes no additional
+readiness requirement. Startup, automatic, and manual refreshes share one manager
+lock; health checks do not wait for custom network refreshes. Each Git command has
+a two-minute deadline, plus a one-second output-pipe shutdown bound.
+
 ## API migration
 
 Use `platformVersion` when filtering templates and upgrade links. The historical `rancherVersion` and `minimumRancherVersion_lte` query parameters remain read-only compatibility fallbacks. Set `PASTURESTACK_LOCALE=en-US` or `zh-TW` for operator lifecycle messages.
@@ -115,8 +156,8 @@ Use `platformVersion` when filtering templates and upgrade links. The historical
 
 From a Docker-capable Linux host:
 
-To rebuild the published source, check out `v0.20.18` and set
-`VERSION_OVERRIDE=v0.20.18`. The default Go 1.27.4 archive pins cover
+To build this candidate, check out its reviewed commit and set
+`VERSION_OVERRIDE=v0.20.19`. The default Go 1.27.4 archive pins cover
 Linux/amd64 and Linux/armv6l; the published artifact qualification covers
 Linux/amd64 only, not an ARM binary build.
 

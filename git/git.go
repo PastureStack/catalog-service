@@ -1,17 +1,21 @@
 package git
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/PastureStack/catalog-service/outbound"
 	log "github.com/sirupsen/logrus"
 )
 
 var fullCommitSHA = regexp.MustCompile(`^[0-9a-fA-F]{40}$`)
+
+const commandTimeout = 2 * time.Minute
 
 func Clone(path string, source outbound.AuthorizedSource, branch string) error {
 	if err := validateBranch(branch); err != nil {
@@ -46,9 +50,63 @@ func CheckoutCommit(path, commit string) error {
 }
 
 func HeadCommit(path string) (string, error) {
-	cmd := gitCommand("git", "-C", path, "rev-parse", "HEAD")
-	output, err := cmd.Output()
-	return strings.Trim(string(output), "\n"), err
+	output, err := runCommand(context.Background(), commandTimeout, "git", "-C", path, "rev-parse", "HEAD")
+	return strings.TrimSpace(string(output)), err
+}
+
+// CloneBundle is only called with an operator-supplied, SHA256-verified bundle.
+// It cannot fetch an external source. The pin must be explicitly advertised;
+// the bundle's ref name need not be the catalog's upstream branch name.
+func CloneBundle(path, bundle, branch, commit string) error {
+	if err := validateBranch(branch); err != nil {
+		return err
+	}
+	if !fullCommitSHA.MatchString(commit) {
+		return fmt.Errorf("Git catalog commit must be a full 40-character SHA")
+	}
+	if err := runcmd("git", "init", "--", path); err != nil {
+		return err
+	}
+	output, err := runCommand(context.Background(), commandTimeout, "git", "-C", path, "bundle", "list-heads", bundle)
+	if err != nil {
+		return err
+	}
+	ref := ""
+	for _, line := range strings.Split(string(output), "\n") {
+		fields := strings.Fields(line)
+		if len(fields) == 2 && strings.EqualFold(fields[0], commit) && strings.HasPrefix(fields[1], "refs/heads/") {
+			ref = fields[1]
+			break
+		}
+	}
+	if ref == "" {
+		return fmt.Errorf("Bundled catalog does not advertise the pinned commit")
+	}
+	if err := runcmd("git", "-C", path, "-c", "protocol.allow=never", "-c", "protocol.file.allow=always",
+		"fetch", "--no-tags", "--", bundle, ref+":refs/remotes/bundled/source"); err != nil {
+		return err
+	}
+	return CheckoutCommit(path, commit)
+}
+
+// IsClean checks tracked modifications and untracked files; either can otherwise
+// make the catalog index disagree with the commit recorded in the database.
+func IsClean(path string) (bool, error) {
+	output, err := runCommand(context.Background(), commandTimeout, "git", "-C", path, "status", "--porcelain", "--untracked-files=all", "--ignored")
+	if err != nil || len(strings.TrimSpace(string(output))) != 0 {
+		return false, err
+	}
+	// Index flags must not hide modified tracked files from the status check.
+	output, err = runCommand(context.Background(), commandTimeout, "git", "-C", path, "ls-files", "-v", "-z")
+	if err != nil {
+		return false, err
+	}
+	for _, entry := range strings.Split(string(output), "\x00") {
+		if entry != "" && !strings.HasPrefix(entry, "H ") {
+			return false, nil
+		}
+	}
+	return true, nil
 }
 
 func IsValid(source outbound.AuthorizedSource) bool {
@@ -61,8 +119,7 @@ func validateBranch(branch string) error {
 	if strings.TrimSpace(branch) != branch || branch == "" {
 		return fmt.Errorf("Git catalog branch is invalid")
 	}
-	cmd := gitCommand("git", "check-ref-format", "refs/heads/"+branch)
-	if err := cmd.Run(); err != nil {
+	if err := runcmd("git", "check-ref-format", "refs/heads/"+branch); err != nil {
 		return fmt.Errorf("Git catalog branch %q is invalid", branch)
 	}
 	return nil
@@ -86,16 +143,27 @@ func protocolArguments(source outbound.AuthorizedSource) []string {
 }
 
 func runcmd(name string, arg ...string) error {
-	cmd := gitCommand(name, arg...)
-	if log.GetLevel() >= log.DebugLevel {
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-	}
-	return cmd.Run()
+	_, err := runCommand(context.Background(), commandTimeout, name, arg...)
+	return err
 }
 
-func gitCommand(name string, arg ...string) *exec.Cmd {
-	cmd := exec.Command(name, arg...)
+func runCommand(parent context.Context, timeout time.Duration, name string, arg ...string) ([]byte, error) {
+	ctx, cancel := context.WithTimeout(parent, timeout)
+	defer cancel()
+	cmd := gitCommand(ctx, name, arg...)
+	cmd.WaitDelay = time.Second
+	if log.GetLevel() >= log.DebugLevel {
+		cmd.Stderr = os.Stderr
+	}
+	output, err := cmd.Output()
+	if ctx.Err() != nil {
+		return nil, fmt.Errorf("Git command did not complete: %w", ctx.Err())
+	}
+	return output, err
+}
+
+func gitCommand(ctx context.Context, name string, arg ...string) *exec.Cmd {
+	cmd := exec.CommandContext(ctx, name, arg...)
 	environment := make([]string, 0, len(os.Environ())+8)
 	for _, entry := range os.Environ() {
 		key := entry
