@@ -21,6 +21,9 @@ func removeDuplicateCatalogTemplate(templates []model.Template, envId string) []
 	catalogIds := []uint{}
 	templateMap := make(map[uint][]model.Template)
 	for _, template := range templates {
+		if model.IsCompatibilityOnlyTemplate(template) {
+			continue
+		}
 
 		if _, exists := templateMap[template.CatalogId]; !exists {
 			templateMap[template.CatalogId] = []model.Template{}
@@ -112,7 +115,7 @@ func getTemplate(w http.ResponseWriter, r *http.Request, envId string) (int, err
 
 	catalogName, templateName, templateBase, revisionOrVersion, _ := parse.TemplateURLPath(catalogTemplateVersion)
 
-	template := model.LookupTemplate(db, envId, catalogName, templateName, templateBase)
+	template, lookupCatalog := model.LookupTemplateForRead(db, envId, catalogName, templateName, templateBase)
 
 	if template == nil {
 		return http.StatusNotFound, errors.New("Template not found")
@@ -138,9 +141,9 @@ func getTemplate(w http.ResponseWriter, r *http.Request, envId string) (int, err
 		var version *model.Version
 		revision, err := strconv.Atoi(revisionOrVersion)
 		if err == nil {
-			version = model.LookupVersionByRevision(db, envId, catalogName, templateBase, templateName, revision)
+			version = model.LookupVersionByRevision(db, envId, lookupCatalog, templateBase, templateName, revision)
 		} else {
-			version = model.LookupVersionByVersion(db, envId, catalogName, templateBase, templateName, revisionOrVersion)
+			version = model.LookupVersionByVersion(db, envId, lookupCatalog, templateBase, templateName, revisionOrVersion)
 		}
 		if version == nil {
 			return http.StatusNotFound, errors.New("Version not found")

@@ -2,6 +2,26 @@
 
 Catalog Service indexes reviewed catalog repositories and serves compatible catalog, template, version, question, icon, and upgrade-link APIs.
 
+## Historical scheduler upgrades
+
+The legacy `library:infra*container-crontab` read routes can resolve a reviewed
+first-party compatibility template when the original template is absent. Exact
+historical revisions, requested response IDs and ordinary upgrade links are
+preserved; unknown revisions still return 404. A configured custom library
+keeps its own identity and never falls back to this bridge. The compatibility
+template is not offered in new-install lists, so it does not add a second
+scheduler beside the normal Container Schedule template.
+
+The matching Catalog template retains the `container-crontab` service key and
+the original `metrics` and `debug` answer variables. Its next revision uses
+stop-first service replacement through the existing Stack upgrade, completion
+and rollback actions. Catalog GET requests do not create a library, edit a
+Stack, rewrite its external ID or start a workload. An existing Stack keeps its
+legacy namespace as a supported identity; upgrading its numbered revision is
+an ordinary persisted Stack operation. Operator overrides, schedule labels and
+rollback/runtime results must be checked in the target environment; component
+publication alone does not establish those results.
+
 PastureStack is an independent community effort to preserve, audit, and modernize the Rancher 1.6 ecosystem. It is not affiliated with or endorsed by Rancher Labs or SUSE.
 
 **Upstream:** [`rancher/catalog-service`](https://github.com/rancher/catalog-service). This GitHub fork preserves upstream history, authorship, dates, tags, licenses, and bundled dependency notices; all PastureStack maintenance follows the preserved upstream boundary.
