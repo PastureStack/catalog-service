@@ -8,11 +8,18 @@ PastureStack is an independent community effort to preserve, audit, and moderniz
 
 ## Project status
 
-The current maintenance candidate is `v0.20.19`, built with checksum-pinned
-Go 1.27.4. It adds native offline catalog bundles, exact pinned-source matching,
+The current published maintenance release is
+[`v0.20.19`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.19),
+built with checksum-pinned Go 1.27.4 from producer
+[`151d62fff93deaca9b2486b0b071df6772d1a27b`](https://github.com/PastureStack/catalog-service/commit/151d62fff93deaca9b2486b0b071df6772d1a27b).
+It adds native offline catalog bundles, exact pinned-source matching,
 transactional repair of required template revisions, serialized refresh, and
-bounded Git commands. Publication and Server runtime acceptance remain separate.
-See [the release note](docs/releases/catalog-service-0.20.19.md).
+bounded Git commands. The
+[security gate](https://github.com/PastureStack/catalog-service/actions/runs/45100342078)
+and [release workflow](https://github.com/PastureStack/catalog-service/actions/runs/45101142629)
+passed for this producer; the published archive matches the gate archive byte for
+byte. [The release note](docs/releases/catalog-service-0.20.19.md) records its
+checksums. Server assembly, deployment, and runtime acceptance remain separate.
 
 The existing bounded launch material, question definitions, and owner-side
 answer validation remain in place. Catalog returns explicit string variables
@@ -24,8 +31,8 @@ complete `/v1-catalog/ai` namespace at every public proxy entrance and redirect.
 loopback peer and effective project header identify the internal transport only;
 they do not replace caller/Key authorization. The Engine owns live account and
 Key limits, source CAS, human-only inputs, encrypted private plans and exact
-delegated execution. The earlier launch-metadata component passed its gates and publication; matching
-Server559 runtime/browser/role/weak-model acceptance remains pending.
+delegated execution. Matching Server runtime, browser, role, and weak-model
+acceptance remain separate from this component release.
 
 The release builder applies Ubuntu's checksum-pinned
 `libbrotli1=1.2.0-3ubuntu0.1` same-series security update for
@@ -40,7 +47,7 @@ resource lifecycle or permission matrix; those results remain INCOMPLETE.
 The disposable AMD64 release builder also pins the official curl
 8.18.0-1ubuntu2.8 payloads and certifi 2026.10.19 wheel; its existing
 OpenSSL 3.5.5-1ubuntu3.7 pin is retained. Refreshed exact header-only VEX
-statements cover only the reviewed linux-libc-dev 7.0.0-38.38 package,
+statements cover only the reviewed linux-libc-dev 7.0.0-43.43 package,
 not a host kernel or the Go runtime. Raw-to-VEX equality, no-kernel-package
 and independent product gates remain unchanged.
 
@@ -156,7 +163,7 @@ Use `platformVersion` when filtering templates and upgrade links. The historical
 
 From a Docker-capable Linux host:
 
-To build this candidate, check out its reviewed commit and set
+To rebuild the published release, check out `v0.20.19` at the producer above and set
 `VERSION_OVERRIDE=v0.20.19`. The default Go 1.27.4 archive pins cover
 Linux/amd64 and Linux/armv6l; the published artifact qualification covers
 Linux/amd64 only, not an ARM binary build.
