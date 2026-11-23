@@ -1,9 +1,34 @@
 # Catalog Service v0.20.19
 
-This maintenance candidate makes offline catalog bootstrap and index repair native
-to Catalog Service. It retains the checksum-pinned Go 1.27.4 compiler and existing
-source authorization, rooted cache, catalog identity, and database transaction
-boundaries. Publication and matching Server runtime acceptance are separate.
+Published on 2026-11-23, this maintenance release makes offline catalog bootstrap
+and index repair native to Catalog Service. It retains the checksum-pinned
+Go 1.27.4 compiler and existing source authorization, rooted cache, catalog
+identity, and database transaction boundaries. Server assembly, deployment, and
+matching runtime acceptance remain separate from this component publication.
+
+## Published identity
+
+- Release: [`v0.20.19`](https://github.com/PastureStack/catalog-service/releases/tag/v0.20.19).
+- Immutable producer: [`151d62fff93deaca9b2486b0b071df6772d1a27b`](https://github.com/PastureStack/catalog-service/commit/151d62fff93deaca9b2486b0b071df6772d1a27b).
+- Compiler: Go 1.27.4; published product qualification covers Linux/amd64.
+- [Security release gate 45100342078](https://github.com/PastureStack/catalog-service/actions/runs/45100342078): success for that producer, including complete tests, race, reproducible packaging, scans, and provenance checks.
+- [Release workflow 45101142629](https://github.com/PastureStack/catalog-service/actions/runs/45101142629): success for the same producer.
+
+The downloaded release archive is byte-identical to the qualified gate archive.
+Both binaries are contained in that archive; the license is a separate release
+asset. The immutable SHA-256 values are:
+
+| Artifact | SHA-256 |
+| --- | --- |
+| [`catalog-service-0.20.19.tar.xz`](https://github.com/PastureStack/catalog-service/releases/download/v0.20.19/catalog-service-0.20.19.tar.xz) | `dc46d200cfe8f454b234ca36c04043beeaa3cc48eac921f85118ee9c8db5e0c2` |
+| `catalog-service` inside the archive | `4dc152e56630c845bfe9638aa06f3f28ae74da89342a5f8354847e9888cea5a9` |
+| `catalog-service-sqlite` inside the archive | `7b82205cffde1989d033e9a1d9dd6a05138a5cef1d5107440ce24e118e00bac1` |
+| [`catalog-service-0.20.19-LICENSE.txt`](https://github.com/PastureStack/catalog-service/releases/download/v0.20.19/catalog-service-0.20.19-LICENSE.txt) | `0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594` |
+
+This documentation update does not change those producer bytes or qualify a
+Server deployment or a production-site repair.
+
+## Released behavior
 
 - Operators may provide `--bundled-sources` or
   `CATALOG_SERVICE_BUNDLED_SOURCES`. Version 1 manifests identify an exact catalog
@@ -28,10 +53,10 @@ boundaries. Publication and matching Server runtime acceptance are separate.
   without waiting for custom network refreshes. Failed refreshes retain existing
   Catalog API access and report unavailable bundled readiness until recovery.
 
-Focused validation covers cold and warm offline starts, different bundle and
+Focused validation covered cold and warm offline starts, different bundle and
 upstream ref names, tracked/untracked/ignored cache contamination, hidden tracked
 changes, old database pins, missing same-commit revisions, rejected hashes,
 malformed bundles, missing pins, partial parse failures, source-policy boundaries,
 custom-source independence, concurrent refresh, command timeout, flag/environment
-precedence, and failed-readiness API access. The official release gate separately
-qualifies reproducible archives, complete tests, scans, and build provenance.
+precedence, and failed-readiness API access. The successful official release gate
+above records reproducible archives, complete tests, scans, and build provenance.
